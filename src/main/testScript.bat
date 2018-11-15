@@ -1,0 +1,23 @@
+del *.class
+del *.tokens
+del *.java
+java org.antlr.v4.Tool Smoola.g4
+javac *.java
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/1.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/2.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/3.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/4.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/5.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/6.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/7.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/8.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/9.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/10.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/11.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/12.txt
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/13.sml
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/14.sml
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/15.sml
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/16.sml
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/17.sml
+java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/18.sml

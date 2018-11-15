@@ -1,9 +1,8 @@
 grammar Smoola;
 
-@header {
-    import "./src/main/symbolTable/SymbolTable.java";
+@header{
+    import ast.Type.PrimitiveType.IntType;
 }
-
     program:
         mainClass (classDeclaration)* EOF
     ;

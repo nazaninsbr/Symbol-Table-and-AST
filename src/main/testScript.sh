@@ -1,11 +1,11 @@
 export CLASSPATH=".:/usr/local/lib/antlr-4.7.1-complete.jar:$CLASSPATH"
 rm *.class
 rm *.tokens
-rm Smoola*.java
+rm *.java
 java -jar /usr/local/lib/antlr-4.7.1-complete.jar Smoola.g4
-javac Smoola*.java
+javac *.java
 echo 1
-java org.antlr.v4.gui.TestRig Smoola program < ./Tests/1.txt
+java org.antlr.v4.gui.TestRig Smoola program -gui < ./Tests/1.txt
 # echo 2
 # java org.antlr.v4.gui.TestRig Smoola program -gui < ./Tests/2.txt 
 # echo 3

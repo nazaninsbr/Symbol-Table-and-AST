@@ -102,3 +102,6 @@ SmoolaLexer.java
 SmoolaLexer.tokens
 SmoolaListener.java
 SmoolaParser.java
+*.class
+*.tokens
+*.java
