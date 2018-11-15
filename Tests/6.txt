@@ -1,0 +1,10 @@
+class Test{
+	def main(): int{
+		j = true;
+		i = "st  g";
+
+		new d().testMethod("hi there;ghj1`2344][vcza88^$% ??!");
+		return 0;
+		# This is a comment!
+	}
+}

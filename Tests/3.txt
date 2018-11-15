@@ -1,0 +1,20 @@
+class Test {
+	def main() : int {
+		return 0;
+	}
+}
+
+class Book extends Library {
+	var j : int [];
+	var k : boolean; 
+	var i : Rectangle; 
+
+	def x (f1: int) : int {
+		i =--i;
+		if (3||true) then
+			k = false;
+		else
+			k = "YES";
+		return -A && !V || (3+4-3*5);
+	}
+}

@@ -1,0 +1,27 @@
+class Test {
+	def main() : int {
+		return 0;
+	}
+}
+
+class Book {
+	var j : int [];
+	var k : boolean; 
+
+	def main (f1: int, main: string) : int {
+		if (3||true) then
+			k = false;
+		else
+			k = "YES";
+		return -A && !V || (3+4-3*5);
+	}
+
+	def f(): string {
+		while ( i <> 9){
+			writeln("hi");
+		}
+		main = 1;
+		i [main] = 12;
+		return (B||C) + (m*9) - 3;
+	}
+}

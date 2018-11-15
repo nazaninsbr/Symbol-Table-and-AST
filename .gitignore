@@ -93,3 +93,12 @@ fabric.properties
 
 gen/**
 compilerFall97.iml
+
+Smoola.interp
+Smoola.tokens
+SmoolaBaseListener.java
+SmoolaLexer.interp
+SmoolaLexer.java
+SmoolaLexer.tokens
+SmoolaListener.java
+SmoolaParser.java

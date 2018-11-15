@@ -1,0 +1,22 @@
+class MainClass {
+	def main() : int {
+		return new SecondMain().main();
+	}
+}
+class SecondMain extends Blue{
+	var arr: int[];
+	var x : int;
+	var y : boolean;
+	def main(): int{
+		x = (2 + (3 || 4)) / 7;
+		y = 4*6+12||c[0]-8*4&&12;
+	arr = new int[10];
+	if (arr.length == 10 * x) then
+		y =true;
+	else
+		y =false;
+	return y;
+
+
+	}
+}

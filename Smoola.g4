@@ -1,4 +1,9 @@
 grammar Smoola;
+
+@header {
+    import "./src/main/symbolTable/SymbolTable.java";
+}
+
     program:
         mainClass (classDeclaration)* EOF
     ;
