@@ -2,12 +2,14 @@ grammar Smoola;
 
 @header{
     import ast.Type.PrimitiveType.IntType;
+    import symbolTable.SymbolTable;
 }
     program:
-        mainClass (classDeclaration)* EOF
+        {SymbolTable mainSymTable = new SymbolTable();} mainClass[mainSymTable] ( {} classDeclaration[mainSymTable])* EOF 
     ;
-    mainClass:
+    mainClass[SymbolTable mainSymTable]:
         // name should be checked later
+        {$mainSymTable.push(new SymbolTable());}
         'class' ID '{' 'def' ID '()' ':' 'int' '{'  statements 'return' expression ';' '}' '}'
     ;
     classDeclaration:

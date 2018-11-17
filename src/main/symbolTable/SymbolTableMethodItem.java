@@ -16,6 +16,6 @@ public class SymbolTableMethodItem extends SymbolTableItem {
     @Override
     public String getKey() {
         //todo: method + method_name
-        return null;
+        return "method_"+this.name;
     }
 }
