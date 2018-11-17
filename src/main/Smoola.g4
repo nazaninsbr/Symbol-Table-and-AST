@@ -65,16 +65,16 @@ grammar Smoola;
         'def' method_name = ID { MethodDeclaration this_method = create_methodDeclaration_object($method_name.text);} ('()' | ('(' arg_name = ID ':' arg_type = type { this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, this_method);})* ')')) ':' type '{'  varDeclaration* statements 'return' expression ';' '}'
     ;
     statements:
-        (statement)*
+        (statement )*
     ;
     statement:
-        statementBlock |
+        {Block block_statement = new Block();} statementBlock[block_statement] |
         statementCondition |
         statementLoop |
         statementWrite |
         statementAssignment
     ;
-    statementBlock:
+    statementBlock [Block block_statement]:
         '{'  statements '}'
     ;
     statementCondition:
@@ -173,12 +173,12 @@ grammar Smoola;
 	    '.' (ID '()' | ID '(' (expression (',' expression)*) ')' | 'length') expressionMethodsTemp
 	    |
 	;
-    expressionOther:
+    expressionOther returns [Expression this_expression]:
 		CONST_NUM
         |	CONST_STR
         |   'new ' 'int' '[' expression ']'
         |   'new ' ID '()'
-        |   'this'
+        |   'this' {Expression this_expression = new This();}
         |   'true'
         |   'false'
         |	ID
