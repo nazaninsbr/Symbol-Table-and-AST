@@ -75,7 +75,7 @@ grammar Smoola;
             } (',' arg_name_2 = ID ':' arg_type_2 = type {
             this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, this_method);
             })* ')')) ':' type '{' (var_dec = varDeclaration {this_method.addLocalVar($var_dec.this_var);})* statements 'return' ret_exp = expression{
-            this_method.setReturnValue($ret_exp.this_exp);
+            //this_method.setReturnValue($ret_exp.this_exp);
             //this_exp ???
             } ';' '}'
     ;
