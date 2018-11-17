@@ -1,6 +1,6 @@
 class firstClass # comment
 {
-    def  main( ): int{
+    def  main(): int{
         good = true;
         i = 0;
         data = "null";

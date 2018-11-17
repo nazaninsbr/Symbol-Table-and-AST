@@ -1,0 +1,3 @@
+# print classes and parent classes 
+
+{List<ClassDeclaration> classes = prog.getClasses(); for(int i=0; i<classes.size(); i++){System.out.println(classes.get(i).getName().getName()); System.out.println(classes.get(i).getParentName().getName());} }
