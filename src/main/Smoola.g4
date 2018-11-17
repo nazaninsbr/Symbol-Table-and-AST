@@ -41,7 +41,6 @@ grammar Smoola;
         this_method.addArg(this_arg_dec);
         return this_method;
     }
-
     Identifier create_identifier_object(String name){
         return new Identifier(name);
     }
@@ -62,7 +61,7 @@ grammar Smoola;
         'var' var_name = ID ':' this_type = type ';' { VarDeclaration this_variable_dec = create_varDeclaration_object($var_name.text, $this_type.this_type);}
     ;
     methodDeclaration returns [MethodDeclaration this_method]:
-        'def' method_name = ID { MethodDeclaration this_method = create_methodDeclaration_object($method_name.text);} ('()' | ('(' arg_name = ID ':' arg_type = type { this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, this_method);})* ')')) ':' type '{'  varDeclaration* statements 'return' expression ';' '}'
+        'def' method_name = ID { MethodDeclaration this_method = create_methodDeclaration_object($method_name.text);} ('()' | ('(' arg_name = ID ':' arg_type = type { this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, this_method);})* ')')) ':' type '{' varDeclaration* statements 'return' expression ';' '}'
     ;
     statements:
         (statement)*
