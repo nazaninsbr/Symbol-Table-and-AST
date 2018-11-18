@@ -37,6 +37,10 @@ grammar Smoola;
             ArrayList<MethodDeclaration> methods = classes.get(i).getMethodDeclarations();
             for(int j=0; j<methods.size(); j++){
                 System.out.println(methods.get(j).getName().getName());
+                ArrayList<Statement> statements = methods.get(j).getBody();
+                for(int k=0; k<statements.size(); k++){
+                    System.out.println(statements.get(k).toString());
+                }
             }
         }
     }
@@ -70,10 +74,16 @@ grammar Smoola;
         return this_method;
     }
 
+    MethodDeclaration add_body_statements_to_method(MethodDeclaration this_method, ArrayList<Statement> all_statements){
+        for(int i=0; i<all_statements.size(); i++){
+            this_method.addStatement(all_statements.get(i)); 
+        }
+        return this_method;
+    }
+
     Block create_block_statement_object(ArrayList<Statement> all_statements){
         Block this_statement = new Block();
         for(int i=0; i<all_statements.size(); i++){
-            System.out.println(all_statements.get(i).toString());
             this_statement.addStatement(all_statements.get(i)); 
         }
         return this_statement;
@@ -133,7 +143,7 @@ grammar Smoola;
     ;
     mainClass[Program prog]:
         // name should be checked later
-        'class' class_name = ID {ClassDeclaration main_class_dec = create_class_object($class_name.text, "null"); $prog.setMainClass(main_class_dec);} '{' 'def' method_name = ID {main_class_dec.addMethodDeclaration(create_main_method_object($method_name.text));} '()' ':' 'int' '{'  statements 'return' expression ';' '}' '}'
+        'class' class_name = ID {ClassDeclaration main_class_dec = create_class_object($class_name.text, "null"); $prog.setMainClass(main_class_dec);} '{' 'def' method_name = ID {MethodDeclaration main_method = create_main_method_object($method_name.text); main_class_dec.addMethodDeclaration(main_method); } '()' ':' 'int' '{'  method_body = statements {main_method = add_body_statements_to_method(main_method, $method_body.all_statements);} 'return' ret_expr = expression {main_method.setReturnValue($ret_expr.this_expression);} ';' '}' '}'
     ;
     classDeclaration[Program prog]:
         'class' class_name = ID ('extends' parent_class = ID )? { ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text); $prog.addClass(new_class_dec);} '{' (var_dec = varDeclaration { new_class_dec.addVarDeclaration($var_dec.this_var);})* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
@@ -142,7 +152,7 @@ grammar Smoola;
         'var' var_name = ID ':' this_type = type ';' {$this_var = create_varDeclaration_object($var_name.text, $this_type.this_type);}
     ;
     methodDeclaration returns [MethodDeclaration this_method]:
-        'def' method_name = ID { $this_method = create_methodDeclaration_object($method_name.text);} ('()' | ('(' arg_name = ID ':' arg_type = type { $this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, $this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { $this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, $this_method);})* ')')) ':' type '{'  (this_var = varDeclaration {$this_method.addLocalVar($this_var.this_var);})* statements 'return' expression ';' '}'
+        'def' method_name = ID { $this_method = create_methodDeclaration_object($method_name.text);} ('()' | ('(' arg_name = ID ':' arg_type = type { $this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, $this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { $this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, $this_method);})* ')')) ':' type '{'  (this_var = varDeclaration {$this_method.addLocalVar($this_var.this_var);})* method_body = statements {$this_method = add_body_statements_to_method($this_method, $method_body.all_statements);} 'return' ret_expr = expression {$this_method.setReturnValue($ret_expr.this_expression);} ';' '}'
     ;
 
 
