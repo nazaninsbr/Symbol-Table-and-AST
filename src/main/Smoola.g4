@@ -91,10 +91,15 @@ grammar Smoola;
         'class' class_name = ID {ClassDeclaration main_class_dec = create_class_object($class_name.text, "null"); $prog.setMainClass(main_class_dec);} '{' 'def' method_name = ID {main_class_dec.addMethodDeclaration(create_main_method_object($method_name.text));} '()' ':' 'int' '{'  statements 'return' expression ';' '}' '}'
     ;
     classDeclaration[Program prog]:
-        'class' class_name = ID ('extends' parent_class = ID )? {ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text); $prog.addClass(new_class_dec);} '{' (var_dec = varDeclaration {new_class_dec.addVarDeclaration($var_dec.this_var);})* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
+        'class' class_name = ID ('extends' parent_class = ID )? {
+            ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text); $prog.addClass(new_class_dec);
+            } '{' (var_dec = varDeclaration {
+            new_class_dec.addVarDeclaration($var_dec.this_var);
+            })* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
     ;
     varDeclaration returns [VarDeclaration this_var]:
-        'var' var_name = ID ':' this_type = type ';' { VarDeclaration this_variable_dec = create_varDeclaration_object($var_name.text, $this_type.this_type);}
+        'var' var_name = ID ':' this_type = type ';' { 
+            VarDeclaration this_variable_dec = create_varDeclaration_object($var_name.text, $this_type.this_type);}
     ;
     methodDeclaration returns [MethodDeclaration this_method]:
         'def' method_name = ID { MethodDeclaration this_method = create_methodDeclaration_object($method_name.text);} ('()' | ('(' arg_name = ID ':' arg_type = type { this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, this_method);})* ')')) ':' type '{'  (this_var = varDeclaration {this_method.addLocalVar($this_var.this_var);})* statements 'return' expression ';' '}'
