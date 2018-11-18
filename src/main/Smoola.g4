@@ -8,6 +8,7 @@ grammar Smoola;
     import ast.node.expression.Value.*;
     import ast.node.statement.*;
     import ast.Type.Type;
+    import java.util.ArrayList;
     import ast.Type.PrimitiveType.*;
     import ast.Type.UserDefinedType.UserDefinedType;
     import ast.Type.ArrayType.ArrayType;
@@ -45,6 +46,14 @@ grammar Smoola;
         VarDeclaration this_arg_dec = new VarDeclaration(arg_name_id, arg_type);
         this_method.addArg(this_arg_dec);
         return this_method;
+    }
+
+    Block create_block_statement_object(ArrayList<Statement> all_statements){
+        Block this_statement = new Block();
+        for(int i=0; i<all_statements.size(); i++){
+            this_statement.addStatement(all_statements.get(i)); 
+        }
+        return this_statement;
     }
 
     NewClass create_class_instantiation_object(String class_name){
@@ -91,34 +100,29 @@ grammar Smoola;
         'class' class_name = ID {ClassDeclaration main_class_dec = create_class_object($class_name.text, "null"); $prog.setMainClass(main_class_dec);} '{' 'def' method_name = ID {main_class_dec.addMethodDeclaration(create_main_method_object($method_name.text));} '()' ':' 'int' '{'  statements 'return' expression ';' '}' '}'
     ;
     classDeclaration[Program prog]:
-        'class' class_name = ID ('extends' parent_class = ID )? {
-            ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text); $prog.addClass(new_class_dec);
-            } '{' (var_dec = varDeclaration {
-            new_class_dec.addVarDeclaration($var_dec.this_var);
-            })* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
+        'class' class_name = ID ('extends' parent_class = ID )? { ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text); $prog.addClass(new_class_dec);} '{' (var_dec = varDeclaration { new_class_dec.addVarDeclaration($var_dec.this_var);})* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
     ;
     varDeclaration returns [VarDeclaration this_var]:
-        'var' var_name = ID ':' this_type = type ';' { 
-            VarDeclaration this_variable_dec = create_varDeclaration_object($var_name.text, $this_type.this_type);}
+        'var' var_name = ID ':' this_type = type ';' {VarDeclaration this_variable_dec = create_varDeclaration_object($var_name.text, $this_type.this_type);}
     ;
     methodDeclaration returns [MethodDeclaration this_method]:
         'def' method_name = ID { MethodDeclaration this_method = create_methodDeclaration_object($method_name.text);} ('()' | ('(' arg_name = ID ':' arg_type = type { this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, this_method);})* ')')) ':' type '{'  (this_var = varDeclaration {this_method.addLocalVar($this_var.this_var);})* statements 'return' expression ';' '}'
     ;
-    statements:
-        (statement )*
+    statements returns [ArrayList<Statement> all_statements]:
+        {ArrayList<Statement> all_statements = new ArrayList<>();} (this_statement = statement {all_statements.add($this_statement.this_statement);})*
     ;
-    statement:
-        {Block block_statement = new Block();} statementBlock[block_statement] |
+    statement returns [Statement this_statement]:
+        block_body = statementBlock {} |
         statementCondition |
         statementLoop |
         statementWrite |
         statementAssignment
     ;
-    statementBlock [Block block_statement]:
-        '{'  statements '}'
+    statementBlock returns [ArrayList<Statement> block_statements]:
+        '{'  block_body = statements {ArrayList<Statement> block_statements = $block_body.all_statements;} '}'
     ;
-    statementCondition:
-        'if' '('expression')' 'then' statement ('else' statement)?
+    statementCondition returns [Expression conditional_expression, Statement consequence_body, Statement alternative_body]:
+        'if' '(' cond_expre = expression {Expression conditional_expression = $cond_expre.this_expression;} ')' 'then' cons_body = statement {Statement consequence_body = $cons_body.this_statement;} ('else' alt_body = statement {Statement alternative_body = $alt_body.this_statement;})?
     ;
     statementLoop:
         'while' '(' expression ')' statement
