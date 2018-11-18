@@ -112,7 +112,7 @@ grammar Smoola;
         {ArrayList<Statement> all_statements = new ArrayList<>();} (this_statement = statement {all_statements.add($this_statement.this_statement);})*
     ;
     statement returns [Statement this_statement]:
-        block_body = statementBlock {} |
+        block_body = statementBlock {Block this_statement = create_block_statement_object($block_body.block_statements);} |
         statementCondition |
         statementLoop |
         statementWrite |
