@@ -2,23 +2,45 @@ grammar Smoola;
 
 @header{
     import ast.node.Program;
+    import ast.VisitorImpl;
+    import ast.Visitor;
     import ast.node.Node;
     import ast.node.declaration.*;
     import ast.node.expression.*;
     import ast.node.expression.Value.*;
     import ast.node.statement.*;
     import ast.Type.Type;
-    import java.util.ArrayList;
     import ast.Type.PrimitiveType.*;
     import ast.Type.UserDefinedType.UserDefinedType;
     import ast.Type.ArrayType.ArrayType;
+
+    import java.util.ArrayList;
+    import java.util.List;
 }
 
 @members {
+
     Program create_program_object(){
         return new Program();
     }
-    
+
+    void print_program_content(Program prog){
+        List<ClassDeclaration> classes = prog.getClasses(); 
+        for(int i=0; i<classes.size(); i++){
+            System.out.println(classes.get(i).getName().getName()); 
+            System.out.println(classes.get(i).getParentName().getName());
+            ArrayList<VarDeclaration> vars = classes.get(i).getVarDeclarations();
+            for(int j=0; j<vars.size(); j++){
+                System.out.println(vars.get(j).getIdentifier().getName());
+                System.out.println(vars.get(j).getType().toString());
+            }
+            ArrayList<MethodDeclaration> methods = classes.get(i).getMethodDeclarations();
+            for(int j=0; j<methods.size(); j++){
+                System.out.println(methods.get(j).getName().getName());
+            }
+        }
+    }
+
     ClassDeclaration create_class_object(String class_name, String parent_name){
         Identifier class_id = create_identifier_object(class_name); 
         Identifier parent_class_id = create_identifier_object(parent_name); 
@@ -51,8 +73,22 @@ grammar Smoola;
     Block create_block_statement_object(ArrayList<Statement> all_statements){
         Block this_statement = new Block();
         for(int i=0; i<all_statements.size(); i++){
+            System.out.println(all_statements.get(i).toString());
             this_statement.addStatement(all_statements.get(i)); 
         }
+        return this_statement;
+    }
+
+    Conditional create_conditional_statement_object(Expression conditional_expression, Statement consequence_body, Statement alternative_body){
+        Conditional this_statement = new Conditional(conditional_expression, consequence_body);
+        if (alternative_body!=null){
+            this_statement.setAlternativeBody(alternative_body);
+        }
+        return this_statement; 
+    }
+
+    While create_loop_statement_object(Expression conditional_expression, Statement body){
+        While this_statement = new While(conditional_expression, body);
         return this_statement;
     }
 
@@ -93,7 +129,7 @@ grammar Smoola;
 
 
     program:
-       {Program prog = create_program_object();} mainClass[prog] (classDeclaration[prog])* EOF 
+       {Program prog = create_program_object();} mainClass[prog] (classDeclaration[prog])* {print_program_content(prog);} EOF {Visitor prog_visitor = new VisitorImpl(); prog.accept(prog_visitor);} 
     ;
     mainClass[Program prog]:
         // name should be checked later
@@ -103,36 +139,39 @@ grammar Smoola;
         'class' class_name = ID ('extends' parent_class = ID )? { ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text); $prog.addClass(new_class_dec);} '{' (var_dec = varDeclaration { new_class_dec.addVarDeclaration($var_dec.this_var);})* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
     ;
     varDeclaration returns [VarDeclaration this_var]:
-        'var' var_name = ID ':' this_type = type ';' {VarDeclaration this_variable_dec = create_varDeclaration_object($var_name.text, $this_type.this_type);}
+        'var' var_name = ID ':' this_type = type ';' {$this_var = create_varDeclaration_object($var_name.text, $this_type.this_type);}
     ;
     methodDeclaration returns [MethodDeclaration this_method]:
-        'def' method_name = ID { MethodDeclaration this_method = create_methodDeclaration_object($method_name.text);} ('()' | ('(' arg_name = ID ':' arg_type = type { this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, this_method);})* ')')) ':' type '{'  (this_var = varDeclaration {this_method.addLocalVar($this_var.this_var);})* statements 'return' expression ';' '}'
+        'def' method_name = ID { $this_method = create_methodDeclaration_object($method_name.text);} ('()' | ('(' arg_name = ID ':' arg_type = type { $this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, $this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { $this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, $this_method);})* ')')) ':' type '{'  (this_var = varDeclaration {$this_method.addLocalVar($this_var.this_var);})* statements 'return' expression ';' '}'
     ;
+
+
     statements returns [ArrayList<Statement> all_statements]:
-        {ArrayList<Statement> all_statements = new ArrayList<>();} (this_statement = statement {all_statements.add($this_statement.this_statement);})*
+        {$all_statements = new ArrayList<>();} (our_statement = statement {$all_statements.add($our_statement.this_statement);} )*
     ;
     statement returns [Statement this_statement]:
-        block_body = statementBlock {Block this_statement = create_block_statement_object($block_body.block_statements);} |
-        statementCondition |
-        statementLoop |
-        statementWrite |
-        statementAssignment
+        block_body = statementBlock {$this_statement = create_block_statement_object($block_body.block_statements);} |
+        conditional_statement = statementCondition {$this_statement = create_conditional_statement_object($conditional_statement.conditional_expression, $conditional_statement.consequence_body, $conditional_statement.alternative_body);}|
+        loop_statement = statementLoop {$this_statement = create_loop_statement_object($loop_statement.conditional_expression, $loop_statement.body);} |
+        write_statement = statementWrite {$this_statement = new Write($write_statement.print_expression);} |
+        assign_statement = statementAssignment {$this_statement = new Assign($assign_statement.lvalue, $assign_statement.rvalue);}
     ;
     statementBlock returns [ArrayList<Statement> block_statements]:
-        '{'  block_body = statements {ArrayList<Statement> block_statements = $block_body.all_statements;} '}'
+        '{'  block_body = statements {$block_statements = new ArrayList<>($block_body.all_statements);} '}'
     ;
     statementCondition returns [Expression conditional_expression, Statement consequence_body, Statement alternative_body]:
-        'if' '(' cond_expre = expression {Expression conditional_expression = $cond_expre.this_expression;} ')' 'then' cons_body = statement {Statement consequence_body = $cons_body.this_statement;} ('else' alt_body = statement {Statement alternative_body = $alt_body.this_statement;})?
+        'if' '(' cond_expre = expression {$conditional_expression = $cond_expre.this_expression;} ')' 'then' cons_body = statement {$consequence_body = $cons_body.this_statement;} ('else' alt_body = statement {$alternative_body = $alt_body.this_statement;})?
     ;
-    statementLoop:
-        'while' '(' expression ')' statement
+    statementLoop returns [Expression conditional_expression, Statement body]:
+        'while' '(' cond_expre = expression {$conditional_expression = $cond_expre.this_expression;} ')' loop_body = statement {$body = $loop_body.this_statement;}
     ;
-    statementWrite:
-        'writeln(' expression ')' ';'
+    statementWrite returns [Expression print_expression]:
+        'writeln(' print_expr = expression {$print_expression = $print_expr.this_expression;} ')' ';'
     ;
-    statementAssignment:
-        expression ';'
+    statementAssignment returns [Expression lvalue, Expression rvalue]:
+        expression ';' {}
     ;
+
 
     expression returns [Expression this_expression]:
 		expressionAssignment
@@ -218,23 +257,23 @@ grammar Smoola;
 	    |
 	;
     expressionOther returns [Expression this_expression]:
-		number = CONST_NUM {IntValue this_expression = create_int_value_object(Integer.parseInt($number.text));}
-        |	str = CONST_STR {StringValue this_expression = create_string_value_object($str.text);}
-        |   'new ' 'int' '[' size_expression = expression ']' {NewArray this_expression = new NewArray(); this_expression.setExpression($size_expression.this_expression);}
-        |   'new ' class_name = ID '()' {NewClass this_expression = create_class_instantiation_object($class_name.text);}
-        |   'this' {This this_expression = new This();}
-        |   'true' {BooleanValue this_expression = create_boolean_value_object(true);}
-        |   'false' {BooleanValue this_expression = create_boolean_value_object(false);}
-        |	name = ID {Identifier this_expression = create_identifier_object($name.text);}
-        |   name = ID '[' index = expression ']' {ArrayCall this_expression = create_array_call_instance($name.text, $index.this_expression);}
+		number = CONST_NUM {$this_expression = create_int_value_object(Integer.parseInt($number.text));}
+        |	str = CONST_STR {$this_expression = create_string_value_object($str.text);}
+        |   'new ' 'int' '[' size_expression = expression ']' {$this_expression = new NewArray();}
+        |   'new ' class_name = ID '()' {$this_expression = create_class_instantiation_object($class_name.text);}
+        |   'this' {$this_expression = new This();}
+        |   'true' {$this_expression = create_boolean_value_object(true);}
+        |   'false' {$this_expression = create_boolean_value_object(false);}
+        |	name = ID {$this_expression = create_identifier_object($name.text);}
+        |   name = ID '[' index = expression ']' {$this_expression = create_array_call_instance($name.text, $index.this_expression);}
         |	'(' expression ')'
 	;
 	type returns [Type this_type]:
-	    'int' {IntType this_type = new IntType();} |
-	    'boolean' {BooleanType this_type = new BooleanType();} |
-	    'string' {StringType this_type = new StringType();} |
-	    'int[]' {ArrayType this_type = new ArrayType();} |
-	    name = ID {Identifier this_id = new Identifier($name.text); UserDefinedType this_type = new UserDefinedType(); this_type.setName(this_id);}
+	    'int' {$this_type = new IntType();} |
+	    'boolean' {$this_type = new BooleanType();} |
+	    'string' {$this_type = new StringType();} |
+	    'int[]' {$this_type = new ArrayType();} |
+	    name = ID {Identifier this_id = new Identifier($name.text); UserDefinedType this_udef_type = new UserDefinedType(); this_udef_type.setName(this_id); $this_type = this_udef_type;}
 	;
 
 

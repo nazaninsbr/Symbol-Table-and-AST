@@ -1,3 +1,13 @@
 # print classes and parent classes 
 
 {List<ClassDeclaration> classes = prog.getClasses(); for(int i=0; i<classes.size(); i++){System.out.println(classes.get(i).getName().getName()); System.out.println(classes.get(i).getParentName().getName());} }
+
+
+# print the statement insides
+
+System.out.println($our_statement.this_statement.toString());
+
+
+
+$this_expression.setExpression($size_expression.this_expression);
+$this_statement = create_block_statement_object($block_body.block_statements);
