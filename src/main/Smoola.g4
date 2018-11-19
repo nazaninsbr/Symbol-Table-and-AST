@@ -19,7 +19,7 @@ grammar Smoola;
     import ast.node.expression.BinaryOperator;
     import ast.node.expression.UnaryOperator;
 
-
+    import ast.node.statement.Write;
     import java.util.ArrayList;
     import java.util.List;
 
@@ -27,34 +27,6 @@ grammar Smoola;
 
 
 @members {
-
-    void print_program_content(Program prog){
-    List<ClassDeclaration> classes = prog.getClasses(); 
-    for(int i=0; i<classes.size(); i++){
-        System.out.println(classes.get(i).getName().getName()); 
-        System.out.println(classes.get(i).getParentName().getName());
-        ArrayList<VarDeclaration> vars = classes.get(i).getVarDeclarations();
-        for(int j=0; j<vars.size(); j++){
-            System.out.println(vars.get(j).getIdentifier().getName());
-            System.out.println(vars.get(j).getType().toString());
-        }
-        ArrayList<MethodDeclaration> methods = classes.get(i).getMethodDeclarations();
-        for(int j=0; j<methods.size(); j++){
-            System.out.println(methods.get(j).getName().getName());
-            ArrayList<Statement> statements = methods.get(j).getBody();
-            for(int k=0; k<statements.size(); k++){
-                System.out.println(statements.get(k).toString());
-            }
-        }
-    }
-}
-
-
-
-    Program create_program_object(){
-        return new Program();
-    }
-
     void print_program_content(Program prog){
         List<ClassDeclaration> classes = prog.getClasses(); 
         for(int i=0; i<classes.size(); i++){
@@ -71,11 +43,26 @@ grammar Smoola;
                 ArrayList<Statement> statements = methods.get(j).getBody();
                 for(int k=0; k<statements.size(); k++){
                     System.out.println(statements.get(k).toString());
+                    if(statements.get(k).toString() == "Assign"){
+                        System.out.println(((Assign)statements.get(k)).getlValue().toString());
+                        System.out.println(((Assign)statements.get(k)).getrValue().toString());
+                    }
+                    else if(statements.get(k).toString() == "Conditional"){
+                        System.out.println(((Conditional)statements.get(k)).getExpression().toString());
+                    }
+                    else if(statements.get(k).toString() == "While"){
+                        System.out.println(((While)statements.get(k)).getCondition().toString());
+                    }
+                    else if(statements.get(k).toString() == "Write"){
+                        System.out.println(((Write)statements.get(k)).getArg().toString());
+                    }
                 }
             }
         }
     }
-
+    Program create_program_object(){
+        return new Program();
+    }
     ClassDeclaration create_class_object(String class_name, String parent_name){
         Identifier class_id = create_identifier_object(class_name); 
         Identifier parent_class_id = create_identifier_object(parent_name); 
@@ -226,6 +213,7 @@ grammar Smoola;
             ///???
             }
         }
+    ;
     expressionAssignment returns [Expression this_expression_lvalue,Expression this_expression_rvalue]:
         exp_lvalue = expressionOr '=' exp_rvalue = expressionAssignment{
             if($exp_rvalue.this_expression_lvalue == null){
@@ -401,7 +389,7 @@ grammar Smoola;
         |   'false' {$this_expression = create_boolean_value_object(false);}
         |	name = ID {$this_expression = create_identifier_object($name.text);}
         |   name = ID '[' index = expression ']' {$this_expression = create_array_call_instance($name.text, $index.this_expression);}
-        |	'(' expression ')' {$this_expression = $exp.this_expression;//???
+        |	'('exp = expression ')' {$this_expression = $exp.this_expression;//???
         }
 	;
 	type returns [Type this_type]:
