@@ -440,13 +440,13 @@ grammar Smoola;
                 { MethodCall this_half_instance_1 = create_method_call_object($method_name1.text, $instance);}
                 exp = expressionMethodsTemp[this_half_instance_1] {$this_expression=$exp.this_expression;}
                 | method_name2 = ID '(' 
-                    { MethodCall this_half_instance = create_method_call_object($method_name2.text, $instance);} 
+                    { MethodCall this_half_instance = create_method_call_object($method_name2.text, $instance); System.out.println(this_half_instance);} 
                     (arg1 = expression 
                         {this_half_instance.addArg($arg1.this_expression);}
                         (',' arg2 = expression 
                             {this_half_instance.addArg($arg2.this_expression);}) 
                         *) 
-                ')' exp = expressionMethodsTemp[this_half_instance] {$this_expression=$exp.this_expression;}
+                ')' exp = expressionMethodsTemp[this_half_instance] {$this_expression=$exp.this_expression; System.out.println($this_expression);} 
                 | 'length' { Length length_expression = new Length($instance);} exp=expressionMethodsTemp[length_expression] {$this_expression=$exp.this_expression;})
         |
     ;
