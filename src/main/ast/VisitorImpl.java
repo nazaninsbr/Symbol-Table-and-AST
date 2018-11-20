@@ -144,25 +144,23 @@ public class VisitorImpl implements Visitor {
             for(int j=0; j<methods.size(); j++){
                 ArrayList<VarDeclaration> localVars = methods.get(j).getLocalVars();
                 for(int l=0; l<localVars.size(); l++){
-                    System.out.println(localVars.get(l).getIdentifier().getName());
-                    System.out.println(localVars.get(l).getType().toString());
+                    System.out.println(localVars.get(l));
                 }
                 System.out.println(methods.get(j).getName().getName());
                 ArrayList<Statement> statements = methods.get(j).getBody();
                 for(int k=0; k<statements.size(); k++){
                     System.out.println(statements.get(k).toString());
                     if(statements.get(k).toString() == "Assign"){
-                        System.out.println(((Assign)statements.get(k)).getlValue().toString());
-                        System.out.println(((Assign)statements.get(k)).getrValue().toString());
+                        System.out.println(((Assign)statements.get(k)));
                     }
                     else if(statements.get(k).toString() == "Conditional"){
-                        System.out.println(((Conditional)statements.get(k)).getExpression().toString());
+                        System.out.println(((Conditional)statements.get(k)));
                     }
                     else if(statements.get(k).toString() == "While"){
-                        System.out.println(((While)statements.get(k)).getCondition().toString());
+                        System.out.println(((While)statements.get(k)));
                     }
                     else if(statements.get(k).toString() == "Write"){
-                        System.out.println(((Write)statements.get(k)).getArg().toString());
+                        System.out.println(((Write)statements.get(k)));
                     }
                 }
             }
@@ -184,7 +182,7 @@ public class VisitorImpl implements Visitor {
             check_conditions_for_inside_classes(program);
         }
         if (no_error==true){
-            print_program_content(program);
+            // print_program_content(program);
         }
     }
 
