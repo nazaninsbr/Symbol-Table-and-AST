@@ -54,9 +54,12 @@ grammar Smoola;
                     }
                     else if(statements.get(k).toString() == "Conditional"){
                         System.out.println(((Conditional)statements.get(k)).getExpression().toString());
+                        System.out.println(((Conditional)statements.get(k)).getConsequenceBody()); 
+                        System.out.println(((Conditional)statements.get(k)).getAlternativeBody());
                     }
                     else if(statements.get(k).toString() == "While"){
                         System.out.println(((While)statements.get(k)).getCondition().toString());
+                        System.out.println(((While)statements.get(k)).getBody());
                     }
                     else if(statements.get(k).toString() == "Write"){
                         System.out.println(((Write)statements.get(k)).getArg().toString());

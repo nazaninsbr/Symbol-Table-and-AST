@@ -431,8 +431,10 @@ public class VisitorImpl implements Visitor {
         exprs.add(conditional.getExpression());
         check_statement_expressions_for_newArray_expr(exprs);
         ArrayList<Statement> statements = new ArrayList<Statement>();
-        statements.add(conditional.getConsequenceBody()); 
-        statements.add(conditional.getAlternativeBody());
+        if(conditional.getConsequenceBody()!=null)
+            statements.add(conditional.getConsequenceBody()); 
+        if(conditional.getAlternativeBody()!=null)
+            statements.add(conditional.getAlternativeBody());
         check_for_statements(statements);
     }
 
