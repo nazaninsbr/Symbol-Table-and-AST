@@ -59,4 +59,8 @@ public class SymbolTable {
 	public SymbolTable getPreSymbolTable() {
 		return pre;
 	}
+
+	public boolean isSymbolTableEmpty(){
+		return this.items.isEmpty();
+	}
 }

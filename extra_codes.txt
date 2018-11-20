@@ -10,4 +10,5 @@ System.out.println($our_statement.this_statement.toString());
 
 
 $this_expression.setExpression($size_expression.this_expression);
-$this_statement = create_block_statement_object($block_body.block_statements);
+
+{print_program_content(prog);}

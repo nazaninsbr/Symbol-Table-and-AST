@@ -40,6 +40,9 @@ grammar Smoola;
                 ArrayList<Statement> statements = methods.get(j).getBody();
                 for(int k=0; k<statements.size(); k++){
                     System.out.println(statements.get(k).toString());
+                    if (statements.get(k).toString()=="While"){
+
+                    }
                 }
             }
         }
@@ -137,9 +140,8 @@ grammar Smoola;
     }
 }
 
-
     program:
-       {Program prog = create_program_object();} mainClass[prog] (classDeclaration[prog])* {print_program_content(prog);} EOF {Visitor prog_visitor = new VisitorImpl(); prog.accept(prog_visitor);} 
+       {Program prog = create_program_object();} mainClass[prog] (classDeclaration[prog])* EOF {Visitor prog_visitor = new VisitorImpl(); prog.accept(prog_visitor);} 
     ;
     mainClass[Program prog]:
         // name should be checked later
@@ -276,7 +278,7 @@ grammar Smoola;
         |   'false' {$this_expression = create_boolean_value_object(false);}
         |	name = ID {$this_expression = create_identifier_object($name.text);}
         |   name = ID '[' index = expression ']' {$this_expression = create_array_call_instance($name.text, $index.this_expression);}
-        |	'(' expression ')'
+        |	'(' expr = expression ')' {$this_expression = $expr.this_expression;}
 	;
 	type returns [Type this_type]:
 	    'int' {$this_type = new IntType();} |

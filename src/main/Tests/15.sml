@@ -32,6 +32,10 @@ class smlExample extends exl
             writeln("Largest Number is:");
             return (((((23 * 5))) + d.test2()));
         }
+        def main( args :string) :boolean #test*&* 
+        {
+            return 0;
+        }
 
     }
 
