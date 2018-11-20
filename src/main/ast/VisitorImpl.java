@@ -209,6 +209,10 @@ public class VisitorImpl implements Visitor {
         ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
         for(int i=0; i<methodDeclarations.size(); i++){
             add_method_to_symbol_table(methodDeclarations.get(i).getName().getName(), methodDeclarations.get(i));
+            ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
+            for(int j=0; j<vars.size(); j++){
+                add_variable_to_sym_table(vars.get(j));
+            }
             methodDeclarations.get(i).accept(this);
         }
     }
