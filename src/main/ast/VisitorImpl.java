@@ -68,8 +68,9 @@ public class VisitorImpl implements Visitor {
             SymbolTableVariableItemBase class_sym_table_item = new SymbolTableVariableItemBase(class_name, class_type, index); 
             symTable.put(class_sym_table_item);
         } catch(ItemAlreadyExistsException e) {
-            System.out.println("Line:<LineNumber>:Redefinition of class "+class_name);
-            String new_class_name = "Temporary_ClassName_"+Integer.toString(index)+"_"+class_name;
+            no_error = false;
+            System.out.println("Line:"+Integer.toString(class_dec.get_line_number())+":Redefinition of class "+class_name);
+            String new_class_name = "Temporary_<>#$%$#**@@123^<>_ClassName_"+Integer.toString(index)+"_"+class_name;
             Identifier new_name_id = new Identifier(new_class_name);
             class_dec.setName(new_name_id);
             UserDefinedType class_type = new UserDefinedType(); 
@@ -96,7 +97,8 @@ public class VisitorImpl implements Visitor {
 
     void check_class_existance_condition_with_symTable(Program program){
         if (symTable.isSymbolTableEmpty()){
-            System.out.println("Line:<LineNumber>:No class exists in the program");
+            System.out.println("Line:0:No class exists in the program");
+            no_error = false;
         }
     }
 
@@ -130,6 +132,41 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+    void print_program_content(Program prog){
+        List<ClassDeclaration> classes = prog.getClasses(); 
+        for(int i=0; i<classes.size(); i++){
+            System.out.println(classes.get(i)); 
+            ArrayList<VarDeclaration> vars = classes.get(i).getVarDeclarations();
+            for(int j=0; j<vars.size(); j++){
+                System.out.println(vars.get(j));
+            }
+            ArrayList<MethodDeclaration> methods = classes.get(i).getMethodDeclarations();
+            for(int j=0; j<methods.size(); j++){
+                ArrayList<VarDeclaration> localVars = methods.get(j).getLocalVars();
+                for(int l=0; l<localVars.size(); l++){
+                    System.out.println(localVars.get(l));
+                }
+                System.out.println(methods.get(j).getName().getName());
+                ArrayList<Statement> statements = methods.get(j).getBody();
+                for(int k=0; k<statements.size(); k++){
+                    System.out.println(statements.get(k).toString());
+                    if(statements.get(k).toString() == "Assign"){
+                        System.out.println(((Assign)statements.get(k)));
+                    }
+                    else if(statements.get(k).toString() == "Conditional"){
+                        System.out.println(((Conditional)statements.get(k)));
+                    }
+                    else if(statements.get(k).toString() == "While"){
+                        System.out.println(((While)statements.get(k)));
+                    }
+                    else if(statements.get(k).toString() == "Write"){
+                        System.out.println(((Write)statements.get(k)));
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void visit(Program program) {
         if (no_error==false && second_round==false && symTable==null){
@@ -144,8 +181,8 @@ public class VisitorImpl implements Visitor {
             check_class_existance_condition_with_symTable(program);
             check_conditions_for_inside_classes(program);
         }
-        else if (no_error==true){
-
+        if (no_error==true){
+            // print_program_content(program);
         }
     }
 
@@ -190,8 +227,9 @@ public class VisitorImpl implements Visitor {
             SymbolTableMethodItem method_sym_table_item = new SymbolTableMethodItem(method_name, argTypes); 
             symTable.put(method_sym_table_item);
         } catch(ItemAlreadyExistsException e) {
-            System.out.println("Line:<LineNumber>:Redefinition of method "+method_name);
-            String new_method_name = "Temporary_MethodName_"+Integer.toString(index)+"_"+method_name;
+            no_error = false;
+            System.out.println("Line:"+Integer.toString(method_dec.get_line_number())+":Redefinition of method "+method_name);
+            String new_method_name = "Temporary_<>#$%$#**@@123^<>_MethodName_"+Integer.toString(index)+"_"+method_name;
             Identifier new_name_id = new Identifier(new_method_name);
             method_dec.setName(new_name_id);
             SymbolTableMethodItem method_sym_table_item = new SymbolTableMethodItem(method_name, argTypes);  
@@ -206,13 +244,14 @@ public class VisitorImpl implements Visitor {
     }
 
     void check_method_existance_condition_with_symTable(ClassDeclaration classDeclaration){
+        ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
+        for(int j=0; j<vars.size(); j++){
+            add_variable_to_sym_table(vars.get(j));
+        }
+
         ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
         for(int i=0; i<methodDeclarations.size(); i++){
             add_method_to_symbol_table(methodDeclarations.get(i).getName().getName(), methodDeclarations.get(i));
-            ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
-            for(int j=0; j<vars.size(); j++){
-                add_variable_to_sym_table(vars.get(j));
-            }
             methodDeclarations.get(i).accept(this);
         }
     }
@@ -229,8 +268,9 @@ public class VisitorImpl implements Visitor {
             SymbolTableVariableItemBase var_sym_table_item = new SymbolTableVariableItemBase(this_var.getIdentifier().getName(), this_var.getType(), index); 
             symTable.put(var_sym_table_item);
         } catch(ItemAlreadyExistsException e) {
-            System.out.println("Line:<LineNumber>:Redefinition of variable "+this_var.getIdentifier().getName());
-            String new_var_name = "Temporary_VarName_"+Integer.toString(index)+"_"+this_var.getIdentifier().getName();
+            no_error = false;
+            System.out.println("Line:"+Integer.toString(this_var.get_line_number())+":Redefinition of variable "+this_var.getIdentifier().getName());
+            String new_var_name = "Temporary_<>#$%$#**@@123^<>_VarName_"+Integer.toString(index)+"_"+this_var.getIdentifier().getName();
             Identifier new_name_id = new Identifier(new_var_name);
             this_var.setIdentifier(new_name_id);
             SymbolTableVariableItemBase var_sym_table_item = new SymbolTableVariableItemBase(this_var.getIdentifier().getName(), this_var.getType(), index); 
@@ -255,10 +295,36 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+    void check_for_statements(ArrayList<Statement> body){
+        for(int i=0; i<body.size(); i++){
+            if(body.get(i).toString() == "Assign"){
+                Assign x = (Assign)body.get(i);
+                x.accept(this);
+            }
+            else if(body.get(i).toString() == "Conditional"){
+                Conditional x = (Conditional)body.get(i);
+                x.accept(this);
+            }
+            else if(body.get(i).toString() == "While"){
+                While x = (While)body.get(i);
+                x.accept(this);
+            }
+            else if(body.get(i).toString() == "Write"){
+                Write x = (Write)body.get(i);
+                x.accept(this);
+            }
+            else if(body.get(i).toString() == "Block"){
+                Block x = (Block)body.get(i); 
+                x.accept(this);
+            }
+        }
+    }
+
     @Override
     public void visit(MethodDeclaration methodDeclaration) {
         symTable.push(new SymbolTable());
         check_variable_existance_condition_with_symTable(methodDeclaration);
+        check_for_statements(methodDeclaration.getBody());
         symTable.pop();
     }
 
@@ -299,7 +365,10 @@ public class VisitorImpl implements Visitor {
 
     @Override
     public void visit(NewArray newArray) {
-        //TODO: implement appropriate visit functionality
+        if(newArray.getIntSize()<=0){
+            no_error = false;
+            System.out.println("Line:"+Integer.toString(newArray.get_line_number())+":Array length should not be zero or negative");
+        }
     }
 
     @Override
@@ -332,28 +401,53 @@ public class VisitorImpl implements Visitor {
         //TODO: implement appropriate visit functionality
     }
 
+    void check_statement_expressions_for_newArray_expr(ArrayList<Expression> exprs){
+        for(int i=0; i<exprs.size(); i++){
+            if (exprs.get(i).toString().equals("NewArray")){
+                NewArray x = (NewArray) exprs.get(i);
+                x.accept(this);
+            }
+        }
+    }
+
     @Override
     public void visit(Assign assign) {
-        //TODO: implement appropriate visit functionality
+        ArrayList<Expression> exprs = new ArrayList<Expression>();
+        exprs.add(assign.getlValue()); 
+        exprs.add(assign.getrValue());
+        check_statement_expressions_for_newArray_expr(exprs);
     }
 
     @Override
     public void visit(Block block) {
-        //TODO: implement appropriate visit functionality
+        check_for_statements(block.getBody());
     }
 
     @Override
     public void visit(Conditional conditional) {
-        //TODO: implement appropriate visit functionality
+        ArrayList<Expression> exprs = new ArrayList<Expression>();
+        exprs.add(conditional.getExpression());
+        check_statement_expressions_for_newArray_expr(exprs);
+        ArrayList<Statement> statements = new ArrayList<Statement>();
+        statements.add(conditional.getConsequenceBody()); 
+        statements.add(conditional.getAlternativeBody());
+        check_for_statements(statements);
     }
 
     @Override
     public void visit(While loop) {
-        //TODO: implement appropriate visit functionality
+        ArrayList<Expression> exprs = new ArrayList<Expression>();
+        exprs.add(loop.getCondition());
+        check_statement_expressions_for_newArray_expr(exprs);
+        ArrayList<Statement> statements = new ArrayList<Statement>();
+        statements.add(loop.getBody()); 
+        check_for_statements(statements);
     }
 
     @Override
     public void visit(Write write) {
-        //TODO: implement appropriate visit functionality
+        ArrayList<Expression> exprs = new ArrayList<Expression>();
+        exprs.add(write.getArg());
+        check_statement_expressions_for_newArray_expr(exprs);
     }
 }

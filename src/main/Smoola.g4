@@ -90,9 +90,10 @@ grammar Smoola;
         return new MethodDeclaration(method_id);
     }
 
-    MethodDeclaration add_arg_to_MethodDeclaration(String arg_name, Type arg_type, MethodDeclaration this_method){
+    MethodDeclaration add_arg_to_MethodDeclaration(String arg_name, int line_number, Type arg_type, MethodDeclaration this_method){
         Identifier arg_name_id = create_identifier_object(arg_name);
         VarDeclaration this_arg_dec = new VarDeclaration(arg_name_id, arg_type);
+        this_arg_dec.set_line_number(line_number);
         this_method.addArg(this_arg_dec);
         return this_method;
     }
@@ -227,7 +228,7 @@ grammar Smoola;
         'var' var_name = ID ':' this_type = type ';' {$this_var = create_varDeclaration_object($var_name.text, $this_type.this_type);$this_var.set_line_number($var_name.getLine());}
     ;
     methodDeclaration returns [MethodDeclaration this_method]:
-        'def' method_name = ID { $this_method = create_methodDeclaration_object($method_name.text);$this_method.set_line_number($method_name.getLine());} ('()' | ('(' arg_name = ID ':' arg_type = type { $this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, $this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { $this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, $this_method);})* ')')) ':' type '{'  (this_var = varDeclaration {$this_method.addLocalVar($this_var.this_var);})* method_body = statements {$this_method = add_body_statements_to_method($this_method, $method_body.all_statements);} 'return' ret_expr = expression {$this_method.setReturnValue($ret_expr.this_expression);} ';' '}'
+        'def' method_name = ID { $this_method = create_methodDeclaration_object($method_name.text);$this_method.set_line_number($method_name.getLine());} ('()' | ('(' arg_name = ID ':' arg_type = type { $this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_name.getLine(), $arg_type.this_type, $this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { $this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_name_2.getLine(), $arg_type_2.this_type, $this_method);})* ')')) ':' type '{'  (this_var = varDeclaration {$this_method.addLocalVar($this_var.this_var);})* method_body = statements {$this_method = add_body_statements_to_method($this_method, $method_body.all_statements);} 'return' ret_expr = expression {$this_method.setReturnValue($ret_expr.this_expression);} ';' '}'
     ;
 
 
@@ -453,7 +454,7 @@ grammar Smoola;
     expressionOther returns [Expression this_expression]:
 		number = CONST_NUM {$this_expression = create_int_value_object(Integer.parseInt($number.text));}
         |	str = CONST_STR {$this_expression = create_string_value_object($str.text);}
-        |   'new ' this_int = 'int' '[' size_expression = expression ']' {$this_expression = new NewArray();$this_expression.set_line_number($this_int.getLine());}
+        |   'new ' this_int = 'int' '[' size_expression = CONST_NUM ']' {NewArray this_array = new NewArray(); this_array.setIntSize(Integer.parseInt($size_expression.text)) ; this_array.set_line_number($this_int.getLine()); $this_expression = this_array;}
         |   'new ' class_name = ID '()' {$this_expression = create_class_instantiation_object($class_name.text);}
         |   'this' {$this_expression = new This();}
         |   'true' {$this_expression = create_boolean_value_object(true);}
