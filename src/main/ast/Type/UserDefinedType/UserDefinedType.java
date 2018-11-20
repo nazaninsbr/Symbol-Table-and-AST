@@ -6,6 +6,7 @@ import ast.node.expression.Identifier;
 
 public class UserDefinedType extends Type {
     private ClassDeclaration classDeclaration;
+    private Identifier name;
 
     public ClassDeclaration getClassDeclaration() {
         return classDeclaration;
@@ -22,8 +23,6 @@ public class UserDefinedType extends Type {
     public void setName(Identifier name) {
         this.name = name;
     }
-
-    private Identifier name;
 
     @Override
     public String toString() {

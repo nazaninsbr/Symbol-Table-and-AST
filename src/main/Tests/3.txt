@@ -5,16 +5,12 @@ class Test {
 }
 
 class Book extends Library {
-	var j : int [];
+	var j : int[];
 	var k : boolean; 
-	var i : Rectangle; 
+	var i : Book; 
 
 	def x (f1: int) : int {
 		i =--i;
-		if (3||true) then
-			k = false;
-		else
-			k = "YES";
 		return -A && !V || (3+4-3*5);
 	}
 }

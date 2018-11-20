@@ -5,7 +5,7 @@ class Test {
 }
 
 class Book {
-	var j : int [];
+	var j : int[];
 	var k : boolean; 
 
 	def main (f1: int, main: string) : int {

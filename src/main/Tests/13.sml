@@ -11,7 +11,7 @@ class Test {
 # this is a % line = comment !
 # *&%#!@#$%SWQ~?/\{}[]()|&*_-
 class Book {
-	var j : int [];
+	var j : int[];
 	var k : boolean; 
 
 	def main (f1: int, main: string) : int {

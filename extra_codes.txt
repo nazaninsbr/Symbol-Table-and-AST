@@ -12,3 +12,6 @@ System.out.println($our_statement.this_statement.toString());
 $this_expression.setExpression($size_expression.this_expression);
 
 {print_program_content(prog);}
+
+returns [Expression this_expression]
+

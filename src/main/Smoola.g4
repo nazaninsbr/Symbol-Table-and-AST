@@ -39,6 +39,11 @@ grammar Smoola;
             }
             ArrayList<MethodDeclaration> methods = classes.get(i).getMethodDeclarations();
             for(int j=0; j<methods.size(); j++){
+                ArrayList<VarDeclaration> localVars = methods.get(j).getLocalVars();
+                for(int l=0; l<localVars.size(); l++){
+                    System.out.println(localVars.get(l).getIdentifier().getName());
+                    System.out.println(localVars.get(l).getType().toString());
+                }
                 System.out.println(methods.get(j).getName().getName());
                 ArrayList<Statement> statements = methods.get(j).getBody();
                 for(int k=0; k<statements.size(); k++){
@@ -150,6 +155,58 @@ grammar Smoola;
         return this_value;
     }
 
+    MethodCall create_method_call_object(String method_name, Expression instance){
+        Identifier m_name1 = create_identifier_object(method_name); 
+        return new MethodCall(instance , m_name1);
+    }
+
+    Type create_user_defined_type(String name){
+        Identifier this_id = create_identifier_object(name); 
+        UserDefinedType this_udef_type = new UserDefinedType(); 
+        this_udef_type.setName(this_id); 
+        return this_udef_type;
+    }
+
+    ClassDeclaration get_user_defined_type_class_def(String name, Program prog){
+        String main_class_name = prog.getMainClass().getName().getName();
+        if (main_class_name == name){
+            return prog.getMainClass();
+        }
+        else{
+            List<ClassDeclaration> classes = prog.getClasses();
+            for(int i=0; i<classes.size(); i++){
+                String class_name = classes.get(i).getName().getName(); 
+                if (class_name.equals(name)){
+                    return classes.get(i);
+                }
+            }
+        }
+        return create_class_object("null", "null");
+    }
+
+    void complete_incomple_var_declarations(Program prog){
+        List<ClassDeclaration> classes = prog.getClasses(); 
+        for(int i=0; i<classes.size(); i++){
+            ArrayList<VarDeclaration> vars = classes.get(i).getVarDeclarations();
+            for(int j=0; j<vars.size(); j++){
+                if (vars.get(j).getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")){
+                    UserDefinedType x = (UserDefinedType) vars.get(j).getType(); 
+                    x.setClassDeclaration(get_user_defined_type_class_def(x.getName().getName(), prog));
+                } 
+            }
+            ArrayList<MethodDeclaration> methods = classes.get(i).getMethodDeclarations();
+            for(int j=0; j<methods.size(); j++){
+                ArrayList<VarDeclaration> localVars = methods.get(j).getLocalVars();
+                for(int l=0; l<localVars.size(); l++){
+                    if (localVars.get(l).getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")){
+                        UserDefinedType x = (UserDefinedType) localVars.get(l).getType(); 
+                        x.setClassDeclaration(get_user_defined_type_class_def( x.getName().getName(), prog));
+                    }
+                }
+            }
+        }
+    }
+
     Identifier create_identifier_object(String name){
         return new Identifier(name);
     }
@@ -157,7 +214,7 @@ grammar Smoola;
 }
 
     program:
-       {Program prog = create_program_object();} mainClass[prog] (classDeclaration[prog])* EOF {Visitor prog_visitor = new VisitorImpl(); prog.accept(prog_visitor);} 
+       {Program prog = create_program_object();} mainClass[prog] (classDeclaration[prog])* {complete_incomple_var_declarations(prog);} EOF {Visitor prog_visitor = new VisitorImpl(); prog.accept(prog_visitor);} 
     ;
     mainClass[Program prog]:
         // name should be checked later
@@ -197,7 +254,7 @@ grammar Smoola;
         'writeln(' print_expr = expression {$print_expression = $print_expr.this_expression;} ')' ';'
     ;
     statementAssignment returns [Expression lvalue, Expression rvalue]:
-        expression ';' {}
+        exp = expression ';' {$lvalue = $exp.this_lvalue; $rvalue = $exp.this_rvalue; }
     ;
     expression returns [Expression this_expression,Expression this_lvalue,Expression this_rvalue]:
         exp = expressionAssignment{
@@ -209,22 +266,22 @@ grammar Smoola;
                 $this_rvalue = $exp.this_expression_rvalue;
                 BinaryOperator binary_op = BinaryOperator.assign;
                 $this_expression = new BinaryExpression ($exp.this_expression_lvalue,$exp.this_expression_rvalue,binary_op);
-            ///???
             }
+
         }
     ;
     expressionAssignment returns [Expression this_expression_lvalue,Expression this_expression_rvalue]:
         exp_lvalue = expressionOr '=' exp_rvalue = expressionAssignment{
             if($exp_rvalue.this_expression_lvalue == null){
                 $this_expression_rvalue = $exp_rvalue.this_expression_rvalue;
-            }
-            else{
+                $this_expression_lvalue = $exp_lvalue.this_expression;
+            } else{
                 BinaryOperator binary_op = BinaryOperator.assign;
                 $this_expression_rvalue = new BinaryExpression($exp_rvalue.this_expression_lvalue,$exp_rvalue.this_expression_rvalue,binary_op);
+                $this_expression_lvalue = $exp_lvalue.this_expression;
             }
-            $this_expression_lvalue = $exp_lvalue.this_expression;
         }
-        |   exp = expressionOr {$this_expression_rvalue = $exp.this_expression;}
+        |   exp = expressionOr {$this_expression_rvalue = $exp.this_expression; $this_expression_lvalue = null;}
 
 	;
 
@@ -236,7 +293,6 @@ grammar Smoola;
             else{
                 $this_expression = $left.this_expression;
             }
-            
         }
 	;
 
@@ -287,24 +343,6 @@ grammar Smoola;
     expressionCmp returns [Expression this_expression]:
 		left = expressionAdd half_exp = expressionCmpTemp{
             if ($half_exp.this_half_expression != null){
-            $this_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
-            }
-            else{
-                $this_expression = $left.this_expression;
-            }
-        }
-	;
-
-    expressionCmpTemp returns [BinaryOperator this_binaryOperator,Expression this_half_expression]:
-		(op = '<'{$this_binaryOperator = BinaryOperator.lt;}| op = '>'{$this_binaryOperator = BinaryOperator.gt;}) left= expressionAdd half_exp = expressionCmpTemp{
-             $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
-        }
-	    |
-	;
-
-    expressionAdd returns[Expression this_expression]:
-		left = expressionMult half_exp = expressionAddTemp{
-            if ($half_exp.this_half_expression != null){
                 $this_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
             }
             else{
@@ -313,14 +351,34 @@ grammar Smoola;
         }
 	;
 
+    expressionCmpTemp returns [BinaryOperator this_binaryOperator,Expression this_half_expression]:
+		(op = '<' {$this_binaryOperator = BinaryOperator.lt;} | op = '>' {$this_binaryOperator = BinaryOperator.gt;} ) left= expressionAdd half_exp = expressionCmpTemp 
+        {
+             $this_half_expression = new BinaryExpression($left.this_expression, $half_exp.this_half_expression, $half_exp.this_binaryOperator);
+        }
+	    |
+	;
+
+    expressionAdd returns[Expression this_expression]:
+		left = expressionMult half_exp = expressionAddTemp{
+            if ($half_exp.this_half_expression != null){
+                $this_expression = new BinaryExpression($left.this_expression, $half_exp.this_half_expression, $half_exp.this_binaryOperator);
+            }
+            else{
+                $this_expression = $left.this_expression;
+            }
+        }
+	;
+
     expressionAddTemp returns[BinaryOperator this_binaryOperator,Expression this_half_expression]:
-		(op = '+'{$this_binaryOperator = BinaryOperator.add;}| op = '-'{$this_binaryOperator = BinaryOperator.sub;}) left = expressionMult half_exp = expressionAddTemp{
+		(op = '+' {$this_binaryOperator = BinaryOperator.add;} | op = '-' {$this_binaryOperator = BinaryOperator.sub;} ) left = expressionMult half_exp = expressionAddTemp
+        {
             $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
         }
 	    |
 	;
 
-        expressionMult returns[Expression this_expression]:
+    expressionMult returns[Expression this_expression]:
 		left = expressionUnary half_exp = expressionMultTemp{
             if ($half_exp.this_half_expression != null){
             $this_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
@@ -342,18 +400,21 @@ grammar Smoola;
 		{UnaryOperator unary_op;}(op = '!'{unary_op = UnaryOperator.not;}| op = '-'{unary_op = UnaryOperator.minus;}) unary_exp = expressionUnary{
             $this_expression = new UnaryExpression(unary_op,$unary_exp.this_expression);
         }
-	    |	exp = expressionMem {$this_expression = $exp.this_expression;}
+	    |	exp = expressionMem 
+            {
+                $this_expression = $exp.this_expression; 
+            }
 	;
 
     expressionMem returns[Expression this_expression]:
-		instance_exp = expressionMethods index_exp = expressionMemTemp {
+		instance_exp = expressionMethods index_exp = expressionMemTemp 
+        {
             if ($index_exp.this_expression != null){
-                $this_expression = new ArrayCall($instance_exp.this_expression,$index_exp.this_expression);
+                $this_expression = new ArrayCall($instance_exp.this_expression, $index_exp.this_expression);
             }
             else{
                 $this_expression = $instance_exp.this_expression;
             }
-
         }
 	;
 
@@ -362,21 +423,32 @@ grammar Smoola;
 	    |
 	;
 	expressionMethods returns [Expression this_expression]:
-	    instance = expressionOther {Expression inst = $instance.this_expression;} expressionMethodsTemp[inst] {
+	    instance = expressionOther {Expression inst = $instance.this_expression;} expr_temp = expressionMethodsTemp[inst] 
+        {
+            if ($expr_temp.this_expression==null)
+                $this_expression = inst;
+            else {
+                $this_expression = $expr_temp.this_expression;
+            }
         }
 	;
 
 
-    expressionMethodsTemp [Expression instance]:
-    '.' (method_name1 = ID '()'{
-        MethodCall this_half_instance; Identifier m_name1 = create_identifier_object($method_name1.text); this_half_instance = new MethodCall($instance,m_name1);
-    }expressionMethodsTemp[(Expression) this_half_instance]|  method_name2 = ID '('{
-        MethodCall this_half_instance; Identifier m_name2 = create_identifier_object($method_name2.text); this_half_instance = new MethodCall($instance,m_name2);
-        } (arg1 = expression {this_half_instance.addArg($arg1.this_expression);}(',' arg2 = expression {this_half_instance.addArg($arg2.this_expression);})*) ')'expressionMethodsTemp[(Expression) this_half_instance] | 'length'{
-           Length this_half_instance; this_half_instance = new Length($instance);
-        }expressionMethodsTemp[(Expression) this_half_instance])
-    |
-;
+    expressionMethodsTemp [Expression instance] returns [Expression this_expression]:
+        '.' (method_name1 = ID '()' 
+                { MethodCall this_half_instance_1 = create_method_call_object($method_name1.text, $instance);}
+                exp = expressionMethodsTemp[this_half_instance_1] {$this_expression=$exp.this_expression;}
+                | method_name2 = ID '(' 
+                    { MethodCall this_half_instance = create_method_call_object($method_name2.text, $instance);} 
+                    (arg1 = expression 
+                        {this_half_instance.addArg($arg1.this_expression);}
+                        (',' arg2 = expression 
+                            {this_half_instance.addArg($arg2.this_expression);}) 
+                        *) 
+                ')' exp = expressionMethodsTemp[this_half_instance] {$this_expression=$exp.this_expression;}
+                | 'length' { Length length_expression = new Length($instance);} exp=expressionMethodsTemp[length_expression] {$this_expression=$exp.this_expression;})
+        |
+    ;
 
     expressionOther returns [Expression this_expression]:
 		number = CONST_NUM {$this_expression = create_int_value_object(Integer.parseInt($number.text));}
@@ -395,7 +467,7 @@ grammar Smoola;
 	    'boolean' {$this_type = new BooleanType();} |
 	    'string' {$this_type = new StringType();} |
 	    'int[]' {$this_type = new ArrayType();} |
-	    name = ID {Identifier this_id = new Identifier($name.text); UserDefinedType this_udef_type = new UserDefinedType(); this_udef_type.setName(this_id); $this_type = this_udef_type;}
+	    name = ID {$this_type = create_user_defined_type($name.text);}
 	;
 
 

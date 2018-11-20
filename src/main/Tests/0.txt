@@ -1,0 +1,15 @@
+class Test2 {
+	def main() : int {
+		i = 3;
+		arr = new int[666];
+		return 0;
+	}
+}
+
+class Test2 {
+	def main() : int {
+		i = 3;
+		arr = new int[666];
+		return 0;
+	}
+}
