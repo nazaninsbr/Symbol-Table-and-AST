@@ -1,6 +1,7 @@
 class Test{
 	def main(): int{
-	new BabyTest().testMethod(1,2);	
+	new BabyTest().testMethod(1,2);	 
+	i = new int[0];
 	return 0;
 	}
 
