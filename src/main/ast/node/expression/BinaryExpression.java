@@ -1,7 +1,7 @@
 package ast.node.expression;
 
 import ast.Visitor;
-
+import ast.node.expression.BinaryOperator;
 public class BinaryExpression extends Expression {
 
     private Expression left;
@@ -37,6 +37,52 @@ public class BinaryExpression extends Expression {
     public void setBinaryOperator(BinaryOperator binaryOperator) {
         this.binaryOperator = binaryOperator;
     }
+/*
+    BinaryOperator string_to_binaryoperator(String binary_op){
+        BinaryOperator binaryOperator;
+        switch(binary_op){
+            case"+":
+                binaryOperator = BinaryOperator.add;
+                break;
+            case"-":
+                binaryOperator = BinaryOperator.sub;
+                break;
+            case"*":
+                binaryOperator = BinaryOperator.mult;
+                break;
+            case"/":
+                binaryOperator = BinaryOperator.div;
+                break;
+            case"&&":
+                binaryOperator = BinaryOperator.and;
+                break;
+            case"||":
+                binaryOperator = BinaryOperator.or;
+                break;
+            case"==":
+                binaryOperator = BinaryOperator.eq;
+                break;
+            case"<":
+                binaryOperator = BinaryOperator.lt;
+                break;
+            case">":
+                binaryOperator = BinaryOperator.gt;
+                break;                
+     //       case"<>":
+     //           binaryOperator = BinaryOperator.lte;
+      //          break;
+            case"<>":
+                binaryOperator = BinaryOperator.gte;
+                break;    
+            case"=":
+                binaryOperator = BinaryOperator.assign;
+                break;
+            default:
+                binaryOperator = binaryOperator;  
+        }
+        return binaryOperator;
+    }
+*/
 
     @Override
     public String toString() {
@@ -47,6 +93,4 @@ public class BinaryExpression extends Expression {
         visitor.visit(this);
     }
 }
-enum BinaryOperator {
-    add, sub, mult, div, and, or, eq, lt, gt, lte, gte, assign
-}
+
