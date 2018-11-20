@@ -90,8 +90,11 @@ public class VisitorImpl implements Visitor {
         List<ClassDeclaration> prog_classes = program.getClasses();
         String main_class_name = program.getMainClass().getName().getName();
         add_class_to_symbol_table(main_class_name, program.getMainClass());
+        program.getMainClass().accept(this);
         for(int i = 0; i < prog_classes.size(); ++i) {
+            // System.out.println("**");
             add_class_to_symbol_table(prog_classes.get(i).getName().getName(), prog_classes.get(i));
+            prog_classes.get(i).accept(this);
         }
     }
 
@@ -174,12 +177,8 @@ public class VisitorImpl implements Visitor {
             no_error = true;
             second_round = false; 
             symTable = new SymbolTable(); 
-            // check_class_existance_condition_without_symTable(program);
-            // check_class_name_conditions_without_symTable(program);
-            // check_conditions_for_inside_classes(program);
             check_class_name_conditions_with_symTable(program);
             check_class_existance_condition_with_symTable(program);
-            check_conditions_for_inside_classes(program);
         }
         if (no_error==true){
             // print_program_content(program);
@@ -225,7 +224,7 @@ public class VisitorImpl implements Visitor {
         ArrayList<Type> argTypes = create_arg_types(method_dec);
         try{
             SymbolTableMethodItem method_sym_table_item = new SymbolTableMethodItem(method_name, argTypes); 
-            symTable.put(method_sym_table_item);
+            this.symTable.top.put(method_sym_table_item);
         } catch(ItemAlreadyExistsException e) {
             no_error = false;
             System.out.println("Line:"+Integer.toString(method_dec.get_line_number())+":Redefinition of method "+method_name);
@@ -234,7 +233,7 @@ public class VisitorImpl implements Visitor {
             method_dec.setName(new_name_id);
             SymbolTableMethodItem method_sym_table_item = new SymbolTableMethodItem(method_name, argTypes);  
             try {
-                symTable.put(method_sym_table_item);
+                this.symTable.top.put(method_sym_table_item);
             }
             catch(ItemAlreadyExistsException ex){
                 // this wont happen (I hope!)
@@ -248,25 +247,33 @@ public class VisitorImpl implements Visitor {
         for(int j=0; j<vars.size(); j++){
             add_variable_to_sym_table(vars.get(j));
         }
+        // symTable.top.printSymbolTableItems();
 
         ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
         for(int i=0; i<methodDeclarations.size(); i++){
             add_method_to_symbol_table(methodDeclarations.get(i).getName().getName(), methodDeclarations.get(i));
+            // symTable.top.printSymbolTableItems();
             methodDeclarations.get(i).accept(this);
         }
     }
 
     @Override
     public void visit(ClassDeclaration classDeclaration) {
-        symTable.push(new SymbolTable());
+        // System.out.println(index);
+        // symTable.printSymbolTableItems();
+        symTable.push(new SymbolTable(symTable.top));
         check_method_existance_condition_with_symTable(classDeclaration);
+        // symTable.top.printSymbolTableItems();
+        // System.exit(0);
         symTable.pop();
+        //symTable.printSymbolTableItems();
+        // System.exit(0);
     }
 
     void add_variable_to_sym_table(VarDeclaration this_var){
         try{
             SymbolTableVariableItemBase var_sym_table_item = new SymbolTableVariableItemBase(this_var.getIdentifier().getName(), this_var.getType(), index); 
-            symTable.put(var_sym_table_item);
+            this.symTable.top.put(var_sym_table_item);
         } catch(ItemAlreadyExistsException e) {
             no_error = false;
             System.out.println("Line:"+Integer.toString(this_var.get_line_number())+":Redefinition of variable "+this_var.getIdentifier().getName());
@@ -275,7 +282,7 @@ public class VisitorImpl implements Visitor {
             this_var.setIdentifier(new_name_id);
             SymbolTableVariableItemBase var_sym_table_item = new SymbolTableVariableItemBase(this_var.getIdentifier().getName(), this_var.getType(), index); 
             try {
-                symTable.put(var_sym_table_item);
+                this.symTable.top.put(var_sym_table_item);
             }
             catch(ItemAlreadyExistsException ex){
                 // this wont happen (I hope!)
@@ -322,8 +329,12 @@ public class VisitorImpl implements Visitor {
 
     @Override
     public void visit(MethodDeclaration methodDeclaration) {
-        symTable.push(new SymbolTable());
+        symTable.push(new SymbolTable(symTable.top));
         check_variable_existance_condition_with_symTable(methodDeclaration);
+        // System.out.println("#######");
+        // symTable.printSymbolTableItems();
+        // symTable.top.getPreSymbolTable().printSymbolTableItems();
+        // symTable.top.printSymbolTableItems();
         check_for_statements(methodDeclaration.getBody());
         symTable.pop();
     }
@@ -444,7 +455,8 @@ public class VisitorImpl implements Visitor {
         exprs.add(loop.getCondition());
         check_statement_expressions_for_newArray_expr(exprs);
         ArrayList<Statement> statements = new ArrayList<Statement>();
-        statements.add(loop.getBody()); 
+        if(loop.getBody()!= null)
+            statements.add(loop.getBody()); 
         check_for_statements(statements);
     }
 
