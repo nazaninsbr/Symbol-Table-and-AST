@@ -7,6 +7,7 @@ class Test {
 }
 
 class Book {
+	var f1: int; 
 	def main (f1: int, main: string) : int[] {
 		k = (a.x()).p(v.b()+(a.n().c()).v().t(34 + -12 + l.d()+12));
 		l = (((a.n()).c()).v()).t();

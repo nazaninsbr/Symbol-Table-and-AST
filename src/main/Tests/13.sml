@@ -30,4 +30,10 @@ class Book {
 		i [main] = 12;
 		return (B||C) + (m*9) - 3;
 	}
+
+	def f(): string {
+		main = 1;
+		i [main] = 12;
+		return (B||C) + (m*9) - 3;
+	}
 }

@@ -179,8 +179,9 @@ public class VisitorImpl implements Visitor {
         ArrayList<VarDeclaration> args = method_dec.getArgs();
         ArrayList<Type> argTypes = new ArrayList<Type>();
         for (int i=0; i<args.size(); i++){
-
+            argTypes.add(args.get(i).getType());
         }
+        return argTypes; 
     }
 
     void add_method_to_symbol_table(String method_name, MethodDeclaration method_dec){
@@ -206,21 +207,55 @@ public class VisitorImpl implements Visitor {
 
     void check_method_existance_condition_with_symTable(ClassDeclaration classDeclaration){
         ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
-        symTable.push(new SymbolTable());
         for(int i=0; i<methodDeclarations.size(); i++){
             add_method_to_symbol_table(methodDeclarations.get(i).getName().getName(), methodDeclarations.get(i));
+            methodDeclarations.get(i).accept(this);
         }
     }
 
     @Override
     public void visit(ClassDeclaration classDeclaration) {
-        // check_method_existance_condition_without_symTable(classDeclaration);
+        symTable.push(new SymbolTable());
         check_method_existance_condition_with_symTable(classDeclaration);
+        symTable.pop();
+    }
+
+    void add_variable_to_sym_table(VarDeclaration this_var){
+        try{
+            SymbolTableVariableItemBase var_sym_table_item = new SymbolTableVariableItemBase(this_var.getIdentifier().getName(), this_var.getType(), index); 
+            symTable.put(var_sym_table_item);
+        } catch(ItemAlreadyExistsException e) {
+            System.out.println("Line:<LineNumber>:Redefinition of variable "+this_var.getIdentifier().getName());
+            String new_var_name = "Temporary_VarName_"+Integer.toString(index)+"_"+this_var.getIdentifier().getName();
+            Identifier new_name_id = new Identifier(new_var_name);
+            this_var.setIdentifier(new_name_id);
+            SymbolTableVariableItemBase var_sym_table_item = new SymbolTableVariableItemBase(this_var.getIdentifier().getName(), this_var.getType(), index); 
+            try {
+                symTable.put(var_sym_table_item);
+            }
+            catch(ItemAlreadyExistsException ex){
+                // this wont happen (I hope!)
+            }
+        }
+        index += 1;
+    }
+
+    void check_variable_existance_condition_with_symTable(MethodDeclaration methodDeclaration){
+        ArrayList<VarDeclaration> args = methodDeclaration.getArgs();
+        ArrayList<VarDeclaration> localVars = methodDeclaration.getLocalVars();
+        for(int i=0; i<args.size(); i++){
+            add_variable_to_sym_table(args.get(i)); 
+        }
+        for(int i=0; i<localVars.size(); i++){
+            add_variable_to_sym_table(localVars.get(i)); 
+        }
     }
 
     @Override
     public void visit(MethodDeclaration methodDeclaration) {
-        //TODO: implement appropriate visit functionality
+        symTable.push(new SymbolTable());
+        check_variable_existance_condition_with_symTable(methodDeclaration);
+        symTable.pop();
     }
 
     @Override

@@ -218,7 +218,7 @@ grammar Smoola;
     ;
     mainClass[Program prog]:
         // name should be checked later
-        'class' class_name = ID {ClassDeclaration main_class_dec = create_class_object($class_name.text, "null"); main_class_dec.set_line_number($class_name.line); $prog.setMainClass(main_class_dec);} '{' 'def' method_name = ID {MethodDeclaration main_method = create_main_method_object($method_name.text); main_class_dec.addMethodDeclaration(main_method); } '()' ':' 'int' '{'  method_body = statements {main_method = add_body_statements_to_method(main_method, $method_body.all_statements);} 'return' ret_expr = expression {main_method.setReturnValue($ret_expr.this_expression);} ';' '}' '}'
+        'class' class_name = ID {ClassDeclaration main_class_dec = create_class_object($class_name.text, "null"); $prog.setMainClass(main_class_dec);} '{' 'def' method_name = ID {MethodDeclaration main_method = create_main_method_object($method_name.text); main_class_dec.addMethodDeclaration(main_method); } '()' ':' 'int' '{'  method_body = statements {main_method = add_body_statements_to_method(main_method, $method_body.all_statements);} 'return' ret_expr = expression {main_method.setReturnValue($ret_expr.this_expression);} ';' '}' '}'
     ;
     classDeclaration[Program prog]:
         'class' class_name = ID ('extends' parent_class = ID )? { ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text); $prog.addClass(new_class_dec);} '{' (var_dec = varDeclaration { new_class_dec.addVarDeclaration($var_dec.this_var);})* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
