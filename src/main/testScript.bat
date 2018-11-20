@@ -3,7 +3,7 @@ del *.tokens
 del *.java
 java org.antlr.v4.Tool Smoola.g4
 javac *.java
-java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/1.txt
+rem java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/1.txt
 rem java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/2.txt
 rem java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/3.txt
 rem java org.antlr.v4.runtime.misc.TestRig Smoola program -gui < ./Tests/4.txt
