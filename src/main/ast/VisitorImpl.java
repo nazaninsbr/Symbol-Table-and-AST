@@ -12,6 +12,7 @@ import ast.node.expression.Value.IntValue;
 import ast.node.expression.Value.StringValue;
 import ast.node.statement.*;
 import ast.Type.Type;
+import ast.node.statement.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,6 +131,43 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+    void print_program_content(Program prog){
+        List<ClassDeclaration> classes = prog.getClasses(); 
+        for(int i=0; i<classes.size(); i++){
+            System.out.println(classes.get(i)); 
+            ArrayList<VarDeclaration> vars = classes.get(i).getVarDeclarations();
+            for(int j=0; j<vars.size(); j++){
+                System.out.println(vars.get(j));
+            }
+            ArrayList<MethodDeclaration> methods = classes.get(i).getMethodDeclarations();
+            for(int j=0; j<methods.size(); j++){
+                ArrayList<VarDeclaration> localVars = methods.get(j).getLocalVars();
+                for(int l=0; l<localVars.size(); l++){
+                    System.out.println(localVars.get(l).getIdentifier().getName());
+                    System.out.println(localVars.get(l).getType().toString());
+                }
+                System.out.println(methods.get(j).getName().getName());
+                ArrayList<Statement> statements = methods.get(j).getBody();
+                for(int k=0; k<statements.size(); k++){
+                    System.out.println(statements.get(k).toString());
+                    if(statements.get(k).toString() == "Assign"){
+                        System.out.println(((Assign)statements.get(k)).getlValue().toString());
+                        System.out.println(((Assign)statements.get(k)).getrValue().toString());
+                    }
+                    else if(statements.get(k).toString() == "Conditional"){
+                        System.out.println(((Conditional)statements.get(k)).getExpression().toString());
+                    }
+                    else if(statements.get(k).toString() == "While"){
+                        System.out.println(((While)statements.get(k)).getCondition().toString());
+                    }
+                    else if(statements.get(k).toString() == "Write"){
+                        System.out.println(((Write)statements.get(k)).getArg().toString());
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void visit(Program program) {
         if (no_error==false && second_round==false && symTable==null){
@@ -145,7 +183,7 @@ public class VisitorImpl implements Visitor {
             check_conditions_for_inside_classes(program);
         }
         else if (no_error==true){
-
+            print_program_content(program);
         }
     }
 
@@ -256,10 +294,18 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+    void check_for_statements(MethodDeclaration methodDeclaration){
+        ArrayList<Statement> body = methodDeclaration.getBody();
+        for(int i=0; i<body.size(); i++){
+            // body.get(i).accept(this);
+        }
+    }
+
     @Override
     public void visit(MethodDeclaration methodDeclaration) {
         symTable.push(new SymbolTable());
         check_variable_existance_condition_with_symTable(methodDeclaration);
+        check_for_statements(methodDeclaration);
         symTable.pop();
     }
 
@@ -300,7 +346,9 @@ public class VisitorImpl implements Visitor {
 
     @Override
     public void visit(NewArray newArray) {
-        //TODO: implement appropriate visit functionality
+        if(newArray.getIntSize()<=0){
+            System.out.println("Line:"+Integer.toString(newArray.get_line_number())+":Array length should not be zero or negative");
+        }
     }
 
     @Override
