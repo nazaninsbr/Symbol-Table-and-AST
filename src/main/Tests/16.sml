@@ -26,6 +26,7 @@ class a extends b {
             b < d
         ) then {
             writeln(hello.main((2 * (((3))) + x)));
+            x = new int[0];
         }
 
         while(a[34 + 4 + 3 + 3 ]) {

@@ -32,24 +32,24 @@ echo 12
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/12.txt
 echo 13
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/13.sml
-# echo 14
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/14.sml
+echo 14
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/14.sml
 echo 15
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/15.sml
-# echo 16
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/16.sml
-# echo "my test 1"
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/my-test1.sml
-# echo 17
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/17.sml
+echo 16
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/16.sml
+echo "my test 1"
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/my-test1.sml
+echo 17
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/17.sml
 echo "smltest"
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/smltest.sml
-# echo 18
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/18.sml
-# echo 19
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/19.sml
-# echo 20
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/20.sml
+echo 18
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/18.sml
+echo 19
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/19.sml
+echo 20
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/20.sml
 echo "doc-sample2"
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/doc-sample2.sml
 echo "doc-sample3"
