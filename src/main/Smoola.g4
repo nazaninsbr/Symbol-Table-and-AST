@@ -221,13 +221,13 @@ grammar Smoola;
         'class' class_name = ID {ClassDeclaration main_class_dec = create_class_object($class_name.text, "null"); $prog.setMainClass(main_class_dec);} '{' 'def' method_name = ID {MethodDeclaration main_method = create_main_method_object($method_name.text); main_class_dec.addMethodDeclaration(main_method); } '()' ':' 'int' '{'  method_body = statements {main_method = add_body_statements_to_method(main_method, $method_body.all_statements);} 'return' ret_expr = expression {main_method.setReturnValue($ret_expr.this_expression);} ';' '}' '}'
     ;
     classDeclaration[Program prog]:
-        'class' class_name = ID ('extends' parent_class = ID )? { ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text); $prog.addClass(new_class_dec);} '{' (var_dec = varDeclaration { new_class_dec.addVarDeclaration($var_dec.this_var);})* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
+        'class' class_name = ID ('extends' parent_class = ID )? { ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text);new_class_dec.set_line_number($class_name.line); $prog.addClass(new_class_dec);} '{' (var_dec = varDeclaration { new_class_dec.addVarDeclaration($var_dec.this_var);})* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
     ;
     varDeclaration returns [VarDeclaration this_var]:
-        'var' var_name = ID ':' this_type = type ';' {$this_var = create_varDeclaration_object($var_name.text, $this_type.this_type);}
+        'var' var_name = ID ':' this_type = type ';' {$this_var = create_varDeclaration_object($var_name.text, $this_type.this_type);$this_var.set_line_number($var_name.line);}
     ;
     methodDeclaration returns [MethodDeclaration this_method]:
-        'def' method_name = ID { $this_method = create_methodDeclaration_object($method_name.text);} ('()' | ('(' arg_name = ID ':' arg_type = type { $this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, $this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { $this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, $this_method);})* ')')) ':' type '{'  (this_var = varDeclaration {$this_method.addLocalVar($this_var.this_var);})* method_body = statements {$this_method = add_body_statements_to_method($this_method, $method_body.all_statements);} 'return' ret_expr = expression {$this_method.setReturnValue($ret_expr.this_expression);} ';' '}'
+        'def' method_name = ID { $this_method = create_methodDeclaration_object($method_name.text);$this_method.set_line_number($method_name.line);} ('()' | ('(' arg_name = ID ':' arg_type = type { $this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_type.this_type, $this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { $this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_type_2.this_type, $this_method);})* ')')) ':' type '{'  (this_var = varDeclaration {$this_method.addLocalVar($this_var.this_var);})* method_body = statements {$this_method = add_body_statements_to_method($this_method, $method_body.all_statements);} 'return' ret_expr = expression {$this_method.setReturnValue($ret_expr.this_expression);} ';' '}'
     ;
 
 
@@ -453,7 +453,7 @@ grammar Smoola;
     expressionOther returns [Expression this_expression]:
 		number = CONST_NUM {$this_expression = create_int_value_object(Integer.parseInt($number.text));}
         |	str = CONST_STR {$this_expression = create_string_value_object($str.text);}
-        |   'new ' 'int' '[' size_expression = expression ']' {$this_expression = new NewArray();}
+        |   'new ' 'int' '[' size_expression = expression ']' {$this_expression = new NewArray();$this_expression.set_line_number($size_expression.line);}
         |   'new ' class_name = ID '()' {$this_expression = create_class_instantiation_object($class_name.text);}
         |   'this' {$this_expression = new This();}
         |   'true' {$this_expression = create_boolean_value_object(true);}
