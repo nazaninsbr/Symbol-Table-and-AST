@@ -11,6 +11,7 @@ import ast.node.expression.Value.BooleanValue;
 import ast.node.expression.Value.IntValue;
 import ast.node.expression.Value.StringValue;
 import ast.node.statement.*;
+import ast.Type.Type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,20 +120,14 @@ public class VisitorImpl implements Visitor {
         }
     }
 
-    void check_conditions_for_inside_classes_without_symTable(Program program){
-        Visitor class_visitor = new VisitorImpl();
-
+    void check_conditions_for_inside_classes(Program program){
         ClassDeclaration main_class = program.getMainClass(); 
         List<ClassDeclaration> prog_classes = program.getClasses();
 
-        main_class.accept(class_visitor);
+        main_class.accept(this);
         for(int i = 0; i < prog_classes.size(); ++i){
-            prog_classes.get(i).accept(class_visitor);
+            prog_classes.get(i).accept(this);
         }
-    }
-
-    void check_conditions_for_inside_classes_with_symTable(Program program){
-        
     }
 
     @Override
@@ -142,14 +137,12 @@ public class VisitorImpl implements Visitor {
             no_error = true;
             second_round = false; 
             symTable = new SymbolTable(); 
-        }
-        if (second_round==false){
             // check_class_existance_condition_without_symTable(program);
             // check_class_name_conditions_without_symTable(program);
-            // check_conditions_for_inside_classes_without_symTable(program);
+            // check_conditions_for_inside_classes(program);
             check_class_name_conditions_with_symTable(program);
             check_class_existance_condition_with_symTable(program);
-            check_conditions_for_inside_classes_with_symTable(program);
+            check_conditions_for_inside_classes(program);
         }
         else if (no_error==true){
 
@@ -182,9 +175,47 @@ public class VisitorImpl implements Visitor {
         
     }
 
+    ArrayList<Type> create_arg_types(MethodDeclaration method_dec){
+        ArrayList<VarDeclaration> args = method_dec.getArgs();
+        ArrayList<Type> argTypes = new ArrayList<Type>();
+        for (int i=0; i<args.size(); i++){
+
+        }
+    }
+
+    void add_method_to_symbol_table(String method_name, MethodDeclaration method_dec){
+        ArrayList<Type> argTypes = create_arg_types(method_dec);
+        try{
+            SymbolTableMethodItem method_sym_table_item = new SymbolTableMethodItem(method_name, argTypes); 
+            symTable.put(method_sym_table_item);
+        } catch(ItemAlreadyExistsException e) {
+            System.out.println("Line:<LineNumber>:Redefinition of method "+method_name);
+            String new_method_name = "Temporary_MethodName_"+Integer.toString(index)+"_"+method_name;
+            Identifier new_name_id = new Identifier(new_method_name);
+            method_dec.setName(new_name_id);
+            SymbolTableMethodItem method_sym_table_item = new SymbolTableMethodItem(method_name, argTypes);  
+            try {
+                symTable.put(method_sym_table_item);
+            }
+            catch(ItemAlreadyExistsException ex){
+                // this wont happen (I hope!)
+            }
+        }
+        index += 1;
+    }
+
+    void check_method_existance_condition_with_symTable(ClassDeclaration classDeclaration){
+        ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
+        symTable.push(new SymbolTable());
+        for(int i=0; i<methodDeclarations.size(); i++){
+            add_method_to_symbol_table(methodDeclarations.get(i).getName().getName(), methodDeclarations.get(i));
+        }
+    }
+
     @Override
     public void visit(ClassDeclaration classDeclaration) {
-        check_method_existance_condition_without_symTable(classDeclaration);
+        // check_method_existance_condition_without_symTable(classDeclaration);
+        check_method_existance_condition_with_symTable(classDeclaration);
     }
 
     @Override
