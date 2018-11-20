@@ -414,7 +414,9 @@ public class VisitorImpl implements Visitor {
     public void visit(Assign assign) {
         ArrayList<Expression> exprs = new ArrayList<Expression>();
         exprs.add(assign.getlValue()); 
-        exprs.add(assign.getrValue());
+        if (assign.getrValue()!=null){
+            exprs.add(assign.getrValue());
+        }
         check_statement_expressions_for_newArray_expr(exprs);
     }
 

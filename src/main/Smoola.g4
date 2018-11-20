@@ -255,12 +255,13 @@ grammar Smoola;
         'writeln(' print_expr = expression {$print_expression = $print_expr.this_expression;} ')' ';'
     ;
     statementAssignment returns [Expression lvalue, Expression rvalue]:
-        exp = expression ';' {$lvalue = $exp.this_lvalue; $rvalue = $exp.this_rvalue; }
+        exp = expression ';' {$lvalue = $exp.this_lvalue; $rvalue = $exp.this_rvalue;}
     ;
     expression returns [Expression this_expression,Expression this_lvalue,Expression this_rvalue]:
         exp = expressionAssignment{
             if ($exp.this_expression_lvalue == null){
                 $this_expression = $exp.this_expression_rvalue;
+                $this_lvalue = $exp.this_expression_rvalue;
             }
             else{
                 $this_lvalue = $exp.this_expression_lvalue;
@@ -268,7 +269,6 @@ grammar Smoola;
                 BinaryOperator binary_op = BinaryOperator.assign;
                 $this_expression = new BinaryExpression ($exp.this_expression_lvalue,$exp.this_expression_rvalue,binary_op);
             }
-
         }
     ;
     expressionAssignment returns [Expression this_expression_lvalue,Expression this_expression_rvalue]:
@@ -382,7 +382,7 @@ grammar Smoola;
     expressionMult returns[Expression this_expression]:
 		left = expressionUnary half_exp = expressionMultTemp{
             if ($half_exp.this_half_expression != null){
-            $this_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+                $this_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
             }
             else{
                 $this_expression = $left.this_expression;
@@ -440,14 +440,26 @@ grammar Smoola;
                 { MethodCall this_half_instance_1 = create_method_call_object($method_name1.text, $instance);}
                 exp = expressionMethodsTemp[this_half_instance_1] {$this_expression=$exp.this_expression;}
                 | method_name2 = ID '(' 
-                    { MethodCall this_half_instance = create_method_call_object($method_name2.text, $instance); System.out.println(this_half_instance);} 
+                    { MethodCall this_half_instance = create_method_call_object($method_name2.text, $instance);} 
                     (arg1 = expression 
                         {this_half_instance.addArg($arg1.this_expression);}
                         (',' arg2 = expression 
                             {this_half_instance.addArg($arg2.this_expression);}) 
                         *) 
-                ')' exp = expressionMethodsTemp[this_half_instance] {$this_expression=$exp.this_expression; System.out.println($this_expression);} 
-                | 'length' { Length length_expression = new Length($instance);} exp=expressionMethodsTemp[length_expression] {$this_expression=$exp.this_expression;})
+                ')' exp = expressionMethodsTemp[this_half_instance] 
+                {   
+                    if($exp.this_expression==null)
+                        $this_expression = this_half_instance;
+                    else
+                        $this_expression=$exp.this_expression;
+                } 
+                | 'length' { Length length_expression = new Length($instance);} exp=expressionMethodsTemp[length_expression] 
+                {
+                    if($exp.this_expression == null) 
+                        $this_expression = length_expression;
+                    else 
+                        $this_expression=$exp.this_expression;
+                })
         |
     ;
 
