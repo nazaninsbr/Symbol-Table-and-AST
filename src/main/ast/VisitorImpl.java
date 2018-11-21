@@ -17,11 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ast.Type.UserDefinedType.UserDefinedType; 
-
+import ast.Type.ArrayType.ArrayType;
 import symbolTable.SymbolTable;
 import symbolTable.SymbolTableVariableItemBase;
 import symbolTable.SymbolTableMethodItem;
 import symbolTable.ItemAlreadyExistsException;
+//import ast.print_program_content;
 
 public class VisitorImpl implements Visitor {
 
@@ -132,6 +133,199 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+/////////////////////////////////////
+    void print_program_content(Program prog){
+    System.out.println(prog.toString());
+    ClassDeclaration main_class = prog.getMainClass();
+    print_mainclassdeclaration_content(main_class);
+
+    List<ClassDeclaration> classes = prog.getClasses();;
+    for (int i = 0; i < classes.size(); i++){
+        print_classdeclration_content(classes.get(i));
+    }
+}
+void print_mainclassdeclaration_content(ClassDeclaration main_class){
+    System.out.println(main_class.toString());
+    //BADI bashe ya na?
+    print_expression_content(main_class.getName());// ID ham bege ya faghat name??? ya kollan print?
+    //System.out.println(cls.getName().getName());
+    //?main method ro hich ja estefade nakarde ke????????????
+    ArrayList<MethodDeclaration> main_methods = main_class.getMethodDeclarations();
+    for(int j=0; j<main_methods.size(); j++){
+        print_mainmethoddeclaration_content(main_methods.get(j));
+    }    
+}
+void print_classdeclration_content(ClassDeclaration cls){
+    System.out.println(cls.toString());
+    //BADI bashe ya na?
+    print_expression_content(cls.getName());// ID ham bege ya faghat name??? ya kollan print?
+    //System.out.println(cls.getName().getName()); 
+     print_expression_content(cls.getParentName());// ID ham bege ya faghat name??? ya kollan print?
+    //System.out.println(cls.getParentName().getName());
+    ArrayList<VarDeclaration> vars = cls.getVarDeclarations();
+    for(int j=0; j<vars.size(); j++){
+       print_vardeclaration_content(vars.get(j));
+    }
+    ArrayList<MethodDeclaration> methods = cls.getMethodDeclarations();
+    for(int j=0; j<methods.size(); j++){
+        print_methoddeclration_content(methods.get(j));
+    }
+}
+void print_mainmethoddeclaration_content(MethodDeclaration main_mtd){
+    System.out.println(main_mtd.toString());
+    //BADI bashe ya na??
+    //print_expression_content(main_mtd.getName());// ID ham bege ya faghat name??? ya kollan print?
+    //System.out.println(main_mtd.getName().getName());//??
+
+    //System.out.println(main_mtd.getName().getName()); INJA ??
+    ArrayList<Statement> statements = main_mtd.getBody();
+    for(int k=0; k<statements.size(); k++){
+        print_statement_content(statements.get(k));
+    }
+    print_expression_content(main_mtd.getReturnValue());      
+}
+void print_methoddeclration_content(MethodDeclaration mtd){
+    System.out.println(mtd.toString());
+    //BADI bashe ya na??
+    print_expression_content(mtd.getName());// ID ham bege ya faghat name??? ya kollan print?
+    //System.out.println(mtd.getName().getName());//??
+    ArrayList<VarDeclaration> args = mtd.getArgs();
+    for (int i = 0; i < args.size(); i++){
+        print_vardeclaration_content(args.get(i));
+    }
+    ArrayList<VarDeclaration> localVars = mtd.getLocalVars();
+    for(int l=0; l<localVars.size(); l++){
+        print_vardeclaration_content(localVars.get(l));
+    }
+    //System.out.println(mtd.getName().getName()); INJA ??
+    ArrayList<Statement> statements = mtd.getBody();
+    for(int k=0; k<statements.size(); k++){
+        print_statement_content(statements.get(k));
+    }
+    print_expression_content(mtd.getReturnValue());    
+}
+void print_vardeclaration_content(VarDeclaration var){
+    System.out.println(var.toString());
+    print_expression_content(var.getIdentifier());// ID ham bege ya faghat name??? ya kollan print?
+    //System.out.println(var.getIdentifier().getName());
+    print_type_content(var.getType());//TYPE bege???
+    //System.out.println(localVars.get(l).getType().toString());
+}
+void print_expression_content(Expression expr){
+    String expr_type = expr.getClass().getSimpleName();
+    if(expr_type.equals("BooleanValue")){
+        //
+        System.out.println(((BooleanValue)expr).toString());
+    }
+    else if(expr_type.equals("IntValue")){
+        System.out.println(((IntValue)expr).toString());
+    }
+    else if(expr_type.equals("StringValue")){
+        System.out.println(((StringValue)expr).toString());
+    }
+
+    else if(expr_type.equals("ArrayCall")){
+        System.out.println(((ArrayCall)expr).toString());
+        //pre order???
+        print_expression_content(((ArrayCall)expr).getInstance());
+        print_expression_content(((ArrayCall)expr).getIndex());
+    }
+    else if(expr_type.equals("BinaryExpression")){
+        System.out.println(((BinaryExpression)expr).toString());
+        print_expression_content(((BinaryExpression)expr).getLeft());
+        System.out.println(((BinaryExpression)expr).getBinaryOperator());//??string //print beshe??
+        print_expression_content(((BinaryExpression)expr).getRight());
+    }
+    else if(expr_type.equals("Identifier")){
+        System.out.println(((Identifier)expr).toString());
+        //String value print kone?
+    }
+    else if(expr_type.equals("Length")){
+        System.out.println(((Length)expr).toString());
+        print_expression_content(((Length)expr).getExpression());
+    }
+    else if(expr_type.equals("MethodCall")){
+        System.out.println(((MethodCall)expr).toString());
+        //arg??
+        ArrayList<Expression> methodcall_args = ((MethodCall)expr).getArgs();
+        for (int i = 0; i < methodcall_args.size(); i++){
+            print_expression_content(methodcall_args.get(i));
+        }
+        print_expression_content(((MethodCall)expr).getInstance());
+        print_expression_content(((MethodCall)expr).getMethodName());
+    }
+    else if(expr_type.equals("NewArray")){
+        System.out.println(((NewArray)expr).toString());
+        print_expression_content(((NewArray)expr).getExpression());
+        //print_expression_content(((NewArray)expr).getIntSize()); ///???
+        System.out.println(((NewArray)expr).getIntSize());
+    }
+    else if(expr_type.equals("NewClass")){
+        System.out.println(((NewClass)expr).toString());
+        print_expression_content(((NewClass)expr).getClassName());
+    }
+    else if(expr_type.equals("NewClassAndMethodCall")){
+        System.out.println(((NewClassAndMethodCall)expr).toString());
+        print_expression_content(((NewClassAndMethodCall)expr).getnewClass());
+        print_expression_content(((NewClassAndMethodCall)expr).getmethodCall());
+    }
+    else if(expr_type.equals("This")){
+        System.out.println(((This)expr).toString());
+    }
+           
+    else if(expr_type.equals("UnaryExpression")){
+        System.out.println(((UnaryExpression)expr).toString());
+        System.out.println(((UnaryExpression)expr).getUnaryOperator());//??string //print beshe??
+        print_expression_content(((UnaryExpression)expr).getValue());
+    }
+    else{
+        //System.out.println(expr.toString());
+        return;
+    }    
+}
+void print_statement_content(Statement stm){
+    String stm_type = stm.getClass().getSimpleName();
+    if(stm_type.equals("Assign")){
+        System.out.println(((Assign)stm).toString());
+        print_expression_content(((Assign)stm).getlValue());
+        print_expression_content(((Assign)stm).getrValue());
+    }
+    else if(stm_type.equals("Block")){
+        System.out.println(((Block)stm).toString());
+        ArrayList<Statement> body = ((Block)stm).getBody();
+        for (int i = 0; i < body.size(); i++){
+            print_statement_content(body.get(i));
+        }
+    }
+    else if(stm_type.equals("Conditional")){
+        System.out.println(((Conditional)stm).toString());
+        print_expression_content(((Conditional)stm).getExpression());
+        print_statement_content(((Conditional)stm).getConsequenceBody());
+        print_statement_content(((Conditional)stm).getAlternativeBody());
+    }
+    else if(stm_type.equals("While")){
+        System.out.println(((While)stm).toString());
+        print_expression_content(((While)stm).getCondition());
+        print_statement_content(((While)stm).getBody());
+    }
+    else if(stm_type.equals("Write")){
+        System.out.println(((Write)stm).toString());
+        print_expression_content(((Write)stm).getArg());
+    }
+    else{
+        System.out.println(stm.toString());
+        return;
+    }    
+}
+void print_type_content(Type type_v){
+    System.out.println(type_v.toString());
+    if (type_v.toString() == "int[]"){
+        System.out.println(((ArrayType)type_v).getSize());//LAZAEME??
+        //print_expression_content(type_v.getSize()); ///????
+    }
+}
+/////////////////////////////////////   
+/*
     void print_program_content(Program prog){
         List<ClassDeclaration> classes = prog.getClasses(); 
         for(int i=0; i<classes.size(); i++){
@@ -166,6 +360,7 @@ public class VisitorImpl implements Visitor {
             }
         }
     }
+    */
 
     @Override
     public void visit(Program program) {
@@ -182,7 +377,7 @@ public class VisitorImpl implements Visitor {
             check_conditions_for_inside_classes(program);
         }
         if (no_error==true){
-            // print_program_content(program);
+            print_program_content(program);
         }
     }
 

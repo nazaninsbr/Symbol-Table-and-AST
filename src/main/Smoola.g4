@@ -27,47 +27,7 @@ grammar Smoola;
 
 
 @members {
-    void print_program_content(Program prog){
-        List<ClassDeclaration> classes = prog.getClasses(); 
-        for(int i=0; i<classes.size(); i++){
-            System.out.println(classes.get(i).getName().getName()); 
-            System.out.println(classes.get(i).getParentName().getName());
-            ArrayList<VarDeclaration> vars = classes.get(i).getVarDeclarations();
-            for(int j=0; j<vars.size(); j++){
-                System.out.println(vars.get(j).getIdentifier().getName());
-                System.out.println(vars.get(j).getType().toString());
-            }
-            ArrayList<MethodDeclaration> methods = classes.get(i).getMethodDeclarations();
-            for(int j=0; j<methods.size(); j++){
-                ArrayList<VarDeclaration> localVars = methods.get(j).getLocalVars();
-                for(int l=0; l<localVars.size(); l++){
-                    System.out.println(localVars.get(l).getIdentifier().getName());
-                    System.out.println(localVars.get(l).getType().toString());
-                }
-                System.out.println(methods.get(j).getName().getName());
-                ArrayList<Statement> statements = methods.get(j).getBody();
-                for(int k=0; k<statements.size(); k++){
-                    System.out.println(statements.get(k).toString());
-                    if(statements.get(k).toString() == "Assign"){
-                        System.out.println(((Assign)statements.get(k)).getlValue().toString());
-                        System.out.println(((Assign)statements.get(k)).getrValue().toString());
-                    }
-                    else if(statements.get(k).toString() == "Conditional"){
-                        System.out.println(((Conditional)statements.get(k)).getExpression().toString());
-                        System.out.println(((Conditional)statements.get(k)).getConsequenceBody()); 
-                        System.out.println(((Conditional)statements.get(k)).getAlternativeBody());
-                    }
-                    else if(statements.get(k).toString() == "While"){
-                        System.out.println(((While)statements.get(k)).getCondition().toString());
-                        System.out.println(((While)statements.get(k)).getBody());
-                    }
-                    else if(statements.get(k).toString() == "Write"){
-                        System.out.println(((Write)statements.get(k)).getArg().toString());
-                    }
-                }
-            }
-        }
-    }
+
     Program create_program_object(){
         return new Program();
     }
