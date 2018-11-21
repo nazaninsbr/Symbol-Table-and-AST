@@ -62,3 +62,5 @@ echo "doc-sample6"
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/doc-sample6.sml
 echo "Smoola_2Lexer"
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/our_smoola_2Lexer.sml
+echo 21
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/21.txt

@@ -7,7 +7,8 @@ class SecondMain extends Blue{
 	var arr: int[];
 	var x : int;
 	var y : boolean;
-	def main(): int{
+	def main2(x: int): int{
+		var x: int;
 		x = (2 + (3 || 4)) / 7;
 		y = 4*6+12||c[0]-8*4&&12;
 	arr = new int[10];

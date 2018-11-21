@@ -63,4 +63,12 @@ public class SymbolTable {
 	public boolean isSymbolTableEmpty(){
 		return this.items.isEmpty();
 	}
+
+	public void printSymbolTableItems(){
+		for (String name: this.items.keySet()){
+            String key =name;
+            String value = this.items.get(name).getKey();  
+            System.out.println(key + " " + value);  
+		} 
+	}
 }
