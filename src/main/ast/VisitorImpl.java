@@ -181,7 +181,7 @@ public class VisitorImpl implements Visitor {
             check_class_existance_condition_with_symTable(program);
         }
         if (no_error==true){
-            // print_program_content(program);
+            print_program_content(program);
         }
     }
 

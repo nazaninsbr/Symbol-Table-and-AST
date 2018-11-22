@@ -15,3 +15,5 @@ $this_expression.setExpression($size_expression.this_expression);
 
 returns [Expression this_expression]
 
+System.out.println($this_expression);
+prog.accept(prog_visitor);
