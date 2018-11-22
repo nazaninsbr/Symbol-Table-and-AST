@@ -33,6 +33,9 @@ grammar Smoola;
     }
     ClassDeclaration create_class_object(String class_name, String parent_name){
         Identifier class_id = create_identifier_object(class_name); 
+        if(parent_name==null){
+            parent_name = "null";
+        }
         Identifier parent_class_id = create_identifier_object(parent_name); 
         ClassDeclaration this_class_dec = new ClassDeclaration(class_id, parent_class_id);
         return this_class_dec;

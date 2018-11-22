@@ -466,9 +466,8 @@ public class VisitorImpl implements Visitor {
         else if(second_round==true){
             System.out.println(classDeclaration);
             classDeclaration.getName().accept(this);
-            //System.out.println(classDeclaration.getParentName().getName().getClass().getName());
-            //if(! classDeclaration.getParentName().getName().equals("null"))
-                //classDeclaration.getParentName().accept(this);
+            if(! classDeclaration.getParentName().getName().equals("null"))
+                classDeclaration.getParentName().accept(this);
             ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations();
             for(int j=0; j<vars.size(); j++){
                 vars.get(j).accept(this);
