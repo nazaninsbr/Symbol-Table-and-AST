@@ -466,7 +466,9 @@ public class VisitorImpl implements Visitor {
         else if(second_round==true){
             System.out.println(classDeclaration);
             classDeclaration.getName().accept(this);
-            classDeclaration.getParentName().accept(this);
+            //System.out.println(classDeclaration.getParentName().getName().getClass().getName());
+            //if(! classDeclaration.getParentName().getName().equals("null"))
+                //classDeclaration.getParentName().accept(this);
             ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations();
             for(int j=0; j<vars.size(); j++){
                 vars.get(j).accept(this);
@@ -591,8 +593,8 @@ public class VisitorImpl implements Visitor {
     public void visit(BinaryExpression binaryExpression) {
         if(second_round==true){
             System.out.println(binaryExpression);
+            // System.out.println(binaryExpression.getBinaryOperator());
             binaryExpression.getLeft().accept(this);
-            System.out.println(binaryExpression.getBinaryOperator());//??string //print beshe??
             binaryExpression.getRight().accept(this);
         }
     }
@@ -737,15 +739,16 @@ public class VisitorImpl implements Visitor {
     public void visit(While loop) {
         ArrayList<Expression> exprs = new ArrayList<Expression>();
         exprs.add(loop.getCondition());
-        check_statement_expressions_for_newArray_expr(exprs);
         ArrayList<Statement> statements = new ArrayList<Statement>();
         if(loop.getBody()!= null)
             statements.add(loop.getBody());
         if(second_round==false){
+            check_statement_expressions_for_newArray_expr(exprs);
             check_for_statements(statements);
         }
         else if(second_round==true){
             System.out.println(loop);
+            check_statement_expressions_for_newArray_expr(exprs);
             check_for_statements(statements);
         } 
     }
