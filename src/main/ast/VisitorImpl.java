@@ -465,6 +465,12 @@ public class VisitorImpl implements Visitor {
         } 
         else if(second_round==true){
             System.out.println(classDeclaration);
+            classDeclaration.getName().accept(this);
+            classDeclaration.getParentName().accept(this);
+            ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations();
+            for(int j=0; j<vars.size(); j++){
+                vars.get(j).accept(this);
+            }
             ArrayList<MethodDeclaration> methods = classDeclaration.getMethodDeclarations();
             for(int j=0; j<methods.size(); j++){
                 methods.get(j).accept(this);
@@ -540,10 +546,20 @@ public class VisitorImpl implements Visitor {
         }
         else if(second_round==true){
             System.out.println(methodDeclaration);
+            methodDeclaration.getName().accept(this);
+            ArrayList<VarDeclaration> args = methodDeclaration.getArgs();
+            for (int i = 0; i < args.size(); i++){
+                args.get(i).accept(this);
+            }
+            ArrayList<VarDeclaration> localVars = methodDeclaration.getLocalVars();
+            for(int l=0; l<localVars.size(); l++){
+                localVars.get(l).accept(this);
+            }
             ArrayList<Statement> body = methodDeclaration.getBody();
             for(int j=0; j<body.size(); j++){
                 body.get(j).accept(this);
             }
+            methodDeclaration.getReturnValue().accept(this);
         }
 
     }
