@@ -25,7 +25,8 @@ public class NewClassAndMethodCall extends Expression {
     public String toString() {
         return "NewClassAndMethodCall";
     }
-
+    
+    @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }

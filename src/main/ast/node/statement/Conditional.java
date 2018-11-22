@@ -41,7 +41,8 @@ public class Conditional extends Statement {
     public String toString() {
         return "Conditional";
     }
-
+    
+    @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }

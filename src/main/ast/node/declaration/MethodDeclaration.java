@@ -63,6 +63,7 @@ public class MethodDeclaration extends Declaration {
         return "MethodDeclaration";
     }
 
+    @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }

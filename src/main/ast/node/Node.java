@@ -12,4 +12,6 @@ public abstract class Node {
 	public int get_line_number(){
 		return this.line_number;
 	}
+
+	public void accept(Visitor visitor) {}
 }

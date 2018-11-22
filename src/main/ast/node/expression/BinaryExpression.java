@@ -88,7 +88,8 @@ public class BinaryExpression extends Expression {
     public String toString() {
         return "BinaryExpression " + binaryOperator.name();
     }
-
+    
+    @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
