@@ -565,7 +565,9 @@ public class VisitorImpl implements Visitor {
     @Override
     public void visit(ArrayCall arrayCall) {
         if(second_round==true){
-
+            System.out.println(arrayCall);
+            arrayCall.getInstance().accept(this);
+            arrayCall.getIndex().accept(this);
         }
     }
 
@@ -597,7 +599,15 @@ public class VisitorImpl implements Visitor {
 
     @Override
     public void visit(MethodCall methodCall) {
-        //TODO: implement appropriate visit functionality
+        if(second_round==true){
+            System.out.println(methodCall);
+            methodCall.getInstance().accept(this);
+            methodCall.getMethodName().accept(this);
+            ArrayList<Expression> methodcall_args = methodCall.getArgs();
+            for (int i = 0; i < methodcall_args.size(); i++){
+                methodcall_args.get(i).accept(this);
+            }
+        }
     }
 
     @Override
@@ -608,6 +618,7 @@ public class VisitorImpl implements Visitor {
         }
         else if(second_round==true){
             System.out.println(newArray);
+            newArray.getExpression().accept(this);
         }
     }
 
