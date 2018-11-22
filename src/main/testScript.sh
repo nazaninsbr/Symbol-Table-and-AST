@@ -9,7 +9,7 @@ java org.antlr.v4.gui.TestRig Smoola program < ./Tests/0.txt
 echo 1
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/1.txt
 echo 2
-java org.antlr.v4.gui.TestRig Smoola program < ./Tests/2.txt 
+java org.antlr.v4.gui.TestRig Smoola program -gui < ./Tests/2.txt 
 echo 3
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/3.txt
 echo 4
