@@ -1,5 +1,4 @@
 package ast.node;
-
 import ast.Visitor;
 import java.util.ArrayList;
 import ast.node.declaration.ClassDeclaration;
