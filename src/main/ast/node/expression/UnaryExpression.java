@@ -38,22 +38,5 @@ public class UnaryExpression extends Expression {
         visitor.visit(this);
     }
 }
-/*
-    public UnaryOperator string_to_unaryoperator(String unary_op){
-        UnaryOperator unaryOperator;
-        switch(unary_op){
-            case"!":
-                unaryOperator = UnaryOperator.not;
-                break;
-            case"-":
-                unaryOperator = UnaryOperator.minus;
-                break;
-            default:
-                unaryOperator = unaryOperator;  
-        }
-        return unaryOperator;
-    }
-    */
-
 
 

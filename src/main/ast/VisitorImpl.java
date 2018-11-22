@@ -1,9 +1,9 @@
 package ast;
 
-import ast.node.Node;
+//import ast.node.Node;
 import ast.node.Program;
 import ast.node.declaration.ClassDeclaration;
-import ast.node.declaration.MainMethodDeclaration;
+//import ast.node.declaration.MainMethodDeclaration;
 import ast.node.declaration.MethodDeclaration;
 import ast.node.declaration.VarDeclaration;
 import ast.node.expression.*;
@@ -32,10 +32,10 @@ public class VisitorImpl implements Visitor {
     SymbolTable symTable;  
     int index; 
 
-    @Override
-    public void visit(Node node) {
+   // @Override
+    //public void visit(Node node) {
         //TODO: implement appropriate visit functionality
-    }
+    //}
 
     void check_class_name_conditions_without_symTable(Program program){
         ArrayList<String> errors = new ArrayList<>();
@@ -565,10 +565,10 @@ public class VisitorImpl implements Visitor {
 
     }
 
-    @Override
-    public void visit(MainMethodDeclaration mainMethodDeclaration) {
+   // @Override
+    //public void visit(MainMethodDeclaration mainMethodDeclaration) {
         //TODO: implement appropriate visit functionality
-    }
+    //}
 
     @Override
     public void visit(VarDeclaration varDeclaration) {
