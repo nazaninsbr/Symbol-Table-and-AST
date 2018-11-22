@@ -252,16 +252,17 @@ void print_expression_content(Expression expr){
         System.out.println(((Length)expr).toString());
         print_expression_content(((Length)expr).getExpression());
     }
+
     else if(expr_type.equals("MethodCall")){
         System.out.println(((MethodCall)expr).toString());
+        print_expression_content(((MethodCall)expr).getInstance());
+        print_expression_content(((MethodCall)expr).getMethodName());
         //arg??
         ArrayList<Expression> methodcall_args = ((MethodCall)expr).getArgs();
         for (int i = 0; i < methodcall_args.size(); i++){
             print_expression_content(methodcall_args.get(i));
         }
-        print_expression_content(((MethodCall)expr).getInstance());
-        print_expression_content(((MethodCall)expr).getMethodName());
-    }
+    }    
     else if(expr_type.equals("NewArray")){
         System.out.println(((NewArray)expr).toString());
         print_expression_content(((NewArray)expr).getExpression());
