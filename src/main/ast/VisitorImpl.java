@@ -18,6 +18,7 @@ import java.util.List;
 
 import ast.Type.UserDefinedType.UserDefinedType; 
 import ast.Type.ArrayType.ArrayType;
+import ast.Type.PrimitiveType.*;
 import symbolTable.SymbolTable;
 import symbolTable.SymbolTableVariableItemBase;
 import symbolTable.SymbolTableMethodItem;
