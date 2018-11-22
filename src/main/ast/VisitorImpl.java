@@ -226,7 +226,6 @@ public class VisitorImpl implements Visitor {
         else if(expr_type.equals("StringValue")){
             System.out.println(((StringValue)expr).toString());
         }
-
         else if(expr_type.equals("ArrayCall")){
             System.out.println(((ArrayCall)expr).toString());
             //pre order???
