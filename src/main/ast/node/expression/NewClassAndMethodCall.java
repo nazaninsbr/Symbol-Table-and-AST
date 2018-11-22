@@ -14,6 +14,13 @@ public class NewClassAndMethodCall extends Expression {
         this.methodCall = method_new;
     }
 
+    public Expression getnewClass() {
+        return newClass;
+    }
+    public Expression getmethodCall() {
+        return methodCall;
+    }
+
     @Override
     public String toString() {
         return "NewClassAndMethodCall";
