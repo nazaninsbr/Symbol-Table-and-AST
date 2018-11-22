@@ -1,9 +1,8 @@
 package ast;
 
-//import ast.node.Node;
+
 import ast.node.Program;
 import ast.node.declaration.ClassDeclaration;
-//import ast.node.declaration.MainMethodDeclaration;
 import ast.node.declaration.MethodDeclaration;
 import ast.node.declaration.VarDeclaration;
 import ast.node.expression.*;
@@ -23,7 +22,7 @@ import symbolTable.SymbolTable;
 import symbolTable.SymbolTableVariableItemBase;
 import symbolTable.SymbolTableMethodItem;
 import symbolTable.ItemAlreadyExistsException;
-//import ast.print_program_content;
+
 
 public class VisitorImpl implements Visitor {
 
@@ -32,10 +31,6 @@ public class VisitorImpl implements Visitor {
     SymbolTable symTable;  
     int index; 
 
-   // @Override
-    //public void visit(Node node) {
-        //TODO: implement appropriate visit functionality
-    //}
 
     void check_class_name_conditions_without_symTable(Program program){
         ArrayList<String> errors = new ArrayList<>();
