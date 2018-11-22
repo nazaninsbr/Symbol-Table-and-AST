@@ -85,7 +85,7 @@ public class BinaryExpression extends Expression {
 */
 
     @Override
-    public String toString() {
+    public String toString() {    
         return "BinaryExpression " + binaryOperator.name();
     }
 

@@ -217,10 +217,11 @@ void print_vardeclaration_content(VarDeclaration var){
 void print_expression_content(Expression expr){
     String expr_type = expr.getClass().getSimpleName();
     if(expr_type.equals("BooleanValue")){
-        //
+
         System.out.println(((BooleanValue)expr).toString());
     }
     else if(expr_type.equals("IntValue")){
+
         System.out.println(((IntValue)expr).toString());
     }
     else if(expr_type.equals("StringValue")){

@@ -262,7 +262,8 @@ grammar Smoola;
 
     expressionOrTemp returns [BinaryOperator this_binaryOperator,Expression this_half_expression]:
 		op = '||'{$this_binaryOperator = BinaryOperator.or;} left = expressionAnd half_exp = expressionOrTemp{
-            $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+            if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
+            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
         }
 	    |
 	;
@@ -280,7 +281,9 @@ grammar Smoola;
 
     expressionAndTemp returns [BinaryOperator this_binaryOperator,Expression this_half_expression]:
 		op = '&&'{$this_binaryOperator = BinaryOperator.and;} left = expressionEq half_exp = expressionAndTemp{
-            $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+            if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
+            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);            
+            //$this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
         }
 	    |
 	;
@@ -299,7 +302,9 @@ grammar Smoola;
     expressionEqTemp returns [BinaryOperator this_binaryOperator,Expression this_half_expression]:
 		(op = '=='{$this_binaryOperator = BinaryOperator.eq;}| op = '<>' {
             $this_binaryOperator = BinaryOperator.neq;}) left = expressionCmp half_exp = expressionEqTemp{
-            $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+            if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
+            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);            
+            //$this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
         }
 	    |
 	;
@@ -318,7 +323,9 @@ grammar Smoola;
     expressionCmpTemp returns [BinaryOperator this_binaryOperator,Expression this_half_expression]:
 		(op = '<' {$this_binaryOperator = BinaryOperator.lt;} | op = '>' {$this_binaryOperator = BinaryOperator.gt;} ) left= expressionAdd half_exp = expressionCmpTemp 
         {
-             $this_half_expression = new BinaryExpression($left.this_expression, $half_exp.this_half_expression, $half_exp.this_binaryOperator);
+           if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
+           else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+            //$this_half_expression = new BinaryExpression($left.this_expression, $half_exp.this_half_expression, $half_exp.this_binaryOperator);
         }
 	    |
 	;
@@ -337,7 +344,9 @@ grammar Smoola;
     expressionAddTemp returns[BinaryOperator this_binaryOperator,Expression this_half_expression]:
 		(op = '+' {$this_binaryOperator = BinaryOperator.add;} | op = '-' {$this_binaryOperator = BinaryOperator.sub;} ) left = expressionMult half_exp = expressionAddTemp
         {
-            $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+            if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
+            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+            //$this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
         }
 	    |
 	;
@@ -355,7 +364,9 @@ grammar Smoola;
 
     expressionMultTemp returns[BinaryOperator this_binaryOperator,Expression this_half_expression]:
 		(op = '*'{$this_binaryOperator = BinaryOperator.mult;}| op = '/'{$this_binaryOperator = BinaryOperator.div;}) left = expressionUnary half_exp = expressionMultTemp{
-            $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+            if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
+            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);            
+           // $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
         }
 	    |
 	;
