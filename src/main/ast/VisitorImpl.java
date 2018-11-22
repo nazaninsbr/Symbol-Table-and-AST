@@ -18,6 +18,7 @@ import java.util.List;
 
 import ast.Type.UserDefinedType.UserDefinedType; 
 import ast.Type.ArrayType.ArrayType;
+import ast.Type.PrimitiveType.*;
 import symbolTable.SymbolTable;
 import symbolTable.SymbolTableVariableItemBase;
 import symbolTable.SymbolTableMethodItem;
@@ -215,7 +216,10 @@ void print_vardeclaration_content(VarDeclaration var){
     //System.out.println(localVars.get(l).getType().toString());
 }
 void print_expression_content(Expression expr){
+
     String expr_type = expr.getClass().getSimpleName();
+       // System.out.println("expr_type is");
+  //  System.out.println(expr_type);
     if(expr_type.equals("BooleanValue")){
 
         System.out.println(((BooleanValue)expr).toString());
@@ -322,10 +326,22 @@ void print_statement_content(Statement stm){
     }    
 }
 void print_type_content(Type type_v){
-    System.out.println(type_v.toString());
-    if (type_v.toString() == "int[]"){
+    if((type_v.toString()).equals("bool")){
+        System.out.println(((BooleanType)type_v).toString());
+    }
+    else if((type_v.toString()).equals("int")){
+        System.out.println(((IntType)type_v).toString());
+    }
+    else if((type_v.toString()).equals("string")){
+        System.out.println(((StringType)type_v).toString());
+    }
+    else if((type_v.toString()).equals("int[]")) {
+        System.out.println(((ArrayType)type_v).toString());
         System.out.println(((ArrayType)type_v).getSize());//LAZAEME??
         //print_expression_content(type_v.getSize()); ///????
+    }
+    else{
+        System.out.println(((UserDefinedType)type_v).toString());
     }
 }
 /////////////////////////////////////   

@@ -412,7 +412,13 @@ grammar Smoola;
     expressionMethodsTemp [Expression instance] returns [Expression this_expression]:
         '.' (method_name1 = ID '()' 
                 { MethodCall this_half_instance_1 = create_method_call_object($method_name1.text, $instance);}
-                exp = expressionMethodsTemp[this_half_instance_1] {$this_expression=$exp.this_expression;}
+                exp = expressionMethodsTemp[this_half_instance_1] {
+                    if($exp.this_expression==null)
+                        $this_expression = this_half_instance_1;
+                    else
+                        $this_expression=$exp.this_expression;                    
+                    //$this_expression=$exp.this_expression;
+                }
                 | method_name2 = ID '(' 
                     { MethodCall this_half_instance = create_method_call_object($method_name2.text, $instance);} 
                     (arg1 = expression 
