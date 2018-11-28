@@ -714,17 +714,20 @@ public class VisitorImpl implements Visitor {
     public void visit(Conditional conditional) {
         ArrayList<Expression> exprs = new ArrayList<Expression>();
         exprs.add(conditional.getExpression());
-        check_statement_expressions_for_newArray_expr(exprs);
         ArrayList<Statement> statements = new ArrayList<Statement>();
         if(conditional.getConsequenceBody()!=null)
             statements.add(conditional.getConsequenceBody()); 
         if(conditional.getAlternativeBody()!=null)
             statements.add(conditional.getAlternativeBody());
         if(second_round==false){
+            check_statement_expressions_for_newArray_expr(exprs);
             check_for_statements(statements);
         }
         else if(second_round==true){
+            // System.out.println("XXXXXX");
             System.out.println(conditional);
+            // System.out.println("YYYYYYY");
+            check_statement_expressions_for_newArray_expr(exprs);
             check_for_statements(statements);
         }
     }
