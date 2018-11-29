@@ -12,8 +12,8 @@ javac *.java
 # java org.antlr.v4.gui.TestRig Smoola program -gui < ./Tests/2.txt 
 # echo 3
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/3.txt
-echo 4
-java org.antlr.v4.gui.TestRig Smoola program < ./Tests/4.txt
+# echo 4
+# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/4.txt
 # echo 5
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/5.txt
 # echo 6
@@ -38,8 +38,8 @@ java org.antlr.v4.gui.TestRig Smoola program < ./Tests/4.txt
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/15.sml
 # echo 16
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/16.sml
-# echo "my test 1"
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/my-test1.sml
+echo "my test 1"
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/my-test1.sml
 # echo 17
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/17.sml
 # echo "smltest"
