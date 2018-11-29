@@ -458,7 +458,7 @@ public class VisitorImpl implements Visitor {
             check_method_existance_condition_with_symTable(classDeclaration);
             symTable.pop();
         } 
-        else if(second_round==true){
+        else if(second_round==true && no_error==true){
             System.out.println(classDeclaration);
             classDeclaration.getName().accept(this);
             if(! classDeclaration.getParentName().getName().equals("null"))
@@ -602,7 +602,11 @@ public class VisitorImpl implements Visitor {
 
     @Override
     public void visit(Length length) {
-        if(second_round==true){
+        if (second_round==false) {
+            Expression exp = length.getExpression();
+            exp.accept(this);
+        }
+        else if(second_round==true){
             System.out.println(length);
             Expression exp = length.getExpression();
             exp.accept(this);
