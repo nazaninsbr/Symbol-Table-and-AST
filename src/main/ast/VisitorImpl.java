@@ -657,6 +657,7 @@ public class VisitorImpl implements Visitor {
     public void visit(NewClass newClass) {
         if(second_round==true){
             System.out.println(newClass);
+            System.out.println(newClass.getClassName());
         }
     }
 

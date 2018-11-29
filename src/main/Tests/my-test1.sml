@@ -27,16 +27,16 @@ class SecondMain {
 }
 
 class a extends b {
-    var x : int;
-    var x : int[];
-    var x : boolean;
-    var x : string;
+    var x1 : int;
+    var x2 : int[];
+    var x3 : boolean;
+    var x4 : string;
 
     def x(a1: int, a2: boolean, a3: string, a4: int[]) : string {
-        var x : int;
-        var x : int[];
-        var x : boolean;
-        var x : string;
+        var x1 : int;
+        var x2 : int[];
+        var x3 : boolean;
+        var x4 : string;
 
         if(
             !x == 1 ||
@@ -80,8 +80,8 @@ class Test2 extends Test1 {
     var g : int[];
 
     def method2(): int {
-        var g : int[];
-        var g : int[];
+        var g1 : int[];
+        var g2 : int[];
         a = x[100];
         i = 10;
         variable = new int[10];
@@ -136,7 +136,7 @@ class BabyTest {
         return test2;
     }
 
-    def testMethod() : string {
+    def testMethod2() : string {
          while(i <> 10) {
             test1[i] = i;
          }
@@ -144,7 +144,7 @@ class BabyTest {
     }
 }
 
-class Test {
+class Test3 {
     def main() : int {
         writeln(x.length);
         writeln(x);
@@ -178,13 +178,13 @@ class Book {
     }
 }
 
-class IDENTIFIER extends SomeThingElse{
+class IDENTIFIER2 extends SomeThingElse{
     def main(): int {
         return new SecondMain().main();
     }
 }
 
-class SecondMain{
+class SecondMain2{
     var arr: int[];
     var x: int;
     var y: boolean;
@@ -199,13 +199,13 @@ class SecondMain{
     }
 }
 
-class MainClass {
+class MainClass22 {
     def main(): int {
         return new Test2().method2();
     }
 }
 
-class Test1{
+class Test13{
     var i: int;
     def method(): string{
         var j: string;
@@ -215,20 +215,20 @@ class Test1{
     }
 }
 
-class Test2 extends Test1{
+class Test243 extends Test1{
     def method2(): int{
         i=10;
         return i;
     }
 }
 
-class MainClass{
+class MainClass532{
     def main(): int{
         return 0;
     }
 }
 
-class Test1{
+class Test164{
     var i: int;
     def salam(): string{
         return "salam";
@@ -241,20 +241,21 @@ class Test1{
     }
 }
 
-class Test2 {
+class Test26345 {
   def main() : int {
-    arr = new int[0];
+    arr = new int[1];
     return 0;
   }
 }
 
-class MainClass{
+class MainClass3424{
     def main(): int{
         writeln(new Math().factorial(5));
         return 0;
     }
 }
-class Math{
+
+class Math7657{
     var i: int;
     def factorial(f: int): int{
         var j: int;

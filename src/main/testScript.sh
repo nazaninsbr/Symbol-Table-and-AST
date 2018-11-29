@@ -39,7 +39,7 @@ javac *.java
 # echo 16
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/16.sml
 echo "my test 1"
-java org.antlr.v4.gui.TestRig Smoola program < ./Tests/my-test1.sml
+java org.antlr.v4.gui.TestRig Smoola program -gui < ./Tests/my-test1.sml
 # echo 17
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/17.sml
 # echo "smltest"
