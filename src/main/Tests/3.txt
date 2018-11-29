@@ -4,13 +4,36 @@ class Test {
 	}
 }
 
-class Book extends Library {
-	var j : int[];
-	var k : boolean; 
-	var i : Book; 
+class child  extends parent {
 
-	def x (f1: int) : int {
-		i =--i;
-		return -A && !V || (3+4-3*5);
+	def method () : int{
+
+	return 0;
+
 	}
+
+	def method () : int{
+
+	return 0;
+
+	}
+
+}
+
+class parent {
+
+	def method () : int{
+
+	return 0;
+
+	}
+
+	 
+
+	def method () : int{
+
+	return 0;
+
+	}
+
 }

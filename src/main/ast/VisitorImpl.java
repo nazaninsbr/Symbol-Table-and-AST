@@ -28,6 +28,7 @@ public class VisitorImpl implements Visitor {
 
     boolean no_error;
     boolean second_round; 
+    Program this_prog; 
     SymbolTable symTable;  
     int index; 
 
@@ -364,6 +365,7 @@ public class VisitorImpl implements Visitor {
             index = 0;
             no_error = true;
             second_round = false; 
+            this_prog = program;
             symTable = new SymbolTable(); 
             check_class_name_conditions_with_symTable(program);
             check_class_existance_condition_with_symTable(program);
@@ -436,7 +438,7 @@ public class VisitorImpl implements Visitor {
         index += 1;
     }
 
-    void check_method_existance_condition_with_symTable(ClassDeclaration classDeclaration){
+    void check_method_and_var_existance_condition_with_symTable(ClassDeclaration classDeclaration){
         ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
         for(int j=0; j<vars.size(); j++){
             add_variable_to_sym_table(vars.get(j));
@@ -451,11 +453,62 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+    SymbolTable add_every_thing_to_symbol_table_no_errors(ClassDeclaration classDeclaration, SymbolTable s){
+        ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
+        for(int j=0; j<vars.size(); j++){
+            try{
+                SymbolTableVariableItemBase var_sym_table_item = new SymbolTableVariableItemBase(vars.get(j).getIdentifier().getName(), vars.get(j).getType(), index); 
+                s.top.put(var_sym_table_item);
+            } catch(ItemAlreadyExistsException e) {
+                no_error = false;
+            }
+            index += 1;
+        }
+
+        ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
+        for(int i=0; i<methodDeclarations.size(); i++){
+            try{
+                ArrayList<Type> argTypes = create_arg_types(methodDeclarations.get(i));
+                SymbolTableMethodItem method_sym_table_item = new SymbolTableMethodItem(methodDeclarations.get(i).getName().getName(), argTypes); 
+                s.top.put(method_sym_table_item);
+            } catch(ItemAlreadyExistsException e) {
+                no_error = false;
+            }
+            index += 1;
+        }
+        return s;
+    }
+
+    void fill_the_pre_sym_table_with_parent_data(String parent_name){
+        Boolean found = false;
+        ClassDeclaration mainClass = this.this_prog.getMainClass();
+        if(mainClass.getName().getName().equals(parent_name)){
+            found=true;
+            SymbolTable s = new SymbolTable();
+            s = add_every_thing_to_symbol_table_no_errors(mainClass, s); 
+            this.symTable.top.setPreSymbolTable(s.top);
+        }
+        if(found==false){
+            List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
+            for(int i = 0; i < prog_classes.size(); ++i) {
+                if(prog_classes.get(i).getName().getName().equals(parent_name)){
+                    SymbolTable s = new SymbolTable();
+                    s = add_every_thing_to_symbol_table_no_errors(prog_classes.get(i), s); 
+                    this.symTable.top.setPreSymbolTable(s.top);
+                    break;
+                }
+            }
+        }
+    }
+
     @Override
     public void visit(ClassDeclaration classDeclaration) {
         if(second_round==false){
             symTable.push(new SymbolTable(symTable.top));
-            check_method_existance_condition_with_symTable(classDeclaration);
+            if (! classDeclaration.getParentName().getName().equals("null")) {
+                fill_the_pre_sym_table_with_parent_data(classDeclaration.getParentName().getName());
+            }
+            check_method_and_var_existance_condition_with_symTable(classDeclaration);
             symTable.pop();
         } 
         else if(second_round==true && no_error==true){

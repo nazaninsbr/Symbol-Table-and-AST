@@ -60,6 +60,10 @@ public class SymbolTable {
 		return pre;
 	}
 
+	public void setPreSymbolTable(SymbolTable p) {
+		this.pre = p;
+	}
+
 	public boolean isSymbolTableEmpty(){
 		return this.items.isEmpty();
 	}
