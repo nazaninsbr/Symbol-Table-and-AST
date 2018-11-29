@@ -1,6 +1,6 @@
 class Test {
 	def main() : int {
-		s = new int [0].length;
+		x = a.b(new int[0]);
 		return 0;
 	}
 }

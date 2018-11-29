@@ -576,7 +576,11 @@ public class VisitorImpl implements Visitor {
 
     @Override
     public void visit(ArrayCall arrayCall) {
-        if(second_round==true){
+        if (second_round==false){
+            arrayCall.getInstance().accept(this);
+            arrayCall.getIndex().accept(this);
+        }
+        else if(second_round==true){
             System.out.println(arrayCall);
             arrayCall.getInstance().accept(this);
             arrayCall.getIndex().accept(this);
@@ -585,7 +589,11 @@ public class VisitorImpl implements Visitor {
 
     @Override
     public void visit(BinaryExpression binaryExpression) {
-        if(second_round==true){
+        if(second_round==false){
+            binaryExpression.getLeft().accept(this);
+            binaryExpression.getRight().accept(this);
+        }
+        else if(second_round==true){
             System.out.println(binaryExpression);
             // System.out.println(binaryExpression.getBinaryOperator());
             binaryExpression.getLeft().accept(this);
@@ -615,7 +623,14 @@ public class VisitorImpl implements Visitor {
 
     @Override
     public void visit(MethodCall methodCall) {
-        if(second_round==true){
+        if(second_round==false){
+            methodCall.getInstance().accept(this);
+            ArrayList<Expression> methodcall_args = methodCall.getArgs();
+            for (int i = 0; i < methodcall_args.size(); i++){
+                methodcall_args.get(i).accept(this);
+            }
+        }
+        else if(second_round==true){
             System.out.println(methodCall);
             methodCall.getInstance().accept(this);
             methodCall.getMethodName().accept(this);
@@ -654,7 +669,11 @@ public class VisitorImpl implements Visitor {
 
     @Override
     public void visit(UnaryExpression unaryExpression) {
-        if(second_round==true){
+        if(second_round==false){
+            Expression exp = unaryExpression.getValue();
+            exp.accept(this);
+        }
+        else if(second_round==true){
             System.out.println(unaryExpression);
             Expression exp = unaryExpression.getValue();
             exp.accept(this);
@@ -708,7 +727,7 @@ public class VisitorImpl implements Visitor {
     public void visit(Block block) {
         if(second_round==false){
             check_for_statements(block.getBody());
-        } else {
+        } else if(second_round==true) {
             System.out.println(block);
             check_for_statements(block.getBody());
         }
