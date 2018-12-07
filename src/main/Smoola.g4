@@ -204,7 +204,7 @@ grammar Smoola;
         conditional_statement = statementCondition {$this_statement = create_conditional_statement_object($conditional_statement.conditional_expression, $conditional_statement.consequence_body, $conditional_statement.alternative_body);}|
         loop_statement = statementLoop {$this_statement = create_loop_statement_object($loop_statement.conditional_expression, $loop_statement.body);} |
         write_statement = statementWrite {$this_statement = new Write($write_statement.print_expression);} |
-        assign_statement = statementAssignment {$this_statement = new Assign($assign_statement.lvalue, $assign_statement.rvalue);}
+        assign_statement = statementAssignment {$this_statement = new Assign($assign_statement.lvalue, $assign_statement.rvalue); $this_statement.set_line_number($assign_statement.line_number);}
     ;
     statementBlock returns [ArrayList<Statement> block_statements]:
         '{'  block_body = statements {$block_statements = new ArrayList<>($block_body.all_statements);} '}'
@@ -218,8 +218,8 @@ grammar Smoola;
     statementWrite returns [Expression print_expression]:
         'writeln(' print_expr = expression {$print_expression = $print_expr.this_expression;} ')' ';'
     ;
-    statementAssignment returns [Expression lvalue, Expression rvalue]:
-        exp = expression ';' {$lvalue = $exp.this_lvalue; $rvalue = $exp.this_rvalue;}
+    statementAssignment returns [Expression lvalue, Expression rvalue, int line_number]:
+        exp = expression end_of_line = ';' {$lvalue = $exp.this_lvalue; $rvalue = $exp.this_rvalue; $line_number = $end_of_line.getLine();}
     ;
     expression returns [Expression this_expression,Expression this_lvalue,Expression this_rvalue]:
         exp = expressionAssignment{
@@ -236,13 +236,14 @@ grammar Smoola;
         }
     ;
     expressionAssignment returns [Expression this_expression_lvalue,Expression this_expression_rvalue]:
-        exp_lvalue = expressionOr '=' exp_rvalue = expressionAssignment{
+        exp_lvalue = expressionOr assign_op = '=' exp_rvalue = expressionAssignment{
             if($exp_rvalue.this_expression_lvalue == null){
                 $this_expression_rvalue = $exp_rvalue.this_expression_rvalue;
                 $this_expression_lvalue = $exp_lvalue.this_expression;
             } else{
                 BinaryOperator binary_op = BinaryOperator.assign;
                 $this_expression_rvalue = new BinaryExpression($exp_rvalue.this_expression_lvalue,$exp_rvalue.this_expression_rvalue,binary_op);
+                $this_expression_rvalue.set_line_number($assign_op.getLine());
                 $this_expression_lvalue = $exp_lvalue.this_expression;
             }
         }
@@ -452,7 +453,7 @@ grammar Smoola;
         |   'this' {$this_expression = new This();}
         |   'true' {$this_expression = create_boolean_value_object(true);}
         |   'false' {$this_expression = create_boolean_value_object(false);}
-        |   name = ID {$this_expression = create_identifier_object($name.text);}
+        |   name = ID {$this_expression = create_identifier_object($name.text); $this_expression.set_line_number($name.getLine());}
         |   name = ID '[' index = expression ']' {$this_expression = create_array_call_instance($name.text, $index.this_expression);}
         |   '(' expr = expression ')' {$this_expression = $expr.this_expression;}
     ;

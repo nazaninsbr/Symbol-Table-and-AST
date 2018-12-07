@@ -7,7 +7,6 @@ import ast.node.expression.Identifier;
 public class UserDefinedType extends Type {
     private ClassDeclaration classDeclaration;
     private Identifier name;
-    private boolean is_none_type = false;
 
     public ClassDeclaration getClassDeclaration() {
         return classDeclaration;
@@ -30,11 +29,4 @@ public class UserDefinedType extends Type {
         return classDeclaration.getName().getName();
     }
 
-    public void set_is_none_type(){
-        this.is_none_type = true;
-    }
-
-    public boolean get_is_none_type(){
-        return this.is_none_type;
-    }
 }

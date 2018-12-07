@@ -1,30 +1,18 @@
 class Test2 {
 	def main() : int {
 		i = 3;
-		arr = new int[666];
 		return 0;
 	}
 }
 
 class Test21 extends Book{
-	var x : Rectangle;
+	var x : int;
 	def main(x: int) : int {
 		var x2: Test32;
 		var x3: int; 
-		i = 3;
-		arr = new int[666];
+		x = 1 + x3;
+		x = 4 = x3;
+		x = true = x3;
 		return 0;
-	}
-}
-
-class Book {
-	var j : int[];
-	var k : boolean; 
-	def x (f1: int) : int {
-		j = 5;
-		while (i.length < 4){
-			j = j && (3*2);
-		}
-		return 3+5+(3||true);
 	}
 }

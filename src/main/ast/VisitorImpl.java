@@ -18,6 +18,7 @@ import java.util.List;
 import ast.Type.UserDefinedType.UserDefinedType; 
 import ast.Type.ArrayType.ArrayType;
 import ast.Type.PrimitiveType.*;
+import ast.Type.NoType.NoType;
 import symbolTable.*;
 
 
@@ -418,12 +419,7 @@ public class VisitorImpl implements Visitor {
         }
     }
 
-    void check_method_statement_type_conditions(MethodDeclaration methodDeclaration){
-
-    }
-    
     void check_method_return_type_conditions(MethodDeclaration methodDeclaration){
-
     }
 
     @Override
@@ -437,7 +433,7 @@ public class VisitorImpl implements Visitor {
         else if(second_round==true){
             symTable.push(new SymbolTable(symTable.top));
             check_variable_type_defined_condition_with_symTable(methodDeclaration);
-            check_method_statement_type_conditions(methodDeclaration);
+            check_for_statements(methodDeclaration.getBody());
             check_method_return_type_conditions(methodDeclaration);
         }
 
@@ -455,7 +451,6 @@ public class VisitorImpl implements Visitor {
             catch(ItemNotFoundException ex){
                 UserDefinedType x = (UserDefinedType) varDeclaration.getType(); 
                 System.out.println("Line:"+Integer.toString(varDeclaration.get_line_number())+":name "+x.getName().getName()+" is not defined");
-                x.set_is_none_type();
             }
         }
     }
@@ -480,17 +475,41 @@ public class VisitorImpl implements Visitor {
             binaryExpression.getRight().accept(this);
         }
         else if(second_round==true){
-            System.out.println(binaryExpression);
-            // System.out.println(binaryExpression.getBinaryOperator());
             binaryExpression.getLeft().accept(this);
             binaryExpression.getRight().accept(this);
+            if ( !(binaryExpression.getLeft().getType().toString().equals("NoType") || binaryExpression.getRight().getType().toString().equals("NoType"))) {
+                if( ! binaryExpression.getLeft().getType().toString().equals(binaryExpression.getRight().getType().toString()) ){
+                    System.out.println("Line:"+Integer.toString(binaryExpression.get_line_number())+":unsupported operand type for "+binaryExpression.getBinaryOperator());
+                    binaryExpression.setType(new NoType());
+                } 
+                else {
+                    binaryExpression.setType(binaryExpression.getLeft().getType());
+                }
+            } 
+            else {
+                if ( !(binaryExpression.getLeft().getType().toString().equals("NoType")) ){
+                    binaryExpression.setType(binaryExpression.getLeft().getType());
+                }
+                else {
+                    binaryExpression.setType(binaryExpression.getRight().getType());
+                }
+            }
         }
     }
 
     @Override
     public void visit(Identifier identifier) {
         if(second_round==true){
-            System.out.println(identifier);
+            try {
+                SymbolTableItem thisItem = symTable.top.get(identifier.getName());
+                SymbolTableVariableItemBase thisIdType = (SymbolTableVariableItemBase) thisItem;
+                identifier.setType(thisIdType.getType());
+            }
+            catch(ItemNotFoundException ex){
+                System.out.println("Line:"+Integer.toString(identifier.get_line_number())+":variable "+identifier.getName()+" is not declared");
+                identifier.setType(new NoType());
+            }
+           
         }
     }
 
@@ -570,14 +589,14 @@ public class VisitorImpl implements Visitor {
     @Override
     public void visit(BooleanValue value) {
         if(second_round==true){
-            System.out.println(value);
+            value.setType(new BooleanType());
         }
     }
 
     @Override
     public void visit(IntValue value) {
         if(second_round==true){
-            System.out.println(value);
+            value.setType(new IntType());
         }
     }
 
@@ -605,8 +624,15 @@ public class VisitorImpl implements Visitor {
             check_statement_expressions_for_newArray_expr(exprs);
         }
         else if(second_round==true){
-            System.out.println(assign);
-            check_statement_expressions_for_newArray_expr(exprs);
+            assign.getlValue().accept(this);
+            assign.getrValue().accept(this);
+
+            if ( !(assign.getlValue().getType().toString().equals("NoType") || assign.getrValue().getType().toString().equals("NoType"))) {
+                if( ! assign.getlValue().getType().toString().equals(assign.getrValue().getType().toString()) ){
+                    System.out.println("Line:"+Integer.toString(assign.get_line_number())+":unsupported operand type for assign");
+
+                }
+            }
         }
     }
 
@@ -634,11 +660,7 @@ public class VisitorImpl implements Visitor {
             check_for_statements(statements);
         }
         else if(second_round==true){
-            // System.out.println("XXXXXX");
-            System.out.println(conditional);
-            // System.out.println("YYYYYYY");
-            check_statement_expressions_for_newArray_expr(exprs);
-            check_for_statements(statements);
+            
         }
     }
 
@@ -654,9 +676,7 @@ public class VisitorImpl implements Visitor {
             check_for_statements(statements);
         }
         else if(second_round==true){
-            System.out.println(loop);
-            check_statement_expressions_for_newArray_expr(exprs);
-            check_for_statements(statements);
+            
         } 
     }
 
@@ -668,8 +688,7 @@ public class VisitorImpl implements Visitor {
             check_statement_expressions_for_newArray_expr(exprs);
         }
         else if(second_round==true){
-            System.out.println(write);
-            check_statement_expressions_for_newArray_expr(exprs);
+            
         }
     }
 
