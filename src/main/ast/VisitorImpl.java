@@ -24,6 +24,9 @@ import symbolTable.SymbolTableMethodItem;
 import symbolTable.ItemAlreadyExistsException;
 
 
+
+
+
 public class VisitorImpl implements Visitor {
 
     boolean no_error;
@@ -838,5 +841,10 @@ public class VisitorImpl implements Visitor {
             System.out.println(write);
             check_statement_expressions_for_newArray_expr(exprs);
         }
+    }
+
+    @Override
+    public void visit(MethodCallInMain methodCallInMain) {
+        //TODO: implement appropriate visit functionality
     }
 }
