@@ -42,9 +42,11 @@ grammar Smoola;
         return new MethodDeclaration(method_id);
     }
 
-    VarDeclaration create_varDeclaration_object(String var_name, Type var_type){
+    VarDeclaration create_varDeclaration_object(String var_name, Type var_type, int line_number){
         Identifier this_var_id = create_identifier_object(var_name);
-        return new VarDeclaration(this_var_id, var_type);
+        VarDeclaration this_var = new VarDeclaration(this_var_id, var_type);
+        this_var.set_line_number(line_number);
+        return this_var;
     }
 
     MethodDeclaration create_main_method_object(String method_name){
@@ -132,7 +134,7 @@ grammar Smoola;
 
     ClassDeclaration get_user_defined_type_class_def(String name, Program prog){
         String main_class_name = prog.getMainClass().getName().getName();
-        if (main_class_name == name){
+        if (main_class_name.equals(name)){
             return prog.getMainClass();
         }
         else{
@@ -187,7 +189,7 @@ grammar Smoola;
         'class' class_name = ID ('extends' parent_class = ID )? { ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text);new_class_dec.set_line_number($class_name.getLine()); $prog.addClass(new_class_dec);} '{' (var_dec = varDeclaration { new_class_dec.addVarDeclaration($var_dec.this_var);})* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
     ;
     varDeclaration returns [VarDeclaration this_var]:
-        'var' var_name = ID ':' this_type = type ';' {$this_var = create_varDeclaration_object($var_name.text, $this_type.this_type);$this_var.set_line_number($var_name.getLine());}
+        'var' var_name = ID ':' this_type = type ';' {$this_var = create_varDeclaration_object($var_name.text, $this_type.this_type, $var_name.getLine());$this_var.set_line_number($var_name.getLine());}
     ;
     methodDeclaration returns [MethodDeclaration this_method]:
         'def' method_name = ID { $this_method = create_methodDeclaration_object($method_name.text);$this_method.set_line_number($method_name.getLine());} ('()' | ('(' arg_name = ID ':' arg_type = type { $this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_name.getLine(), $arg_type.this_type, $this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { $this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_name_2.getLine(), $arg_type_2.this_type, $this_method);})* ')')) ':' type '{'  (this_var = varDeclaration {$this_method.addLocalVar($this_var.this_var);})* method_body = statements {$this_method = add_body_statements_to_method($this_method, $method_body.all_statements);} 'return' ret_expr = expression {$this_method.setReturnValue($ret_expr.this_expression);} ';' '}'

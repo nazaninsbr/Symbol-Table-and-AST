@@ -10,7 +10,7 @@ import ast.node.expression.Value.BooleanValue;
 import ast.node.expression.Value.IntValue;
 import ast.node.expression.Value.StringValue;
 import ast.node.statement.*;
-import ast.Type.Type;
+import ast.Type.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +18,7 @@ import java.util.List;
 import ast.Type.UserDefinedType.UserDefinedType; 
 import ast.Type.ArrayType.ArrayType;
 import ast.Type.PrimitiveType.*;
-import symbolTable.SymbolTable;
-import symbolTable.SymbolTableVariableItemBase;
-import symbolTable.SymbolTableMethodItem;
-import symbolTable.ItemAlreadyExistsException;
-
+import symbolTable.*;
 
 
 
@@ -460,6 +456,18 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+    void add_vars_and_methods_to_symbolTable_for_undefiend_checks(ClassDeclaration classDeclaration){
+        ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
+        for(int j=0; j<vars.size(); j++){
+            add_variable_to_sym_table(vars.get(j));
+        }
+
+        ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
+        for(int i=0; i<methodDeclarations.size(); i++){
+            add_method_to_symbol_table(methodDeclarations.get(i).getName().getName(), methodDeclarations.get(i));
+        }
+    }
+
     SymbolTable add_every_thing_to_symbol_table_no_errors(ClassDeclaration classDeclaration, SymbolTable s){
         ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
         for(int j=0; j<vars.size(); j++){
@@ -508,6 +516,18 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+    void continue_phase3_checks(ClassDeclaration classDeclaration){
+        ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
+        for(int j=0; j<vars.size(); j++){
+            vars.get(j).accept(this);
+        }
+
+        ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
+        for(int i=0; i<methodDeclarations.size(); i++){
+            methodDeclarations.get(i).accept(this);
+        }
+    }
+
     @Override
     public void visit(ClassDeclaration classDeclaration) {
         if(second_round==false){
@@ -520,19 +540,11 @@ public class VisitorImpl implements Visitor {
         } 
         else if(second_round==true && no_error==true){
             System.out.println("---------- inside class -------");
-            if (classDeclaration.getName().getName().equals("Test2")) {
-                UserDefinedType class_type = new UserDefinedType(); 
-                SymbolTableVariableItemBase class_sym_table_item = new SymbolTableVariableItemBase("N", class_type, index); 
-                index += 1;
-                try {
-                    symTable.put(class_sym_table_item);
-                }
-                catch(ItemAlreadyExistsException ex){
-                    // this wont happen (I hope!)
-                }
-            }
             symTable.push(new SymbolTable(symTable)); 
-            symTable.top.printSymbolTableItems();
+            add_vars_and_methods_to_symbolTable_for_undefiend_checks(classDeclaration);
+            // symTable.top.printSymbolTableItems();
+            continue_phase3_checks(classDeclaration);
+            symTable.pop();
         }
     }
 
@@ -603,36 +615,26 @@ public class VisitorImpl implements Visitor {
             symTable.pop();
         }
         else if(second_round==true){
-            System.out.println(methodDeclaration);
-            methodDeclaration.getName().accept(this);
-            ArrayList<VarDeclaration> args = methodDeclaration.getArgs();
-            for (int i = 0; i < args.size(); i++){
-                args.get(i).accept(this);
-            }
-            ArrayList<VarDeclaration> localVars = methodDeclaration.getLocalVars();
-            for(int l=0; l<localVars.size(); l++){
-                localVars.get(l).accept(this);
-            }
-            ArrayList<Statement> body = methodDeclaration.getBody();
-            for(int j=0; j<body.size(); j++){
-                body.get(j).accept(this);
-            }
-            methodDeclaration.getReturnValue().accept(this);
+            System.out.println("---------- inside method declaration -------");
+            // symTable.top.printSymbolTableItems();
         }
 
     }
 
-   // @Override
-    //public void visit(MainMethodDeclaration mainMethodDeclaration) {
-        //TODO: implement appropriate visit functionality
-    //}
-
     @Override
     public void visit(VarDeclaration varDeclaration) {
         if(second_round==true){
-            System.out.println(varDeclaration);
-            Identifier id = varDeclaration.getIdentifier();
-            id.accept(this);
+            try {
+                if (varDeclaration.getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")){
+                    UserDefinedType x = (UserDefinedType) varDeclaration.getType(); 
+                    symTable.top.get(x.getName().getName());
+                }
+            }
+            catch(ItemNotFoundException ex){
+                UserDefinedType x = (UserDefinedType) varDeclaration.getType(); 
+                System.out.println("Line:"+Integer.toString(varDeclaration.get_line_number())+":name "+x.getName().getName()+" is not defined");
+                x.set_is_none_type();
+            }
         }
     }
 
