@@ -374,8 +374,8 @@ grammar Smoola;
     ;
 
     expressionUnary returns[Expression this_expression]:
-        {UnaryOperator unary_op;}(op = '!'{unary_op = UnaryOperator.not;}| op = '-'{unary_op = UnaryOperator.minus;}) unary_exp = expressionUnary{
-            $this_expression = new UnaryExpression(unary_op,$unary_exp.this_expression);
+        {UnaryOperator unary_op;}(op = '!'{unary_op = UnaryOperator.not;}| op = '-'{unary_op = UnaryOperator.minus;} ) unary_exp = expressionUnary{
+            $this_expression = new UnaryExpression(unary_op,$unary_exp.this_expression); $this_expression.set_line_number($op.getLine());
         }
         |   exp = expressionMem 
             {

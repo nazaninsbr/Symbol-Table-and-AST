@@ -11,7 +11,7 @@ import ast.node.expression.Value.IntValue;
 import ast.node.expression.Value.StringValue;
 import ast.node.statement.*;
 import ast.Type.*;
-
+import ast.node.expression.UnaryOperator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -580,9 +580,22 @@ public class VisitorImpl implements Visitor {
             exp.accept(this);
         }
         else if(second_round==true){
-            System.out.println(unaryExpression);
             Expression exp = unaryExpression.getValue();
             exp.accept(this);
+            
+            if ( !(exp.getType().toString().equals("NoType"))) {
+                if( unaryExpression.getUnaryOperator() == UnaryOperator.not && (! exp.getType().toString().equals("bool") )){
+                    System.out.println("Line:"+Integer.toString(unaryExpression.get_line_number())+":unsupported operand type for not");
+                    unaryExpression.setType(new NoType());
+                }
+                else if( unaryExpression.getUnaryOperator() ==UnaryOperator.minus && (! exp.getType().toString().equals("int") )){
+                    System.out.println("Line:"+Integer.toString(unaryExpression.get_line_number())+":unsupported operand type for minus");
+                     unaryExpression.setType(new NoType());
+                }
+                else {
+                    unaryExpression.setType(exp.getType());
+                }
+            }
         }
     }
 
@@ -603,7 +616,7 @@ public class VisitorImpl implements Visitor {
     @Override
     public void visit(StringValue value) {
         if(second_round==true){
-            System.out.println(value);
+            value.setType(new StringType());
         }
     }
 
@@ -634,6 +647,7 @@ public class VisitorImpl implements Visitor {
                 }
             }
         }
+
     }
 
     @Override
