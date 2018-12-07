@@ -507,6 +507,56 @@ public class VisitorImpl implements Visitor {
             }
         }
     }
+/////////////
+    void ___add_every_thing_to_symbol_table_no_errors(ClassDeclaration classDeclaration){
+        ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
+        for(int j=0; j<vars.size(); j++){
+            try{
+                SymbolTableVariableItemBase var_sym_table_item = new SymbolTableVariableItemBase(vars.get(j).getIdentifier().getName(), vars.get(j).getType(), index); 
+                this.symTable.top.put(var_sym_table_item);
+            } catch(ItemAlreadyExistsException e) {
+                no_error = false;
+            }
+            index += 1;
+        }
+
+        ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
+        for(int i=0; i<methodDeclarations.size(); i++){
+            try{
+                ArrayList<Type> argTypes = create_arg_types(methodDeclarations.get(i));
+                SymbolTableMethodItem method_sym_table_item = new SymbolTableMethodItem(methodDeclarations.get(i).getName().getName(), argTypes); 
+                this.symTable.top.put(method_sym_table_item);
+            } catch(ItemAlreadyExistsException e) {
+                no_error = false;
+            }
+            index += 1;
+        }
+       // return s;
+    }
+
+    void ___fill_the_sym_table_with_parent_data(String parent_name){
+        Boolean found = false;
+        ClassDeclaration mainClass = this.this_prog.getMainClass();
+        if(mainClass.getName().getName().equals(parent_name)){
+            found=true;
+           // SymbolTable s = new SymbolTable();
+            ___add_every_thing_to_symbol_table_no_errors(mainClass); 
+           // this.symTable.top.setPreSymbolTable(s.top);
+        }
+        if(found==false){
+            List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
+            for(int i = 0; i < prog_classes.size(); ++i) {
+                if(prog_classes.get(i).getName().getName().equals(parent_name)){
+                    //SymbolTable s = new SymbolTable();
+                    ___add_every_thing_to_symbol_table_no_errors(prog_classes.get(i)); 
+                    //this.symTable.top.setPreSymbolTable(s.top);
+                    break;
+                }
+            }
+        }
+    }
+
+//////////////////////////
 
     @Override
     public void visit(ClassDeclaration classDeclaration) {
@@ -531,7 +581,15 @@ public class VisitorImpl implements Visitor {
                     // this wont happen (I hope!)
                 }
             }
+
+
+
+
+
             symTable.push(new SymbolTable(symTable)); 
+            if (! classDeclaration.getParentName().getName().equals("null")) {
+                ___fill_the_sym_table_with_parent_data(classDeclaration.getParentName().getName());
+            }
             symTable.top.printSymbolTableItems();
         }
     }
