@@ -137,233 +137,7 @@ public class VisitorImpl implements Visitor {
         for(int i = 0; i < prog_classes.size(); ++i){
             prog_classes.get(i).accept(this);
         }
-    }
-
-    void print_program_content(Program prog){
-        System.out.println(prog.toString());
-        ClassDeclaration main_class = prog.getMainClass();
-        print_mainclassdeclaration_content(main_class);
-
-        List<ClassDeclaration> classes = prog.getClasses();;
-        for (int i = 0; i < classes.size(); i++){
-            print_classdeclration_content(classes.get(i));
-        }
-    }
-    void print_mainclassdeclaration_content(ClassDeclaration main_class){
-        System.out.println(main_class.toString());
-        //BADI bashe ya na?
-        print_expression_content(main_class.getName());// ID ham bege ya faghat name??? ya kollan print?
-        //System.out.println(cls.getName().getName());
-        //?main method ro hich ja estefade nakarde ke????????????
-        ArrayList<MethodDeclaration> main_methods = main_class.getMethodDeclarations();
-        for(int j=0; j<main_methods.size(); j++){
-            print_mainmethoddeclaration_content(main_methods.get(j));
-        }    
-    }
-    void print_classdeclration_content(ClassDeclaration cls){
-        System.out.println(cls.toString());
-        //BADI bashe ya na?
-        print_expression_content(cls.getName());// ID ham bege ya faghat name??? ya kollan print?
-        //System.out.println(cls.getName().getName()); 
-         print_expression_content(cls.getParentName());// ID ham bege ya faghat name??? ya kollan print?
-        //System.out.println(cls.getParentName().getName());
-        ArrayList<VarDeclaration> vars = cls.getVarDeclarations();
-        for(int j=0; j<vars.size(); j++){
-           print_vardeclaration_content(vars.get(j));
-        }
-        ArrayList<MethodDeclaration> methods = cls.getMethodDeclarations();
-        for(int j=0; j<methods.size(); j++){
-            print_methoddeclration_content(methods.get(j));
-        }
-    }
-    void print_mainmethoddeclaration_content(MethodDeclaration main_mtd){
-        System.out.println(main_mtd.toString());
-        //BADI bashe ya na??
-        //print_expression_content(main_mtd.getName());// ID ham bege ya faghat name??? ya kollan print?
-        //System.out.println(main_mtd.getName().getName());//??
-
-        //System.out.println(main_mtd.getName().getName()); INJA ??
-        ArrayList<Statement> statements = main_mtd.getBody();
-        for(int k=0; k<statements.size(); k++){
-            print_statement_content(statements.get(k));
-        }
-        print_expression_content(main_mtd.getReturnValue());      
-    }
-    void print_methoddeclration_content(MethodDeclaration mtd){
-        System.out.println(mtd.toString());
-        //BADI bashe ya na??
-        print_expression_content(mtd.getName());// ID ham bege ya faghat name??? ya kollan print?
-        //System.out.println(mtd.getName().getName());//??
-        ArrayList<VarDeclaration> args = mtd.getArgs();
-        for (int i = 0; i < args.size(); i++){
-            print_vardeclaration_content(args.get(i));
-        }
-        ArrayList<VarDeclaration> localVars = mtd.getLocalVars();
-        for(int l=0; l<localVars.size(); l++){
-            print_vardeclaration_content(localVars.get(l));
-        }
-        //System.out.println(mtd.getName().getName()); INJA ??
-        ArrayList<Statement> statements = mtd.getBody();
-        for(int k=0; k<statements.size(); k++){
-            print_statement_content(statements.get(k));
-        }
-        print_expression_content(mtd.getReturnValue());    
-    }
-    void print_vardeclaration_content(VarDeclaration var){
-        System.out.println(var.toString());
-        print_expression_content(var.getIdentifier());// ID ham bege ya faghat name??? ya kollan print?
-        //System.out.println(var.getIdentifier().getName());
-        print_type_content(var.getType());//TYPE bege???
-        //System.out.println(localVars.get(l).getType().toString());
-    }
-    void print_expression_content(Expression expr){
-        String expr_type = expr.getClass().getSimpleName();
-        if(expr_type.equals("BooleanValue")){
-            //
-            System.out.println(((BooleanValue)expr).toString());
-        }
-        else if(expr_type.equals("IntValue")){
-            System.out.println(((IntValue)expr).toString());
-        }
-        else if(expr_type.equals("StringValue")){
-            System.out.println(((StringValue)expr).toString());
-        }
-        else if(expr_type.equals("ArrayCall")){
-            System.out.println(((ArrayCall)expr).toString());
-            //pre order???
-            print_expression_content(((ArrayCall)expr).getInstance());
-            print_expression_content(((ArrayCall)expr).getIndex());
-        }
-        else if(expr_type.equals("BinaryExpression")){
-            System.out.println(((BinaryExpression)expr).toString());
-            print_expression_content(((BinaryExpression)expr).getLeft());
-            System.out.println(((BinaryExpression)expr).getBinaryOperator());//??string //print beshe??
-            print_expression_content(((BinaryExpression)expr).getRight());
-        }
-        else if(expr_type.equals("Identifier")){
-            System.out.println(((Identifier)expr).toString());
-            //String value print kone?
-        }
-        else if(expr_type.equals("Length")){
-            System.out.println(((Length)expr).toString());
-            print_expression_content(((Length)expr).getExpression());
-        }
-        else if(expr_type.equals("MethodCall")){
-            System.out.println(((MethodCall)expr).toString());
-            //arg??
-            ArrayList<Expression> methodcall_args = ((MethodCall)expr).getArgs();
-            for (int i = 0; i < methodcall_args.size(); i++){
-                print_expression_content(methodcall_args.get(i));
-            }
-            print_expression_content(((MethodCall)expr).getInstance());
-            print_expression_content(((MethodCall)expr).getMethodName());
-        }
-        else if(expr_type.equals("NewArray")){
-            System.out.println(((NewArray)expr).toString());
-            print_expression_content(((NewArray)expr).getExpression());
-            //print_expression_content(((NewArray)expr).getIntSize()); ///???
-            System.out.println(((NewArray)expr).getIntSize());
-        }
-        else if(expr_type.equals("NewClass")){
-            System.out.println(((NewClass)expr).toString());
-            print_expression_content(((NewClass)expr).getClassName());
-        }
-        else if(expr_type.equals("NewClassAndMethodCall")){
-            System.out.println(((NewClassAndMethodCall)expr).toString());
-            print_expression_content(((NewClassAndMethodCall)expr).getnewClass());
-            print_expression_content(((NewClassAndMethodCall)expr).getmethodCall());
-        }
-        else if(expr_type.equals("This")){
-            System.out.println(((This)expr).toString());
-        }
-               
-        else if(expr_type.equals("UnaryExpression")){
-            System.out.println(((UnaryExpression)expr).toString());
-            System.out.println(((UnaryExpression)expr).getUnaryOperator());//??string //print beshe??
-            print_expression_content(((UnaryExpression)expr).getValue());
-        }
-        else{
-            //System.out.println(expr.toString());
-            return;
-        }    
-    }
-    void print_statement_content(Statement stm){
-        String stm_type = stm.getClass().getSimpleName();
-        if(stm_type.equals("Assign")){
-            System.out.println(((Assign)stm).toString());
-            print_expression_content(((Assign)stm).getlValue());
-            print_expression_content(((Assign)stm).getrValue());
-        }
-        else if(stm_type.equals("Block")){
-            System.out.println(((Block)stm).toString());
-            ArrayList<Statement> body = ((Block)stm).getBody();
-            for (int i = 0; i < body.size(); i++){
-                print_statement_content(body.get(i));
-            }
-        }
-        else if(stm_type.equals("Conditional")){
-            System.out.println(((Conditional)stm).toString());
-            print_expression_content(((Conditional)stm).getExpression());
-            print_statement_content(((Conditional)stm).getConsequenceBody());
-            print_statement_content(((Conditional)stm).getAlternativeBody());
-        }
-        else if(stm_type.equals("While")){
-            System.out.println(((While)stm).toString());
-            print_expression_content(((While)stm).getCondition());
-            print_statement_content(((While)stm).getBody());
-        }
-        else if(stm_type.equals("Write")){
-            System.out.println(((Write)stm).toString());
-            print_expression_content(((Write)stm).getArg());
-        }
-        else{
-            System.out.println(stm.toString());
-            return;
-        }    
-    }
-    void print_type_content(Type type_v){
-        System.out.println(type_v.toString());
-        if (type_v.toString() == "int[]"){
-            System.out.println(((ArrayType)type_v).getSize());//LAZAEME??
-            //print_expression_content(type_v.getSize()); ///????
-        }
-    }
-
-    void print_program_content_1(Program prog){
-        List<ClassDeclaration> classes = prog.getClasses(); 
-        for(int i=0; i<classes.size(); i++){
-            System.out.println(classes.get(i)); 
-            ArrayList<VarDeclaration> vars = classes.get(i).getVarDeclarations();
-            for(int j=0; j<vars.size(); j++){
-                System.out.println(vars.get(j));
-            }
-            ArrayList<MethodDeclaration> methods = classes.get(i).getMethodDeclarations();
-            for(int j=0; j<methods.size(); j++){
-                ArrayList<VarDeclaration> localVars = methods.get(j).getLocalVars();
-                for(int l=0; l<localVars.size(); l++){
-                    System.out.println(localVars.get(l));
-                }
-                System.out.println(methods.get(j).getName().getName());
-                ArrayList<Statement> statements = methods.get(j).getBody();
-                for(int k=0; k<statements.size(); k++){
-                    System.out.println(statements.get(k).toString());
-                    if(statements.get(k).toString() == "Assign"){
-                        System.out.println(((Assign)statements.get(k)));
-                    }
-                    else if(statements.get(k).toString() == "Conditional"){
-                        System.out.println(((Conditional)statements.get(k)));
-                    }
-                    else if(statements.get(k).toString() == "While"){
-                        System.out.println(((While)statements.get(k)));
-                    }
-                    else if(statements.get(k).toString() == "Write"){
-                        System.out.println(((Write)statements.get(k)));
-                    }
-                }
-            }
-        }
-    }
-    
+    }    
 
     @Override
     public void visit(Program program) {
@@ -516,6 +290,50 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+    void ___add_every_thing_to_symbol_table_no_errors(ClassDeclaration classDeclaration){
+        ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
+        for(int j=0; j<vars.size(); j++){
+            try{
+                SymbolTableVariableItemBase var_sym_table_item = new SymbolTableVariableItemBase(vars.get(j).getIdentifier().getName(), vars.get(j).getType(), index); 
+                this.symTable.top.put(var_sym_table_item);
+            } catch(ItemAlreadyExistsException e) {
+                no_error = false;
+            }
+            index += 1;
+        }
+
+        ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
+        for(int i=0; i<methodDeclarations.size(); i++){
+            try{
+                ArrayList<Type> argTypes = create_arg_types(methodDeclarations.get(i));
+                SymbolTableMethodItem method_sym_table_item = new SymbolTableMethodItem(methodDeclarations.get(i).getName().getName(), argTypes); 
+                this.symTable.top.put(method_sym_table_item);
+            } catch(ItemAlreadyExistsException e) {
+                no_error = false;
+            }
+            index += 1;
+        }
+    }
+
+    void ___fill_the_sym_table_with_parent_data(String parent_name){
+        Boolean found = false;
+        ClassDeclaration mainClass = this.this_prog.getMainClass();
+        if(mainClass.getName().getName().equals(parent_name)){
+            found=true;
+            ___add_every_thing_to_symbol_table_no_errors(mainClass); 
+        }
+        if(found==false){
+            List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
+            for(int i = 0; i < prog_classes.size(); ++i) {
+                if(prog_classes.get(i).getName().getName().equals(parent_name)){
+                    ___add_every_thing_to_symbol_table_no_errors(prog_classes.get(i)); 
+                    break;
+                }
+            }
+        }
+    }
+
+
     void continue_phase3_checks(ClassDeclaration classDeclaration){
         ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
         for(int j=0; j<vars.size(); j++){
@@ -542,6 +360,9 @@ public class VisitorImpl implements Visitor {
             System.out.println("---------- inside class -------");
             symTable.push(new SymbolTable(symTable)); 
             add_vars_and_methods_to_symbolTable_for_undefiend_checks(classDeclaration);
+            if (! classDeclaration.getParentName().getName().equals("null")) {
+                ___fill_the_sym_table_with_parent_data(classDeclaration.getParentName().getName());
+            }
             // symTable.top.printSymbolTableItems();
             continue_phase3_checks(classDeclaration);
             symTable.pop();
@@ -583,26 +404,6 @@ public class VisitorImpl implements Visitor {
     void check_for_statements(ArrayList<Statement> body){
         for(int i=0; i<body.size(); i++){
             body.get(i).accept(this);
-            // if(body.get(i).toString() == "Assign"){
-            //     Assign x = (Assign)body.get(i).accept(this);
-            //     x.accept(this);
-            // }
-            // else if(body.get(i).toString() == "Conditional"){
-            //     Conditional x = (Conditional)body.get(i);
-            //     x.accept(this);
-            // }
-            // else if(body.get(i).toString() == "While"){
-            //     While x = (While)body.get(i);
-            //     x.accept(this);
-            // }
-            // else if(body.get(i).toString() == "Write"){
-            //     Write x = (Write)body.get(i);
-            //     x.accept(this);
-            // }
-            // else if(body.get(i).toString() == "Block"){
-            //     Block x = (Block)body.get(i); 
-            //     x.accept(this);
-            // }
         }
     }
 
