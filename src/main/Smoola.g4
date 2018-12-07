@@ -206,7 +206,7 @@ grammar Smoola;
         block_body = statementBlock {$this_statement = create_block_statement_object($block_body.block_statements);} |
         conditional_statement = statementCondition {$this_statement = create_conditional_statement_object($conditional_statement.conditional_expression, $conditional_statement.consequence_body, $conditional_statement.alternative_body);}|
         loop_statement = statementLoop {$this_statement = create_loop_statement_object($loop_statement.conditional_expression, $loop_statement.body);} |
-        write_statement = statementWrite {$this_statement = new Write($write_statement.print_expression);} |
+        write_statement = statementWrite {$this_statement = new Write($write_statement.print_expression); $this_statement.set_line_number($write_statement.line_number);} |
         assign_statement = statementAssignment {$this_statement = new Assign($assign_statement.lvalue, $assign_statement.rvalue); $this_statement.set_line_number($assign_statement.line_number);}
     ;
     statementBlock returns [ArrayList<Statement> block_statements]:
@@ -218,8 +218,8 @@ grammar Smoola;
     statementLoop returns [Expression conditional_expression, Statement body]:
         'while' '(' cond_expre = expression {$conditional_expression = $cond_expre.this_expression;} ')' loop_body = statement {$body = $loop_body.this_statement;}
     ;
-    statementWrite returns [Expression print_expression]:
-        'writeln(' print_expr = expression {$print_expression = $print_expr.this_expression;} ')' ';'
+    statementWrite returns [Expression print_expression, int line_number]:
+        l_num = 'writeln(' print_expr = expression {$print_expression = $print_expr.this_expression; $line_number = $l_num.getLine();} ')' ';'
     ;
     statementAssignment returns [Expression lvalue, Expression rvalue, int line_number]:
         exp = expression end_of_line = ';' {$lvalue = $exp.this_lvalue; $rvalue = $exp.this_rvalue; $line_number = $end_of_line.getLine();}

@@ -435,6 +435,7 @@ public class VisitorImpl implements Visitor {
             check_variable_type_defined_condition_with_symTable(methodDeclaration);
             check_for_statements(methodDeclaration.getBody());
             check_method_return_type_conditions(methodDeclaration);
+            symTable.pop();
         }
 
     }
@@ -710,7 +711,10 @@ public class VisitorImpl implements Visitor {
             check_statement_expressions_for_newArray_expr(exprs);
         }
         else if(second_round==true){
-            
+            write.getArg().accept(this);
+            if (!(write.getArg().getType().equals("string") || write.getArg().getType().equals("NoType") || write.getArg().getType().equals("int") || write.getArg().getType().equals("int[]"))){
+                System.out.println("Line:"+Integer.toString(write.get_line_number())+":unsupported type for writeln");
+            }
         }
     }
 
