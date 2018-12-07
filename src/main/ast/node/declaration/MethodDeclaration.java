@@ -4,6 +4,7 @@ import ast.Visitor;
 import ast.node.expression.Expression;
 import ast.node.expression.Identifier;
 import ast.node.statement.Statement;
+import ast.Type.*;
 
 import java.util.ArrayList;
 
@@ -13,6 +14,7 @@ public class MethodDeclaration extends Declaration {
     private ArrayList<VarDeclaration> args = new ArrayList<>();
     private ArrayList<VarDeclaration> localVars = new ArrayList<>();
     private ArrayList<Statement> body = new ArrayList<>();
+    private Type return_type; 
 
     public MethodDeclaration(Identifier name) {
         this.name = name;
@@ -56,6 +58,14 @@ public class MethodDeclaration extends Declaration {
 
     public void addLocalVar(VarDeclaration localVar) {
         this.localVars.add(localVar);
+    }
+
+    public void setReturnType(Type ret_type){
+        this.return_type = ret_type;
+    }
+
+    public Type getReturnType(){
+        return this.return_type;
     }
 
     @Override
