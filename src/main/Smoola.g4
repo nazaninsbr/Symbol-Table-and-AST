@@ -458,7 +458,7 @@ grammar Smoola;
         number = CONST_NUM {$this_expression = create_int_value_object(Integer.parseInt($number.text));}
         |   str = CONST_STR {$this_expression = create_string_value_object($str.text);}
         |   'new ' this_int = 'int' '[' size_expression = CONST_NUM ']' {NewArray this_array = new NewArray(); this_array.setIntSize(Integer.parseInt($size_expression.text)); this_array.setExpression(create_int_value_object(Integer.parseInt($size_expression.text))); this_array.set_line_number($this_int.getLine()); $this_expression = this_array;}
-        |   'new ' class_name = ID '()' {$this_expression = create_class_instantiation_object($class_name.text);}
+        |   'new ' class_name = ID '()' {$this_expression = create_class_instantiation_object($class_name.text); $this_expression.set_line_number($class_name.getLine());}
         |   'this' {$this_expression = new This();}
         |   'true' {$this_expression = create_boolean_value_object(true);}
         |   'false' {$this_expression = create_boolean_value_object(false);}
