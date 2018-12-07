@@ -1,7 +1,7 @@
 class Test2 {
 	def main() : int {
 		writeln(true);
-		return 0;
+		return true;
 	}
 }
 
@@ -11,6 +11,7 @@ class Test21 extends Book{
 		var x3: int; 
 		x3 = true.length;
 		x3 = x.length;
-		return 0;
+		x = -x3 + !true;
+		return "sj";
 	}
 }

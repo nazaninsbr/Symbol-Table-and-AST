@@ -186,7 +186,7 @@ grammar Smoola;
     ;
     mainClass[Program prog]:
         // name should be checked later
-        'class' class_name = ID {ClassDeclaration main_class_dec = create_class_object($class_name.text, "null"); ((Node)((Declaration)main_class_dec)).set_line_number($class_name.getLine()); $prog.setMainClass(main_class_dec);} '{' 'def' method_name = ID {MethodDeclaration main_method = create_main_method_object($method_name.text); main_class_dec.addMethodDeclaration(main_method); } '()' ':' 'int' '{'  method_body = statements {main_method = add_body_statements_to_method(main_method, $method_body.all_statements);} 'return' ret_expr = expression {main_method.setReturnValue($ret_expr.this_expression);} ';' '}' '}'
+        'class' class_name = ID {ClassDeclaration main_class_dec = create_class_object($class_name.text, "null"); ((Node)((Declaration)main_class_dec)).set_line_number($class_name.getLine()); $prog.setMainClass(main_class_dec);} '{' 'def' method_name = ID {MethodDeclaration main_method = create_main_method_object($method_name.text); main_class_dec.addMethodDeclaration(main_method); main_method.setReturnType(new IntType());} '()' ':' 'int' '{'  method_body = statements {main_method = add_body_statements_to_method(main_method, $method_body.all_statements);} l_num = 'return' ret_expr = expression {$ret_expr.this_expression.set_line_number($l_num.getLine()); main_method.setReturnValue($ret_expr.this_expression);} ';' '}' '}'
     ;
     classDeclaration[Program prog]:
         'class' class_name = ID ('extends' parent_class = ID )? { ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text);new_class_dec.set_line_number($class_name.getLine()); $prog.addClass(new_class_dec);} '{' (var_dec = varDeclaration { new_class_dec.addVarDeclaration($var_dec.this_var);})* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
@@ -195,7 +195,7 @@ grammar Smoola;
         'var' var_name = ID ':' this_type = type ';' {$this_var = create_varDeclaration_object($var_name.text, $this_type.this_type, $var_name.getLine());$this_var.set_line_number($var_name.getLine());}
     ;
     methodDeclaration returns [MethodDeclaration this_method]:
-        'def' method_name = ID { $this_method = create_methodDeclaration_object($method_name.text);$this_method.set_line_number($method_name.getLine());} ('()' | ('(' arg_name = ID ':' arg_type = type { $this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_name.getLine(), $arg_type.this_type, $this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { $this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_name_2.getLine(), $arg_type_2.this_type, $this_method);})* ')')) ':' ret_type = type { $this_method.setReturnType($ret_type.this_type); } '{'  (this_var = varDeclaration {$this_method.addLocalVar($this_var.this_var);})* method_body = statements {$this_method = add_body_statements_to_method($this_method, $method_body.all_statements);} 'return' ret_expr = expression {$this_method.setReturnValue($ret_expr.this_expression);} ';' '}'
+        'def' method_name = ID { $this_method = create_methodDeclaration_object($method_name.text);$this_method.set_line_number($method_name.getLine());} ('()' | ('(' arg_name = ID ':' arg_type = type { $this_method = add_arg_to_MethodDeclaration($arg_name.text, $arg_name.getLine(), $arg_type.this_type, $this_method);} (',' arg_name_2 = ID ':' arg_type_2 = type { $this_method = add_arg_to_MethodDeclaration($arg_name_2.text, $arg_name_2.getLine(), $arg_type_2.this_type, $this_method);})* ')')) ':' ret_type = type { $this_method.setReturnType($ret_type.this_type); } '{'  (this_var = varDeclaration {$this_method.addLocalVar($this_var.this_var);})* method_body = statements {$this_method = add_body_statements_to_method($this_method, $method_body.all_statements);} l_num = 'return' ret_expr = expression {$ret_expr.this_expression.set_line_number($l_num.getLine()); $this_method.setReturnValue($ret_expr.this_expression);} ';' '}'
     ;
 
 
@@ -235,11 +235,14 @@ grammar Smoola;
                 $this_rvalue = $exp.this_expression_rvalue;
                 BinaryOperator binary_op = BinaryOperator.assign;
                 $this_expression = new BinaryExpression ($exp.this_expression_lvalue,$exp.this_expression_rvalue,binary_op);
+                $this_expression.set_line_number($exp.line_number);
             }
         }
     ;
-    expressionAssignment returns [Expression this_expression_lvalue,Expression this_expression_rvalue]:
-        exp_lvalue = expressionOr assign_op = '=' exp_rvalue = expressionAssignment{
+    expressionAssignment returns [Expression this_expression_lvalue,Expression this_expression_rvalue, int line_number]:
+        exp_lvalue = expressionOr assign_op = '=' exp_rvalue = expressionAssignment
+        {$line_number = $assign_op.getLine();}
+        {
             if($exp_rvalue.this_expression_lvalue == null){
                 $this_expression_rvalue = $exp_rvalue.this_expression_rvalue;
                 $this_expression_lvalue = $exp_lvalue.this_expression;
@@ -350,8 +353,11 @@ grammar Smoola;
         (op = '+' {$this_binaryOperator = BinaryOperator.add;} | op = '-' {$this_binaryOperator = BinaryOperator.sub;} ) left = expressionMult half_exp = expressionAddTemp
         {
             if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
-            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
-            //$this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+            else {
+                $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+                $this_half_expression.set_line_number($op.getLine());
+            }
+
         }
         |
     ;

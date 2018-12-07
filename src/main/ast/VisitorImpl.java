@@ -420,6 +420,10 @@ public class VisitorImpl implements Visitor {
     }
 
     void check_method_return_type_conditions(MethodDeclaration methodDeclaration){
+        methodDeclaration.getReturnValue().accept(this);
+        if (! methodDeclaration.getReturnType().toString().equals(methodDeclaration.getReturnValue().getType().toString())){
+            System.out.println("Line:"+Integer.toString(methodDeclaration.getReturnValue().get_line_number())+":"+methodDeclaration.getName().getName()+" return type must be "+methodDeclaration.getReturnType().toString());
+        }
     }
 
     @Override
