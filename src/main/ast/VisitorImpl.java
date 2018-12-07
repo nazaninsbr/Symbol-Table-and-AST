@@ -363,7 +363,7 @@ public class VisitorImpl implements Visitor {
             if (! classDeclaration.getParentName().getName().equals("null")) {
                 ___fill_the_sym_table_with_parent_data(classDeclaration.getParentName().getName());
             }
-            // symTable.top.printSymbolTableItems();
+            symTable.top.printSymbolTableItems();
             continue_phase3_checks(classDeclaration);
             symTable.pop();
         }

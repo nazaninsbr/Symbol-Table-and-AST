@@ -6,7 +6,7 @@ class Test2 {
 	}
 }
 
-class Test21 {
+class Test21 extends Book{
 	var x : Rectangle;
 	def main(x: int) : int {
 		var x2: Test2;
@@ -14,5 +14,17 @@ class Test21 {
 		i = 3;
 		arr = new int[666];
 		return 0;
+	}
+}
+
+class Book {
+	var j : int[];
+	var k : boolean; 
+	def x (f1: int) : int {
+		j = 5;
+		while (i.length < 4){
+			j = j && (3*2);
+		}
+		return 3+5+(3||true);
 	}
 }
