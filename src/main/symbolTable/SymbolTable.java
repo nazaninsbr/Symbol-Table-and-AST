@@ -69,6 +69,12 @@ public class SymbolTable {
 	}
 
 	public void printSymbolTableItems(){
+		System.out.println("=========== Starting print =============");
+		if (this.pre!=null){
+			System.out.println("*********** the pre symbol table ************");
+			this.pre.printSymbolTableItems();
+		}
+		System.out.println("*********** this symbol table ************");
 		for (String name: this.items.keySet()){
             String key =name;
             String value = this.items.get(name).getKey();  

@@ -84,7 +84,14 @@ public class VisitorImpl implements Visitor {
         index += 1;
     }
 
+    void add_object_class_to_symtable(){
+        Identifier class_name = new Identifier("Object");
+        Identifier parent_name = new Identifier("null");
+        add_class_to_symbol_table("Object", new ClassDeclaration(class_name, parent_name));
+    }
+
     void check_class_name_conditions_with_symTable(Program program){
+        add_object_class_to_symtable();
         List<ClassDeclaration> prog_classes = program.getClasses();
         String main_class_name = program.getMainClass().getName().getName();
         add_class_to_symbol_table(main_class_name, program.getMainClass());
@@ -372,7 +379,6 @@ public class VisitorImpl implements Visitor {
         }
         if (no_error==true){
             second_round = true; 
-            System.out.println(program);
             program.getMainClass().accept(this);
             List<ClassDeclaration> classes = program.getClasses(); 
             for(int i=0; i<classes.size(); i++){
@@ -443,12 +449,10 @@ public class VisitorImpl implements Visitor {
         for(int j=0; j<vars.size(); j++){
             add_variable_to_sym_table(vars.get(j));
         }
-        // symTable.top.printSymbolTableItems();
 
         ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
         for(int i=0; i<methodDeclarations.size(); i++){
             add_method_to_symbol_table(methodDeclarations.get(i).getName().getName(), methodDeclarations.get(i));
-            // symTable.top.printSymbolTableItems();
             methodDeclarations.get(i).accept(this);
         }
     }
@@ -504,7 +508,7 @@ public class VisitorImpl implements Visitor {
     @Override
     public void visit(ClassDeclaration classDeclaration) {
         if(second_round==false){
-            symTable.push(new SymbolTable(symTable.top));
+            symTable.push(new SymbolTable(symTable.top));            
             if (! classDeclaration.getParentName().getName().equals("null")) {
                 fill_the_pre_sym_table_with_parent_data(classDeclaration.getParentName().getName());
             }
@@ -512,18 +516,20 @@ public class VisitorImpl implements Visitor {
             symTable.pop();
         } 
         else if(second_round==true && no_error==true){
-            System.out.println(classDeclaration);
-            classDeclaration.getName().accept(this);
-            if(! classDeclaration.getParentName().getName().equals("null"))
-                classDeclaration.getParentName().accept(this);
-            ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations();
-            for(int j=0; j<vars.size(); j++){
-                vars.get(j).accept(this);
+            System.out.println("---------- inside class -------");
+            if (classDeclaration.getName().getName().equals("Test2")) {
+                UserDefinedType class_type = new UserDefinedType(); 
+                SymbolTableVariableItemBase class_sym_table_item = new SymbolTableVariableItemBase("N", class_type, index); 
+                index += 1;
+                try {
+                    symTable.put(class_sym_table_item);
+                }
+                catch(ItemAlreadyExistsException ex){
+                    // this wont happen (I hope!)
+                }
             }
-            ArrayList<MethodDeclaration> methods = classDeclaration.getMethodDeclarations();
-            for(int j=0; j<methods.size(); j++){
-                methods.get(j).accept(this);
-            }
+            symTable.push(new SymbolTable(symTable)); 
+            symTable.top.printSymbolTableItems();
         }
     }
 

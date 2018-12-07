@@ -6,12 +6,12 @@ java -jar /usr/local/lib/antlr-4.7.1-complete.jar Smoola.g4
 javac *.java
 echo 0
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/0.txt
-echo 1
-java org.antlr.v4.gui.TestRig Smoola program < ./Tests/1.txt
+# echo 1
+# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/1.txt
 # echo 2
 # java org.antlr.v4.gui.TestRig Smoola program -gui < ./Tests/2.txt 
-echo 3
-java org.antlr.v4.gui.TestRig Smoola program < ./Tests/3.txt
+# echo 3
+# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/3.txt
 # echo 4
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/4.txt
 # echo 5

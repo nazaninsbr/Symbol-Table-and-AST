@@ -6,9 +6,11 @@ class Test2 {
 	}
 }
 
-class Test2 {
+class Test21 {
+	var x : Rectangle;
 	def main(x: int) : int {
-		var x: int; 
+		var x2: Test2;
+		var x3: int; 
 		i = 3;
 		arr = new int[666];
 		return 0;
