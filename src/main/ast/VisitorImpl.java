@@ -334,7 +334,7 @@ public class VisitorImpl implements Visitor {
     }
 
 
-    void continue_phase3_checks(ClassDeclaration classDeclaration){
+    void continue_phase3_checks_for_class(ClassDeclaration classDeclaration){
         ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
         for(int j=0; j<vars.size(); j++){
             vars.get(j).accept(this);
@@ -357,14 +357,12 @@ public class VisitorImpl implements Visitor {
             symTable.pop();
         } 
         else if(second_round==true && no_error==true){
-            System.out.println("---------- inside class -------");
             symTable.push(new SymbolTable(symTable)); 
             add_vars_and_methods_to_symbolTable_for_undefiend_checks(classDeclaration);
             if (! classDeclaration.getParentName().getName().equals("null")) {
                 ___fill_the_sym_table_with_parent_data(classDeclaration.getParentName().getName());
             }
-            symTable.top.printSymbolTableItems();
-            continue_phase3_checks(classDeclaration);
+            continue_phase3_checks_for_class(classDeclaration);
             symTable.pop();
         }
     }
@@ -401,10 +399,31 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+    void check_variable_type_defined_condition_with_symTable(MethodDeclaration methodDeclaration){
+        ArrayList<VarDeclaration> args = methodDeclaration.getArgs();
+        ArrayList<VarDeclaration> localVars = methodDeclaration.getLocalVars();
+        for(int i=0; i<args.size(); i++){
+            add_variable_to_sym_table(args.get(i)); 
+            args.get(i).accept(this);
+        }
+        for(int i=0; i<localVars.size(); i++){
+            add_variable_to_sym_table(localVars.get(i)); 
+            localVars.get(i).accept(this);
+        }
+    }
+
     void check_for_statements(ArrayList<Statement> body){
         for(int i=0; i<body.size(); i++){
             body.get(i).accept(this);
         }
+    }
+
+    void check_method_statement_type_conditions(MethodDeclaration methodDeclaration){
+
+    }
+    
+    void check_method_return_type_conditions(MethodDeclaration methodDeclaration){
+
     }
 
     @Override
@@ -416,8 +435,10 @@ public class VisitorImpl implements Visitor {
             symTable.pop();
         }
         else if(second_round==true){
-            System.out.println("---------- inside method declaration -------");
-            // symTable.top.printSymbolTableItems();
+            symTable.push(new SymbolTable(symTable.top));
+            check_variable_type_defined_condition_with_symTable(methodDeclaration);
+            check_method_statement_type_conditions(methodDeclaration);
+            check_method_return_type_conditions(methodDeclaration);
         }
 
     }

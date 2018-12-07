@@ -9,7 +9,7 @@ class Test2 {
 class Test21 extends Book{
 	var x : Rectangle;
 	def main(x: int) : int {
-		var x2: Test2;
+		var x2: Test32;
 		var x3: int; 
 		i = 3;
 		arr = new int[666];
