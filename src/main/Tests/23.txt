@@ -1,6 +1,5 @@
 class Test2 {
 	def main() : int {
-		i = 3;
 		return 0;
 	}
 }
@@ -8,11 +7,9 @@ class Test2 {
 class Test21 extends Book{
 	var x : int[];
 	def main(x6: int) : int {
-		var x2: Test32;
 		var x3: int; 
-		x3 = x[true];
-		x = 4 = x3;
-		x = true = x3;
+		x3 = true.length;
+		x3 = x.length;
 		return 0;
 	}
 }

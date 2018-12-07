@@ -96,9 +96,12 @@ grammar Smoola;
         return this_class;
     }
 
-    ArrayCall create_array_call_instance(String name, Expression index){
+    ArrayCall create_array_call_instance(String name, Expression index, int line_number){
         Identifier array_name_id = create_identifier_object(name); 
+        array_name_id.set_line_number(line_number);
+        index.set_line_number(line_number);
         ArrayCall this_array = new ArrayCall(array_name_id, index);
+        this_array.set_line_number(line_number);
         return this_array; 
     }
 
@@ -396,7 +399,7 @@ grammar Smoola;
     ;
 
     expressionMemTemp returns [Expression this_expression]:
-        '[' exp = expression ']' {$this_expression = $exp.this_expression;}
+        l_num = '[' exp = expression ']' {$this_expression = $exp.this_expression; $this_expression.set_line_number($l_num.getLine());}
         |
     ;
     expressionMethods returns [Expression this_expression]:
@@ -435,7 +438,7 @@ grammar Smoola;
                     else
                         $this_expression=$exp.this_expression;
                 } 
-                | 'length' { Length length_expression = new Length($instance);} exp=expressionMethodsTemp[length_expression] 
+                | l_num = 'length' { Length length_expression = new Length($instance); length_expression.set_line_number($l_num.getLine());} exp=expressionMethodsTemp[length_expression] 
                 {
                     if($exp.this_expression == null) 
                         $this_expression = length_expression;
@@ -454,7 +457,7 @@ grammar Smoola;
         |   'true' {$this_expression = create_boolean_value_object(true);}
         |   'false' {$this_expression = create_boolean_value_object(false);}
         |   name = ID {$this_expression = create_identifier_object($name.text); $this_expression.set_line_number($name.getLine());}
-        |   name = ID '[' index = expression ']' {$this_expression = create_array_call_instance($name.text, $index.this_expression);}
+        |   name = ID '[' index = expression ']' {$this_expression = create_array_call_instance($name.text, $index.this_expression, $name.getLine());}
         |   '(' expr = expression ')' {$this_expression = $expr.this_expression;}
     ;
     type returns [Type this_type]:

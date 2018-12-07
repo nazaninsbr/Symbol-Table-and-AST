@@ -462,9 +462,24 @@ public class VisitorImpl implements Visitor {
             arrayCall.getIndex().accept(this);
         }
         else if(second_round==true){
-            System.out.println(arrayCall);
             arrayCall.getInstance().accept(this);
             arrayCall.getIndex().accept(this);
+            if ( arrayCall.getIndex().getType().toString().equals("int") || arrayCall.getIndex().getType().toString().equals("NoType")){
+                if( (!arrayCall.getInstance().getType().toString().equals("int[]")) && (!arrayCall.getInstance().getType().toString().equals("NoType")) ){
+                    System.out.println("Line:"+Integer.toString(arrayCall.getInstance().get_line_number())+":"+arrayCall.getInstance().getType().toString()+" object is not subscriptable");
+                    arrayCall.setType(new NoType());
+                }
+                else {
+                    arrayCall.setType(new IntType());
+                }
+            } 
+            else {
+                System.out.println("Line:"+Integer.toString(arrayCall.getIndex().get_line_number())+":list indices must be integers");
+                if( (!arrayCall.getInstance().getType().toString().equals("int[]")) && (!arrayCall.getInstance().getType().toString().equals("NoType")) ){
+                    System.out.println("Line:"+Integer.toString(arrayCall.getInstance().get_line_number())+":"+arrayCall.getInstance().getType().toString()+" object is not subscriptable");
+                }
+                arrayCall.setType(new NoType());
+            }
         }
     }
 
@@ -509,7 +524,6 @@ public class VisitorImpl implements Visitor {
                 System.out.println("Line:"+Integer.toString(identifier.get_line_number())+":variable "+identifier.getName()+" is not declared");
                 identifier.setType(new NoType());
             }
-           
         }
     }
 
@@ -520,9 +534,17 @@ public class VisitorImpl implements Visitor {
             exp.accept(this);
         }
         else if(second_round==true){
-            System.out.println(length);
-            Expression exp = length.getExpression();
-            exp.accept(this);
+            length.getExpression().accept(this);
+            if(length.getExpression().getType().toString().equals("int[]")){
+                length.setType(new IntType());
+            } 
+            else if (length.getExpression().getType().toString().equals("NoType")){
+                length.setType(new NoType());
+            } 
+            else {
+                System.out.println("Line:"+Integer.toString(length.get_line_number())+":object of type "+length.getExpression().getType().toString()+" has no length");
+                length.setType(new NoType());
+            }
         }
     }
 
