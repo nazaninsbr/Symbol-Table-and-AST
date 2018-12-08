@@ -7,9 +7,11 @@ class Test2 {
 
 class Test21 extends Book{
 	var x : int[];
+	var xx : int;
 	def main(x6: int) : int {
 		var x2: Test32;
 		var x3: int; 
+		xx = new int[10];
 		x3 = x[true];
 		x = 4 = x3;
 		x = true = x3;

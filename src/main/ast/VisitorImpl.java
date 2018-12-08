@@ -582,17 +582,32 @@ public class VisitorImpl implements Visitor {
             System.out.println("Line:"+Integer.toString(newArray.get_line_number())+":Array length should not be zero or negative");
         }
         else if(second_round==true){
-            System.out.println(newArray);
             newArray.getExpression().accept(this);
+            newArray.setType(new ArrayType());
         }
     }
 
     @Override
     public void visit(NewClass newClass) {
         if(second_round==true){
-            System.out.println(newClass);
-            System.out.println(newClass.getClassName());
+            /*
+            Identifier class_name = newClass.getClassName();
+            try {
+                SymbolTableItem thisItem = symTable.top.get(newClass.getClassName().getName());
+                SymbolTableVariableItemBase thisClassType = (SymbolTableVariableItemBase) thisItem;
+                //UserDefinedType this_class_type = new UserDefinedType()
+                //this_class_type.setClassDeclaration(new ClassDeclaration(name,parent));
+                // this_class_type.setName(new Identifier("") );
+                //newClass.setType(new UserDefinedType());
+                newClass.setType(thisClassType.getType());
+            }
+            catch(ItemNotFoundException ex){
+                System.out.println("Line:"+Integer.toString(newClass.get_line_number())+":variable "+ newClass.getClassName().getName()+" is not declared");
+                newClass.setType(new NoType());
+            }
+            */
         }
+
     }
 
     @Override
