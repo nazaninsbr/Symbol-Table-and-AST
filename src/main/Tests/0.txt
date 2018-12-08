@@ -8,10 +8,15 @@ class Test2 {
 class Test21 extends Book{
 	var x : int[];
 	var xx : int;
+	var yy : string;
+	var v :Test21;#error????
 	def main(x6: int) : int {
 		var x2: Test32;
 		var x3: int; 
 		xx = new int[10];
+		yy = new int[8];
+		v = new Test2();
+		v = new Test8();
 		x3 = x[true];
 		x = 4 = x3;
 		x = true = x3;

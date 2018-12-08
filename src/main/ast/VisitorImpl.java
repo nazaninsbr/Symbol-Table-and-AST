@@ -592,24 +592,21 @@ public class VisitorImpl implements Visitor {
     @Override
     public void visit(NewClass newClass) {
         if(second_round==true){
-            /*
+            
             Identifier class_name = newClass.getClassName();
             try {
                 SymbolTableItem thisItem = symTable.top.get(newClass.getClassName().getName());
                 SymbolTableVariableItemBase thisClassType = (SymbolTableVariableItemBase) thisItem;
-                //UserDefinedType this_class_type = new UserDefinedType()
-                //this_class_type.setClassDeclaration(new ClassDeclaration(name,parent));
-                // this_class_type.setName(new Identifier("") );
-                //newClass.setType(new UserDefinedType());
-                newClass.setType(thisClassType.getType());
+                UserDefinedType this_new_class_type = new UserDefinedType();
+                this_new_class_type.setClassDeclaration(((UserDefinedType)(thisClassType.getType())).getClassDeclaration());
+                this_new_class_type.setName(((UserDefinedType)(thisClassType.getType())).getName());
+                newClass.setType(this_new_class_type);
             }
             catch(ItemNotFoundException ex){
                 System.out.println("Line:"+Integer.toString(newClass.get_line_number())+":variable "+ newClass.getClassName().getName()+" is not declared");
                 newClass.setType(new NoType());
             }
-            */
         }
-
     }
 
     @Override
