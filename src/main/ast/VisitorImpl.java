@@ -29,6 +29,7 @@ public class VisitorImpl implements Visitor {
     boolean no_error;
     boolean second_round; 
     Program this_prog; 
+    ClassDeclaration curr_class; 
     SymbolTable symTable;  
     int index; 
 
@@ -349,6 +350,7 @@ public class VisitorImpl implements Visitor {
 
     @Override
     public void visit(ClassDeclaration classDeclaration) {
+        this.curr_class = classDeclaration;
         if(second_round==false){
             symTable.push(new SymbolTable(symTable.top));            
             if (! classDeclaration.getParentName().getName().equals("null")) {
@@ -613,7 +615,9 @@ public class VisitorImpl implements Visitor {
     @Override
     public void visit(This instance) {
         if(second_round==true){
-            System.out.println(instance);
+            UserDefinedType class_type = new UserDefinedType(); 
+            class_type.setClassDeclaration(this.curr_class);
+            instance.setType(class_type);
         }
     }
 

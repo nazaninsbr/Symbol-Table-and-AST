@@ -7,11 +7,13 @@ class Test2 {
 
 class Test21 extends Book{
 	var x : int[];
+	var p: Test21;
 	def main(x6: int) : int {
 		var x3: int; 
 		x3 = true.length;
 		x3 = x.length;
 		x = -x3 + !true;
+		p = this ;
 		return "sj";
 	}
 }
