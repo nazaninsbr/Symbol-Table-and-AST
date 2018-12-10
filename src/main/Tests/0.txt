@@ -15,7 +15,7 @@ class Test21 extends Book{
 		var x2: Test32;
 		var a :int;
 		var x3: int; 
-		if (1 == 2) then
+		if (1 = 2) then
 			z = 2;
 		else{
 			z = 3;
@@ -23,7 +23,7 @@ class Test21 extends Book{
 		writeln("");
 		writeln(new A());
 		while(2) {
-            a = a + 1;
+            a = a + true;
         }
 		xx = new int[10];
 		yy = new int[8];

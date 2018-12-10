@@ -261,6 +261,7 @@ grammar Smoola;
         left = expressionAnd half_exp = expressionOrTemp {
             if ($half_exp.this_half_expression != null){
                 $this_expression = new BinaryExpression ($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+
             }
             else{
                 $this_expression = $left.this_expression;
@@ -334,6 +335,7 @@ grammar Smoola;
            if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
             //$this_half_expression = new BinaryExpression($left.this_expression, $half_exp.this_half_expression, $half_exp.this_binaryOperator);
+
         }
         |
     ;
@@ -342,6 +344,7 @@ grammar Smoola;
         left = expressionMult half_exp = expressionAddTemp{
             if ($half_exp.this_half_expression != null){
                 $this_expression = new BinaryExpression($left.this_expression, $half_exp.this_half_expression, $half_exp.this_binaryOperator);
+                $this_expression.set_line_number($half_exp.line_number);
             }
             else{
                 $this_expression = $left.this_expression;
@@ -349,8 +352,8 @@ grammar Smoola;
         }
     ;
 
-    expressionAddTemp returns[BinaryOperator this_binaryOperator,Expression this_half_expression]:
-        (op = '+' {$this_binaryOperator = BinaryOperator.add;} | op = '-' {$this_binaryOperator = BinaryOperator.sub;} ) left = expressionMult half_exp = expressionAddTemp
+    expressionAddTemp returns[BinaryOperator this_binaryOperator,Expression this_half_expression, int line_number]:
+        (op = '+' {$this_binaryOperator = BinaryOperator.add; $line_number = $op.getLine();} | op = '-' {$this_binaryOperator = BinaryOperator.sub;$line_number = $op.getLine();} ) left = expressionMult half_exp = expressionAddTemp
         {
             if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
             else {
