@@ -366,6 +366,7 @@ grammar Smoola;
         left = expressionUnary half_exp = expressionMultTemp{
             if ($half_exp.this_half_expression != null){
                 $this_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+                $this_expression.set_line_number($half_exp.this_half_expression.get_line_number());
             }
             else{
                 $this_expression = $left.this_expression;
@@ -376,8 +377,10 @@ grammar Smoola;
     expressionMultTemp returns[BinaryOperator this_binaryOperator,Expression this_half_expression]:
         (op = '*'{$this_binaryOperator = BinaryOperator.mult;}| op = '/'{$this_binaryOperator = BinaryOperator.div;}) left = expressionUnary half_exp = expressionMultTemp{
             if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
-            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);            
-           // $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+            else {
+                $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator); 
+                $this_half_expression.set_line_number($op.getLine());
+            }           
         }
         |
     ;

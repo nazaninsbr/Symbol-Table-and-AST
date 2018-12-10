@@ -4,8 +4,8 @@ rm *.tokens
 rm *.java
 java -jar /usr/local/lib/antlr-4.7.1-complete.jar Smoola.g4
 javac *.java
-# echo 0
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/0.txt
+echo 0
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/0.txt
 # echo 1
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/1.txt
 # echo 2
@@ -64,5 +64,5 @@ java org.antlr.v4.gui.TestRig Smoola program < ./Tests/7.txt
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/our_smoola_2Lexer.sml
 # echo 21
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/21.txt
-# echo 23
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/23.txt
+echo 23
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/23.txt
