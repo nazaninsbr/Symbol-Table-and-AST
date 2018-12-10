@@ -5,10 +5,10 @@ class Test {
 	}
 }
 
-class SecondMain {
+class SecondMain extends Test{
 	var s : Rectangle;
 
-	def main(): int {
+	def main2(): int {
 		var x: int;
 		s = new Rectangle(); 
 		x = s.constructor(10, 5);
@@ -16,7 +16,7 @@ class SecondMain {
 	}
 }
 
-class Rectangle {
+class Rectangle extends SecondMain{
 	var x: int;
 	var y : int; 
 	var name : string;

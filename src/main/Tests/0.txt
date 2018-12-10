@@ -8,14 +8,29 @@ class Test2 {
 class Test21 extends Book{
 	var x : int[];
 	var xx : int;
+	var z :int;
 	var yy : string;
 	var v :Test21;#error????
 	def main(x6: int) : int {
 		var x2: Test32;
+		var a :int;
 		var x3: int; 
+		if (1 == 2) then
+			z = 2;
+		else{
+			z = 3;
+		}
+		writeln("");
+		writeln(new A());
+		while(2) {
+            a = a + 1;
+        }
 		xx = new int[10];
 		yy = new int[8];
-		v = new Test2();
+		#a = new Test2().x3();
+		#a = new Test2().i();
+		#a = new Test2().main();
+		
 		v = new Test8();
 		x3 = x[true];
 		x = 4 = x3;

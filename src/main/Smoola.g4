@@ -204,19 +204,19 @@ grammar Smoola;
     ;
     statement returns [Statement this_statement]:
         block_body = statementBlock {$this_statement = create_block_statement_object($block_body.block_statements);} |
-        conditional_statement = statementCondition {$this_statement = create_conditional_statement_object($conditional_statement.conditional_expression, $conditional_statement.consequence_body, $conditional_statement.alternative_body);}|
-        loop_statement = statementLoop {$this_statement = create_loop_statement_object($loop_statement.conditional_expression, $loop_statement.body);} |
+        conditional_statement = statementCondition {$this_statement = create_conditional_statement_object($conditional_statement.conditional_expression, $conditional_statement.consequence_body, $conditional_statement.alternative_body); $this_statement.set_line_number($conditional_statement.line_number);}|
+        loop_statement = statementLoop {$this_statement = create_loop_statement_object($loop_statement.conditional_expression, $loop_statement.body);  $this_statement.set_line_number($loop_statement.line_number);} |
         write_statement = statementWrite {$this_statement = new Write($write_statement.print_expression); $this_statement.set_line_number($write_statement.line_number);} |
         assign_statement = statementAssignment {$this_statement = new Assign($assign_statement.lvalue, $assign_statement.rvalue); $this_statement.set_line_number($assign_statement.line_number);}
     ;
     statementBlock returns [ArrayList<Statement> block_statements]:
         '{'  block_body = statements {$block_statements = new ArrayList<>($block_body.all_statements);} '}'
     ;
-    statementCondition returns [Expression conditional_expression, Statement consequence_body, Statement alternative_body]:
-        'if' '(' cond_expre = expression {$conditional_expression = $cond_expre.this_expression;} ')' 'then' cons_body = statement {$consequence_body = $cons_body.this_statement;} ('else' alt_body = statement {$alternative_body = $alt_body.this_statement;})?
+    statementCondition returns [Expression conditional_expression, Statement consequence_body, Statement alternative_body,int line_number]:
+        if_ = 'if' '(' cond_expre = expression {$line_number = $if_.getLine(); $conditional_expression = $cond_expre.this_expression;} ')' 'then' cons_body = statement {$consequence_body = $cons_body.this_statement;} ('else' alt_body = statement {$alternative_body = $alt_body.this_statement;})?
     ;
-    statementLoop returns [Expression conditional_expression, Statement body]:
-        'while' '(' cond_expre = expression {$conditional_expression = $cond_expre.this_expression;} ')' loop_body = statement {$body = $loop_body.this_statement;}
+    statementLoop returns [Expression conditional_expression, Statement body,int line_number]:
+        while_ = 'while' '(' cond_expre = expression {$line_number = $while_.getLine();$conditional_expression = $cond_expre.this_expression;} ')' loop_body = statement {$body = $loop_body.this_statement;}
     ;
     statementWrite returns [Expression print_expression, int line_number]:
         l_num = 'writeln(' print_expr = expression {$print_expression = $print_expr.this_expression; $line_number = $l_num.getLine();} ')' ';'

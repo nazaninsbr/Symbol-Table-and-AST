@@ -2,7 +2,7 @@ class Test{
 	def main(): int{
 		j = true;
 		i = "st  g";
-		writeln((new BabyTest()).testMethod(1,2));
+		#writeln((new BabyTest()).testMethod(1,2));
 		new d().testMethod("hi there;ghj1`2344][vcza88^$% ??!");
 		return 0;
 		# This is a comment!
@@ -23,7 +23,6 @@ class BabyTest{
 	test2 = true;
 	else{
 	test2 = false;
-
 	}
 	return test2;
 	
