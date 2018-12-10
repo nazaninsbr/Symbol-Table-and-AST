@@ -270,26 +270,29 @@ public class VisitorImpl implements Visitor {
         return s;
     }
 
-    void fill_the_pre_sym_table_with_parent_data(String parent_name){
+    SymbolTable fill_the_pre_sym_table_with_parent_data(String parent_name, SymbolTable s){
         Boolean found = false;
         ClassDeclaration mainClass = this.this_prog.getMainClass();
         if(mainClass.getName().getName().equals(parent_name)){
             found=true;
-            SymbolTable s = new SymbolTable();
-            s = add_every_thing_to_symbol_table_no_errors(mainClass, s); 
-            this.symTable.top.setPreSymbolTable(s.top);
+            s = add_every_thing_to_symbol_table_no_errors(mainClass, s);
+            if (! mainClass.getParentName().getName().equals("null")){
+                return fill_the_pre_sym_table_with_parent_data(mainClass.getParentName().getName(), s);
+            } 
         }
         if(found==false){
             List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
             for(int i = 0; i < prog_classes.size(); ++i) {
                 if(prog_classes.get(i).getName().getName().equals(parent_name)){
-                    SymbolTable s = new SymbolTable();
                     s = add_every_thing_to_symbol_table_no_errors(prog_classes.get(i), s); 
-                    this.symTable.top.setPreSymbolTable(s.top);
+                    if (! prog_classes.get(i).getParentName().getName().equals("null")){
+                        return fill_the_pre_sym_table_with_parent_data(prog_classes.get(i).getParentName().getName(), s);
+                    }
                     break;
                 }
             }
         }
+        return s;
     }
 
     void ___add_every_thing_to_symbol_table_no_errors(ClassDeclaration classDeclaration){
@@ -323,12 +326,18 @@ public class VisitorImpl implements Visitor {
         if(mainClass.getName().getName().equals(parent_name)){
             found=true;
             ___add_every_thing_to_symbol_table_no_errors(mainClass); 
+            if (! mainClass.getParentName().getName().equals("null")){
+                ___fill_the_sym_table_with_parent_data(mainClass.getParentName().getName());
+            }
         }
         if(found==false){
             List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
             for(int i = 0; i < prog_classes.size(); ++i) {
                 if(prog_classes.get(i).getName().getName().equals(parent_name)){
-                    ___add_every_thing_to_symbol_table_no_errors(prog_classes.get(i)); 
+                    ___add_every_thing_to_symbol_table_no_errors(prog_classes.get(i));
+                    if (! prog_classes.get(i).getParentName().getName().equals("null")){
+                        ___fill_the_sym_table_with_parent_data(prog_classes.get(i).getParentName().getName());
+                    } 
                     break;
                 }
             }
@@ -354,7 +363,9 @@ public class VisitorImpl implements Visitor {
         if(second_round==false){
             symTable.push(new SymbolTable(symTable.top));            
             if (! classDeclaration.getParentName().getName().equals("null")) {
-                fill_the_pre_sym_table_with_parent_data(classDeclaration.getParentName().getName());
+                SymbolTable s = new SymbolTable();
+                s = fill_the_pre_sym_table_with_parent_data(classDeclaration.getParentName().getName(), s);
+                this.symTable.top.setPreSymbolTable(s.top);
             }
             check_method_and_var_existance_condition_with_symTable(classDeclaration);
             symTable.pop();
