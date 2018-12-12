@@ -107,8 +107,13 @@ public class VisitorImpl implements Visitor {
             check_class_existance_condition_with_symTable(program);
         }
         if (no_error==true){
+            if(! program.getMainClass().getMethodDeclarations().get(0).getName().getName().equals("main")){
+                System.out.println("Line:"+Integer.toString(program.getMainClass().getMethodDeclarations().get(0).get_line_number())+":main method was not found");
+            }            
             second_round = true; 
             program.getMainClass().accept(this);
+
+           
             List<ClassDeclaration> classes = program.getClasses(); 
             for(int i=0; i<classes.size(); i++){
                 classes.get(i).accept(this);
@@ -802,11 +807,17 @@ public class VisitorImpl implements Visitor {
             }
         }
         else if(second_round==true){
-            methodCallInMain.getInstance().accept(this);
-            methodCallInMain.getMethodName().accept(this);
-            ArrayList<Expression> methodCallInMain_args = methodCallInMain.getArgs();
-            for (int i = 0; i < methodCallInMain_args.size(); i++){
-                methodCallInMain_args.get(i).accept(this);
+            if (this.curr_class.getName().getName().equals(this_prog.getMainClass().getName().getName()) ){
+                methodCallInMain.getInstance().accept(this);
+                methodCallInMain.getMethodName().accept(this);
+                ArrayList<Expression> methodCallInMain_args = methodCallInMain.getArgs();
+                for (int i = 0; i < methodCallInMain_args.size(); i++){
+                    methodCallInMain_args.get(i).accept(this);
+                }                
+            }
+            
+            else{
+                System.out.println("Line:"+Integer.toString(methodCallInMain.get_line_number())+":method call is illegal outside main class");
             }
         }
     }
