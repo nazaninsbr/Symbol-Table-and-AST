@@ -34,32 +34,6 @@ public class VisitorImpl implements Visitor {
     int index; 
 
 
-    void check_class_name_conditions_without_symTable(Program program){
-        ArrayList<String> errors = new ArrayList<>();
-
-        ArrayList<String> class_names = new ArrayList<>();
-        class_names.add(program.getMainClass().getName().getName());
-
-        List<ClassDeclaration> prog_classes = program.getClasses();
-
-        for(int i = 0; i < prog_classes.size(); ++i) {
-            String this_class_name = prog_classes.get(i).getName().getName(); 
-            int temp = class_names.contains(this_class_name) ? 1 : 2 ;
-            if (temp==1){
-                Identifier new_name_id = new Identifier("Temporary_ClassName_"+Integer.toString(i)+"_"+this_class_name);
-                prog_classes.get(i).setName(new_name_id); 
-                errors.add("Line:<LineNumber>:Redefinition of class "+this_class_name);
-                no_error = false;
-            } else {
-                class_names.add(this_class_name);
-            }
-        }
-
-        for(int i = 0; i < errors.size(); ++i) {
-            System.out.println(errors.get(i));
-        }
-    }
-
     void add_class_to_symbol_table(String class_name, ClassDeclaration class_dec){
         try{
             UserDefinedType class_type = new UserDefinedType(); 
@@ -107,26 +81,6 @@ public class VisitorImpl implements Visitor {
     void check_class_existance_condition_with_symTable(Program program){
         if (symTable.isSymbolTableEmpty()){
             System.out.println("Line:0:No class exists in the program");
-            no_error = false;
-        }
-    }
-
-    void check_class_existance_condition_without_symTable(Program program){
-        boolean seen_class=false;
-
-        ClassDeclaration main_class = program.getMainClass(); 
-        if(main_class!=null){
-            seen_class = true;
-        } 
-        else {
-            List<ClassDeclaration> prog_classes = program.getClasses();
-            if(prog_classes.size()>0){
-                seen_class = true;
-            }
-        }
-
-        if (seen_class==false){
-            System.out.println("Line:<LineNumber>:No class exists in the program");
             no_error = false;
         }
     }
@@ -270,23 +224,35 @@ public class VisitorImpl implements Visitor {
         return s;
     }
 
-    SymbolTable fill_the_pre_sym_table_with_parent_data(String parent_name, SymbolTable s){
+    SymbolTable fill_the_pre_sym_table_with_parent_data(String parent_name, SymbolTable s, ArrayList<String> already_seen){
         Boolean found = false;
         ClassDeclaration mainClass = this.this_prog.getMainClass();
         if(mainClass.getName().getName().equals(parent_name)){
             found=true;
             s = add_every_thing_to_symbol_table_no_errors(mainClass, s);
             if (! mainClass.getParentName().getName().equals("null")){
-                return fill_the_pre_sym_table_with_parent_data(mainClass.getParentName().getName(), s);
+                if (already_seen.contains(mainClass.getParentName().getName())) {
+                    return s;
+                }
+                else{
+                    already_seen.add(mainClass.getParentName().getName());
+                }
+                return fill_the_pre_sym_table_with_parent_data(mainClass.getParentName().getName(), s, already_seen);
             } 
         }
         if(found==false){
             List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
             for(int i = 0; i < prog_classes.size(); ++i) {
                 if(prog_classes.get(i).getName().getName().equals(parent_name)){
-                    s = add_every_thing_to_symbol_table_no_errors(prog_classes.get(i), s); 
+                    s = add_every_thing_to_symbol_table_no_errors(prog_classes.get(i), s);
                     if (! prog_classes.get(i).getParentName().getName().equals("null")){
-                        return fill_the_pre_sym_table_with_parent_data(prog_classes.get(i).getParentName().getName(), s);
+                        if (already_seen.contains(prog_classes.get(i).getParentName().getName())) {
+                            return s;
+                        }
+                        else{
+                            already_seen.add(prog_classes.get(i).getParentName().getName());
+                        }
+                        return fill_the_pre_sym_table_with_parent_data(prog_classes.get(i).getParentName().getName(), s, already_seen);
                     }
                     break;
                 }
@@ -320,25 +286,45 @@ public class VisitorImpl implements Visitor {
         }
     }
 
-    void ___fill_the_sym_table_with_parent_data(String parent_name){
+    void ___fill_the_sym_table_with_parent_data(String class_we_came_here_from, String parent_name, ArrayList<String> already_seen){
         Boolean found = false;
+        Boolean is_after = false;
         ClassDeclaration mainClass = this.this_prog.getMainClass();
         if(mainClass.getName().getName().equals(parent_name)){
             found=true;
             ___add_every_thing_to_symbol_table_no_errors(mainClass); 
-            if (! mainClass.getParentName().getName().equals("null")){
-                ___fill_the_sym_table_with_parent_data(mainClass.getParentName().getName());
+            if (already_seen.contains(mainClass.getParentName().getName())) {
+                System.out.println("Line:"+Integer.toString(mainClass.get_line_number())+":circular dependency is not allowed");
+                return;
             }
+            else{
+                already_seen.add(mainClass.getParentName().getName());
+                if (! mainClass.getParentName().getName().equals("null") && !mainClass.getParentName().getName().equals("Object")){
+                    ___fill_the_sym_table_with_parent_data(mainClass.getName().getName(), mainClass.getParentName().getName(), already_seen);
+                }
+            }
+            
         }
         if(found==false){
             List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
             for(int i = 0; i < prog_classes.size(); ++i) {
                 if(prog_classes.get(i).getName().getName().equals(parent_name)){
                     ___add_every_thing_to_symbol_table_no_errors(prog_classes.get(i));
-                    if (! prog_classes.get(i).getParentName().getName().equals("null")){
-                        ___fill_the_sym_table_with_parent_data(prog_classes.get(i).getParentName().getName());
+                    if (already_seen.contains(prog_classes.get(i).getParentName().getName())) {
+                        if(is_after==false){
+                            System.out.println("Line:"+Integer.toString(prog_classes.get(i).get_line_number())+":circular dependency is not allowed");
+                            prog_classes.get(i).setParentName(new Identifier("Object"));
+                        }
+                        return;
+                    }
+                    already_seen.add(prog_classes.get(i).getParentName().getName()); 
+                    if (! prog_classes.get(i).getParentName().getName().equals("null") && !prog_classes.get(i).getParentName().getName().equals("Object")){
+                        ___fill_the_sym_table_with_parent_data(prog_classes.get(i).getName().getName(), prog_classes.get(i).getParentName().getName(), already_seen);
                     } 
                     break;
+                }
+                if(prog_classes.get(i).getName().getName().equals(class_we_came_here_from)){
+                    is_after = true;
                 }
             }
         }
@@ -363,9 +349,13 @@ public class VisitorImpl implements Visitor {
         if(second_round==false){
             symTable.push(new SymbolTable(symTable.top));            
             if (! classDeclaration.getParentName().getName().equals("null")) {
-                SymbolTable s = new SymbolTable();
-                s = fill_the_pre_sym_table_with_parent_data(classDeclaration.getParentName().getName(), s);
-                this.symTable.top.setPreSymbolTable(s.top);
+                if(! classDeclaration.getParentName().getName().equals(classDeclaration.getName().getName())){
+                    SymbolTable s = new SymbolTable();
+                    ArrayList<String> already_seen = new ArrayList<String>();
+                    already_seen.add(classDeclaration.getParentName().getName());
+                    s = fill_the_pre_sym_table_with_parent_data(classDeclaration.getParentName().getName(), s, already_seen);
+                    this.symTable.top.setPreSymbolTable(s.top);
+                }
             }
             check_method_and_var_existance_condition_with_symTable(classDeclaration);
             symTable.pop();
@@ -374,8 +364,9 @@ public class VisitorImpl implements Visitor {
             symTable.push(new SymbolTable(symTable)); 
             add_vars_and_methods_to_symbolTable_for_undefiend_checks(classDeclaration);
             if (! classDeclaration.getParentName().getName().equals("null")) {
-                ___fill_the_sym_table_with_parent_data(classDeclaration.getParentName().getName());
-            }
+                ArrayList<String> already_seen = new ArrayList<String>();
+                ___fill_the_sym_table_with_parent_data(classDeclaration.getName().getName(), classDeclaration.getParentName().getName(), already_seen);
+            }   
             continue_phase3_checks_for_class(classDeclaration);
             symTable.pop();
         }
@@ -621,7 +612,7 @@ public class VisitorImpl implements Visitor {
                 newClass.setType(this_new_class_type);
             }
             catch(ItemNotFoundException ex){
-                System.out.println("Line:"+Integer.toString(newClass.get_line_number())+":variable "+ newClass.getClassName().getName()+" is not declared");
+                System.out.println("Line:"+Integer.toString(newClass.get_line_number())+":class "+ newClass.getClassName().getName()+" is not declared");
                 newClass.setType(new NoType());
             }
         }
@@ -706,7 +697,6 @@ public class VisitorImpl implements Visitor {
             if (!(assign.getlValue().getType().toString().equals("NoType") || assign.getrValue().getType().toString().equals("NoType"))) {
                 if( ! assign.getlValue().getType().toString().equals(assign.getrValue().getType().toString()) ){
                     System.out.println("Line:"+Integer.toString(assign.get_line_number())+":unsupported operand type for assign");
-
                 }
             }
         }

@@ -1,14 +1,32 @@
-class Test2 {
+class Test2{
 	def main() : int {
 		writeln(true);
 		return true;
 	}
 }
 
+class T3 extends Test2{
+	def main23(x6: int) : int {
+		x2 = new Test21();
+		return "sj";
+	}
+	
+}
+
+class Book extends Book{
+}
+
+class A extends B{
+}
+
+class B extends A{
+	
+}
+
 class Test21 extends Book{
 	var x : int[];
 	var p: Test21;
-	def main(x6: int) : int {
+	def main2(x6: int) : int {
 		var x3: int; 
 		x3 = true.length;
 		x3 = x.length;
