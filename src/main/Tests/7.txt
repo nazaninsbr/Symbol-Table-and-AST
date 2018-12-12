@@ -37,9 +37,16 @@ class A extends Rectangle{
 		var s4 : A;
 		var s5 : string;
 		var s6 : int;
+		var s7 : int[];
 		def main3(): int {
 		var x: int;
-
+		1 + 2 = 3;
+		5 + 4 = 6 + 7;
+		5 * s1 = 4;
+		s6 - 2 = 43;
+		s6 = 32;
+		s6 = s6 + 1;
+		s7[1] = 2;
 		s1 = s1; #ok
 		s1 = s2; 
 		s2 = s1; #ok

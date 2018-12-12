@@ -108,7 +108,7 @@ public class VisitorImpl implements Visitor {
         }
         if (no_error==true){
             if(! program.getMainClass().getMethodDeclarations().get(0).getName().getName().equals("main")){
-                System.out.println("Line:"+Integer.toString(program.getMainClass().getMethodDeclarations().get(0).get_line_number())+":main method was not found");
+                System.out.println("Line:"+Integer.toString((program.getMainClass().getMethodDeclarations().get(0)).get_line_number())+":main method was not found");
             }            
             second_round = true; 
             program.getMainClass().accept(this);
@@ -773,6 +773,14 @@ public class VisitorImpl implements Visitor {
             check_statement_expressions_for_newArray_expr(exprs);
         }
         else if(second_round==true){
+            if (!(assign.getlValue().getClass().getName().equals("ast.node.expression.Identifier") || assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall"))) {
+                System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":unexpected type. required: variable found: value");
+            }
+            else if (assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall") ){
+                if (!(((ArrayCall)assign.getlValue()).getInstance().getClass().getName().equals("ast.node.expression.Identifier"))){
+                    System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":unexpected type. required: variable found: value");
+                }
+            }
             assign.getlValue().accept(this);
             assign.getrValue().accept(this);
 

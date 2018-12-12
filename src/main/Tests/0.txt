@@ -17,6 +17,8 @@ class Test21 extends Book{
 		var a :int;
 		var x3: int; 
 		var b : boolean;
+		new Test21().main();
+
 		if (1 = 2) then
 			z = 2;
 		else{
