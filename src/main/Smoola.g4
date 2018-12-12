@@ -207,7 +207,7 @@ grammar Smoola;
         conditional_statement = statementCondition {$this_statement = create_conditional_statement_object($conditional_statement.conditional_expression, $conditional_statement.consequence_body, $conditional_statement.alternative_body); $this_statement.set_line_number($conditional_statement.line_number);}|
         loop_statement = statementLoop {$this_statement = create_loop_statement_object($loop_statement.conditional_expression, $loop_statement.body);  $this_statement.set_line_number($loop_statement.line_number);} |
         write_statement = statementWrite {$this_statement = new Write($write_statement.print_expression); $this_statement.set_line_number($write_statement.line_number);} |
-        assign_statement = statementAssignment {$this_statement = new Assign($assign_statement.lvalue, $assign_statement.rvalue); $this_statement.set_line_number($assign_statement.line_number);}
+        assign_statement = statementAssignment {$this_statement = $assign_statement.this_statement;}
     ;
     statementBlock returns [ArrayList<Statement> block_statements]:
         '{'  block_body = statements {$block_statements = new ArrayList<>($block_body.all_statements);} '}'
@@ -221,8 +221,20 @@ grammar Smoola;
     statementWrite returns [Expression print_expression, int line_number]:
         l_num = 'writeln(' print_expr = expression {$print_expression = $print_expr.this_expression; $line_number = $l_num.getLine();} ')' ';'
     ;
-    statementAssignment returns [Expression lvalue, Expression rvalue, int line_number]:
-        exp = expression end_of_line = ';' {$lvalue = $exp.this_lvalue; $rvalue = $exp.this_rvalue; $line_number = $end_of_line.getLine();}
+    statementAssignment returns [Statement this_statement]:
+        exp = expression ';' {
+            if ($exp.this_expression.getClass().getName().equals("ast.node.expression.MethodCall")){
+                MethodCallInMain methodCallInMain = new MethodCallInMain(((MethodCall)$exp.this_expression).getInstance(),(((MethodCall)$exp.this_expression).getMethodName()));
+                ArrayList<Expression> method_args = ((MethodCall)($exp.this_expression)).getArgs();
+                for (int i = 0; i < method_args.size(); i++){
+                    methodCallInMain.addArg(method_args.get(i));
+                }
+                $this_statement = methodCallInMain;
+            }
+            else {
+                {$this_statement = new Assign($exp.this_lvalue, $exp.this_rvalue); $this_statement.set_line_number($exp.this_expression.get_line_number());}
+            }
+        }
     ;
     expression returns [Expression this_expression,Expression this_lvalue,Expression this_rvalue]:
         exp = expressionAssignment{
@@ -235,13 +247,12 @@ grammar Smoola;
                 $this_rvalue = $exp.this_expression_rvalue;
                 BinaryOperator binary_op = BinaryOperator.assign;
                 $this_expression = new BinaryExpression ($exp.this_expression_lvalue,$exp.this_expression_rvalue,binary_op);
-                $this_expression.set_line_number($exp.line_number);
+                $this_expression.set_line_number($exp.this_expression_lvalue.get_line_number());
             }
         }
     ;
-    expressionAssignment returns [Expression this_expression_lvalue,Expression this_expression_rvalue, int line_number]:
+    expressionAssignment returns [Expression this_expression_lvalue,Expression this_expression_rvalue]:
         exp_lvalue = expressionOr assign_op = '=' exp_rvalue = expressionAssignment
-        {$line_number = $assign_op.getLine();}
         {
             if($exp_rvalue.this_expression_lvalue == null){
                 $this_expression_rvalue = $exp_rvalue.this_expression_rvalue;
@@ -249,7 +260,7 @@ grammar Smoola;
             } else{
                 BinaryOperator binary_op = BinaryOperator.assign;
                 $this_expression_rvalue = new BinaryExpression($exp_rvalue.this_expression_lvalue,$exp_rvalue.this_expression_rvalue,binary_op);
-                $this_expression_rvalue.set_line_number($assign_op.getLine());
+                $this_expression_rvalue.set_line_number($exp_rvalue.this_expression_lvalue.get_line_number());
                 $this_expression_lvalue = $exp_lvalue.this_expression;
             }
         }
@@ -261,6 +272,8 @@ grammar Smoola;
         left = expressionAnd half_exp = expressionOrTemp {
             if ($half_exp.this_half_expression != null){
                 $this_expression = new BinaryExpression ($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+                $this_expression.set_line_number($left.this_expression.get_line_number());
+
             }
             else{
                 $this_expression = $left.this_expression;
@@ -272,6 +285,7 @@ grammar Smoola;
         op = '||'{$this_binaryOperator = BinaryOperator.or;} left = expressionAnd half_exp = expressionOrTemp{
             if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
             else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+            $this_half_expression.set_line_number($left.this_expression.get_line_number());
         }
         |
     ;
@@ -280,6 +294,7 @@ grammar Smoola;
         left = expressionEq half_exp = expressionAndTemp{
             if ($half_exp.this_half_expression != null){
                 $this_expression = new BinaryExpression ($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+                $this_expression.set_line_number($left.this_expression.get_line_number());
             }
             else{
                 $this_expression = $left.this_expression;
@@ -290,7 +305,8 @@ grammar Smoola;
     expressionAndTemp returns [BinaryOperator this_binaryOperator,Expression this_half_expression]:
         op = '&&'{$this_binaryOperator = BinaryOperator.and;} left = expressionEq half_exp = expressionAndTemp{
             if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
-            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);            
+            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator); 
+            $this_half_expression.set_line_number($left.this_expression.get_line_number());           
             //$this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
         }
         |
@@ -300,6 +316,7 @@ grammar Smoola;
         left = expressionCmp half_exp = expressionEqTemp{
             if ($half_exp.this_half_expression != null){
                 $this_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+                $this_expression.set_line_number($left.this_expression.get_line_number());   
             }
             else{
                 $this_expression = $left.this_expression;
@@ -311,7 +328,8 @@ grammar Smoola;
         (op = '=='{$this_binaryOperator = BinaryOperator.eq;}| op = '<>' {
             $this_binaryOperator = BinaryOperator.neq;}) left = expressionCmp half_exp = expressionEqTemp{
             if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
-            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);            
+            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator); 
+            $this_half_expression.set_line_number($left.this_expression.get_line_number());              
             //$this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
         }
         |
@@ -321,6 +339,7 @@ grammar Smoola;
         left = expressionAdd half_exp = expressionCmpTemp{
             if ($half_exp.this_half_expression != null){
                 $this_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+                $this_expression.set_line_number($left.this_expression.get_line_number());   
             }
             else{
                 $this_expression = $left.this_expression;
@@ -333,7 +352,9 @@ grammar Smoola;
         {
            if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
            else $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
+           $this_half_expression.set_line_number($left.this_expression.get_line_number());  
             //$this_half_expression = new BinaryExpression($left.this_expression, $half_exp.this_half_expression, $half_exp.this_binaryOperator);
+
         }
         |
     ;
@@ -342,6 +363,8 @@ grammar Smoola;
         left = expressionMult half_exp = expressionAddTemp{
             if ($half_exp.this_half_expression != null){
                 $this_expression = new BinaryExpression($left.this_expression, $half_exp.this_half_expression, $half_exp.this_binaryOperator);
+                $this_expression.set_line_number($left.this_expression.get_line_number()); 
+               // $this_expression.set_line_number($half_exp.line_number);
             }
             else{
                 $this_expression = $left.this_expression;
@@ -349,13 +372,14 @@ grammar Smoola;
         }
     ;
 
-    expressionAddTemp returns[BinaryOperator this_binaryOperator,Expression this_half_expression]:
-        (op = '+' {$this_binaryOperator = BinaryOperator.add;} | op = '-' {$this_binaryOperator = BinaryOperator.sub;} ) left = expressionMult half_exp = expressionAddTemp
+    expressionAddTemp returns[BinaryOperator this_binaryOperator,Expression this_half_expression, int line_number]:
+        (op = '+' {$this_binaryOperator = BinaryOperator.add; $line_number = $op.getLine();} | op = '-' {$this_binaryOperator = BinaryOperator.sub;$line_number = $op.getLine();} ) left = expressionMult half_exp = expressionAddTemp
         {
             if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
             else {
                 $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
-                $this_half_expression.set_line_number($op.getLine());
+                $this_half_expression.set_line_number($left.this_expression.get_line_number()); 
+               // $this_half_expression.set_line_number($op.getLine());
             }
 
         }
@@ -366,7 +390,8 @@ grammar Smoola;
         left = expressionUnary half_exp = expressionMultTemp{
             if ($half_exp.this_half_expression != null){
                 $this_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator);
-                $this_expression.set_line_number($half_exp.this_half_expression.get_line_number());
+                $this_expression.set_line_number($left.this_expression.get_line_number()); 
+                //$this_expression.set_line_number($half_exp.this_half_expression.get_line_number());
             }
             else{
                 $this_expression = $left.this_expression;
@@ -379,7 +404,8 @@ grammar Smoola;
             if($half_exp.this_binaryOperator == null ) $this_half_expression = $left.this_expression;
             else {
                 $this_half_expression = new BinaryExpression($left.this_expression,$half_exp.this_half_expression,$half_exp.this_binaryOperator); 
-                $this_half_expression.set_line_number($op.getLine());
+                $this_half_expression.set_line_number($left.this_expression.get_line_number());
+                //$this_half_expression.set_line_number($op.getLine());
             }           
         }
         |
@@ -388,6 +414,7 @@ grammar Smoola;
     expressionUnary returns[Expression this_expression]:
         {UnaryOperator unary_op;}(op = '!'{unary_op = UnaryOperator.not;}| op = '-'{unary_op = UnaryOperator.minus;} ) unary_exp = expressionUnary{
             $this_expression = new UnaryExpression(unary_op,$unary_exp.this_expression); $this_expression.set_line_number($op.getLine());
+            $this_expression.set_line_number($unary_exp.this_expression.get_line_number());
         }
         |   exp = expressionMem 
             {
@@ -400,6 +427,7 @@ grammar Smoola;
         {
             if ($index_exp.this_expression != null){
                 $this_expression = new ArrayCall($instance_exp.this_expression, $index_exp.this_expression);
+                $this_expression.set_line_number($instance_exp.this_expression.get_line_number());
             }
             else{
                 $this_expression = $instance_exp.this_expression;
@@ -408,7 +436,7 @@ grammar Smoola;
     ;
 
     expressionMemTemp returns [Expression this_expression]:
-        l_num = '[' exp = expression ']' {$this_expression = $exp.this_expression; $this_expression.set_line_number($l_num.getLine());}
+        l_num = '[' exp = expression ']' {$this_expression = $exp.this_expression;}
         |
     ;
     expressionMethods returns [Expression this_expression]:
@@ -425,7 +453,7 @@ grammar Smoola;
 
     expressionMethodsTemp [Expression instance] returns [Expression this_expression]:
         '.' (method_name1 = ID '()' 
-                { MethodCall this_half_instance_1 = create_method_call_object($method_name1.text, $instance);}
+                { MethodCall this_half_instance_1 = create_method_call_object($method_name1.text, $instance);this_half_instance_1.set_line_number($instance.get_line_number());}
                 exp = expressionMethodsTemp[this_half_instance_1] {
                     if($exp.this_expression==null)
                         $this_expression = this_half_instance_1;
@@ -434,7 +462,9 @@ grammar Smoola;
                     //$this_expression=$exp.this_expression;
                 }
                 | method_name2 = ID '(' 
-                    { MethodCall this_half_instance = create_method_call_object($method_name2.text, $instance);} 
+                    { MethodCall this_half_instance = create_method_call_object($method_name2.text, $instance);
+                    this_half_instance.set_line_number($instance.get_line_number());
+                    } 
                     (arg1 = expression 
                         {this_half_instance.addArg($arg1.this_expression);}
                         (',' arg2 = expression 
@@ -447,7 +477,7 @@ grammar Smoola;
                     else
                         $this_expression=$exp.this_expression;
                 } 
-                | l_num = 'length' { Length length_expression = new Length($instance); length_expression.set_line_number($l_num.getLine());} exp=expressionMethodsTemp[length_expression] 
+                | l_num = 'length' { Length length_expression = new Length($instance); length_expression.set_line_number($instance.get_line_number());} exp=expressionMethodsTemp[length_expression] 
                 {
                     if($exp.this_expression == null) 
                         $this_expression = length_expression;
@@ -458,16 +488,16 @@ grammar Smoola;
     ;
 
     expressionOther returns [Expression this_expression]:
-        number = CONST_NUM {$this_expression = create_int_value_object(Integer.parseInt($number.text));}
-        |   str = CONST_STR {$this_expression = create_string_value_object($str.text);}
+        number = CONST_NUM {$this_expression = create_int_value_object(Integer.parseInt($number.text)); $this_expression.set_line_number($number.getLine());}
+        |   str = CONST_STR {$this_expression = create_string_value_object($str.text); $this_expression.set_line_number($str.getLine());}
         |   'new ' this_int = 'int' '[' size_expression = CONST_NUM ']' {NewArray this_array = new NewArray(); this_array.setIntSize(Integer.parseInt($size_expression.text)); this_array.setExpression(create_int_value_object(Integer.parseInt($size_expression.text))); this_array.set_line_number($this_int.getLine()); $this_expression = this_array;}
         |   'new ' class_name = ID '()' {$this_expression = create_class_instantiation_object($class_name.text); $this_expression.set_line_number($class_name.getLine());}
-        |   'this' {$this_expression = new This();}
-        |   'true' {$this_expression = create_boolean_value_object(true);}
-        |   'false' {$this_expression = create_boolean_value_object(false);}
+        |   this_ = 'this' {$this_expression = new This(); $this_expression.set_line_number($this_.getLine());}
+        |   true_ = 'true' {$this_expression = create_boolean_value_object(true); $this_expression.set_line_number($true_.getLine());}
+        |   false_ = 'false' {$this_expression = create_boolean_value_object(false); $this_expression.set_line_number($false_.getLine());}
         |   name = ID {$this_expression = create_identifier_object($name.text); $this_expression.set_line_number($name.getLine());}
-        |   name = ID '[' index = expression ']' {$this_expression = create_array_call_instance($name.text, $index.this_expression, $name.getLine());}
-        |   '(' expr = expression ')' {$this_expression = $expr.this_expression;}
+        |   name = ID '[' index = expression ']' {$this_expression = create_array_call_instance($name.text, $index.this_expression, $name.getLine()); $this_expression.set_line_number($name.getLine());}
+        |   p_ = '(' expr = expression ')' {$this_expression = $expr.this_expression; $this_expression.set_line_number($p_.getLine());}
     ;
     type returns [Type this_type]:
         'int' {$this_type = new IntType();} |

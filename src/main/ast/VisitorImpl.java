@@ -510,7 +510,29 @@ public class VisitorImpl implements Visitor {
                     this_binary_exp_type = new NoType();
                 } 
                 else {
-                    this_binary_exp_type = binaryExpression.getLeft().getType();
+                    if (binaryExpression.getBinaryOperator() == BinaryOperator.and || binaryExpression.getBinaryOperator() == BinaryOperator.or ){
+                        if((!binaryExpression.getLeft().getType().toString().equals("bool") )|| (!binaryExpression.getRight().getType().toString().equals("bool"))) {
+                            System.out.println("Line:"+Integer.toString(binaryExpression.get_line_number())+":unsupported operand type for "+binaryExpression.getBinaryOperator());
+                            this_binary_exp_type = new NoType();
+                        }
+                        else{
+                            this_binary_exp_type = binaryExpression.getLeft().getType();
+                        }
+                    }
+                    else if ( binaryExpression.getBinaryOperator() == BinaryOperator.mult || binaryExpression.getBinaryOperator() == BinaryOperator.div
+                                    || binaryExpression.getBinaryOperator() == BinaryOperator.add || binaryExpression.getBinaryOperator() == BinaryOperator.sub
+                                        || binaryExpression.getBinaryOperator() == BinaryOperator.lt || binaryExpression.getBinaryOperator() == BinaryOperator.gt ){
+                        if((!binaryExpression.getLeft().getType().toString().equals("int") )|| (!binaryExpression.getRight().getType().toString().equals("int"))) {
+                            System.out.println("Line:"+Integer.toString(binaryExpression.get_line_number())+":unsupported operand type for "+binaryExpression.getBinaryOperator());
+                            this_binary_exp_type = new NoType();
+                        }
+                        else{
+                            this_binary_exp_type = binaryExpression.getLeft().getType();
+                        }
+                    }
+                    else{
+                        this_binary_exp_type = binaryExpression.getLeft().getType();
+                    }
                 }
             } 
             else {
@@ -772,6 +794,21 @@ public class VisitorImpl implements Visitor {
 
     @Override
     public void visit(MethodCallInMain methodCallInMain) {
-        //TODO: implement appropriate visit functionality
+        if(second_round==false){
+            methodCallInMain.getInstance().accept(this);
+            ArrayList<Expression> methodCallInMain_args = methodCallInMain.getArgs();
+            for (int i = 0; i < methodCallInMain_args.size(); i++){
+                methodCallInMain_args.get(i).accept(this);
+            }
+        }
+        else if(second_round==true){
+            methodCallInMain.getInstance().accept(this);
+            methodCallInMain.getMethodName().accept(this);
+            ArrayList<Expression> methodCallInMain_args = methodCallInMain.getArgs();
+            for (int i = 0; i < methodCallInMain_args.size(); i++){
+                methodCallInMain_args.get(i).accept(this);
+            }
+        }
     }
+
 }
