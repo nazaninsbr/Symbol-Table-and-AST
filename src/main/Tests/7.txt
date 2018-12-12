@@ -10,15 +10,16 @@ class SecondMain extends Test{
 }
 
 class Rectangle extends SecondMain{
-	var x: int;
-	var y : int; 
+	var t :int;
+	#var x: int;
+	#var y : int; 
 	var name : string;
 
 	def constructor(x: int, y:int): int {
 		return 0;
 	}
 
-	def main(): int {
+	def main2(): int {
 		var x: int;
 		s = new Rectangle(); 
 		x = s;
@@ -27,5 +28,30 @@ class Rectangle extends SecondMain{
 
 	def area(): int {
 		return x*y;
+	}
+}
+class A extends Rectangle{
+		var s1 : Rectangle;
+		var s2 : SecondMain;
+		var s3 : Test;
+		var s4 : A;
+		var s5 : string;
+		var s6 : int;
+		def main3(): int {
+		var x: int;
+
+		s1 = s1; #ok
+		s1 = s2; 
+		s2 = s1; #ok
+		s2 = s3; 
+		s3 = s2; #ok
+		s3 = s4; #ok
+		s4 = s3; 
+		s5 = s6; 
+		s6 = s5;
+
+		s = new Rectangle(); 
+		x = s;
+		return s;
 	}
 }
