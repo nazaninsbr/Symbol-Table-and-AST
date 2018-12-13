@@ -19,7 +19,7 @@ class Book extends T3{
 	def methodmethod(): int{
 		x123 = new Test21();
 		x123 = new Book(); 
-		y = x123.main2('x'); 
+		y = x123.main2("x"); 
 		y = new Test21().main2(12); 
 		return 0;
 	}

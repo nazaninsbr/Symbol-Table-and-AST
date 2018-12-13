@@ -1,0 +1,36 @@
+class Main{
+	def main() : int {
+		return true;
+	}
+}
+
+class Animal{
+	def main23(x6: int) : int {
+		return "sj";
+	}
+	
+}
+
+class Pet extends Animal{
+	
+}
+
+class Dog extends Pet{
+	var x123: Test21; 
+	var x4: Dog;
+	def methodmethod(): int{
+		x123 = new Animal();
+		x123 = new Book(); 
+		y = x123.main2("x"); 
+		y = new Test21().main2(12); 
+		return 0;
+	}
+}
+
+class Cat extends Pet{
+	var x: Animal; 
+	def m(): int{
+		x = new Cat(); 
+		return 0; 
+	}
+}

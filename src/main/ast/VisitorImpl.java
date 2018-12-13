@@ -691,7 +691,7 @@ public class VisitorImpl implements Visitor {
                         args.get(i).accept(this);
                         if (! args.get(i).getType().toString().equals("NoType")){
                             if (! args.get(i).getType().toString().equals(argTypes.get(i).toString())){
-                                System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":invalid type for argument number "+Integer.toString(i));
+                                System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":invalid type for argument number "+Integer.toString(i+1));
                             }
                         }
                     }
@@ -813,6 +813,25 @@ public class VisitorImpl implements Visitor {
         }
         return false;
     }
+
+    void add_all_parent_names(String this_class_name, ArrayList<String> parents){
+        ClassDeclaration mainClass = this.this_prog.getMainClass();
+        if(mainClass.getName().getName().equals(this_class_name)){
+            parents.add(mainClass.getName().getName()); 
+            return;
+        }
+        List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
+        for(int i = 0; i < prog_classes.size(); ++i) {
+            if(prog_classes.get(i).getName().getName().equals(this_class_name)){
+                parents.add(prog_classes.get(i).getName().getName());
+                if (! prog_classes.get(i).getParentName().getName().equals("null") && !prog_classes.get(i).getParentName().getName().equals("Object")){
+                    add_all_parent_names(prog_classes.get(i).getParentName().getName(), parents);
+                } 
+                break;
+            }
+        }
+    }
+
     @Override
     public void visit(Assign assign) {
         ArrayList<Expression> exprs = new ArrayList<Expression>();
@@ -838,8 +857,10 @@ public class VisitorImpl implements Visitor {
             if (!(assign.getlValue().getType().toString().equals("NoType") || assign.getrValue().getType().toString().equals("NoType"))) {
                 if ( (assign.getrValue().getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) && (assign.getlValue().getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) ){
                     ArrayList<String> parents = new ArrayList<String>();
-                    parents.add(((UserDefinedType)(assign.getrValue().getType())).getClassDeclaration().getName().getName());
-                    parents.add(((UserDefinedType)(assign.getrValue().getType())).getClassDeclaration().getParentName().getName());
+                    String this_class_name = ((UserDefinedType)(assign.getrValue().getType())).getClassDeclaration().getName().getName();
+                    parents.add(this_class_name);
+                    parents.add("Object");
+                    add_all_parent_names(this_class_name, parents);
                     check_subtype_class(((UserDefinedType)(assign.getrValue().getType())).getClassDeclaration().getName().getName(),((UserDefinedType)(assign.getrValue().getType())).getClassDeclaration().getParentName().getName(),parents);
                     boolean ok_subtype = in_this_array(parents,assign.getlValue().getType().toString());
 

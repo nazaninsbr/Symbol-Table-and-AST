@@ -64,5 +64,7 @@ java org.antlr.v4.gui.TestRig Smoola program < ./Tests/7.txt
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/our_smoola_2Lexer.sml
 # echo 21
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/21.txt
-echo 23
-java org.antlr.v4.gui.TestRig Smoola program < ./Tests/23.txt
+# echo 23
+# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/23.txt
+echo 24
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/24.txt
