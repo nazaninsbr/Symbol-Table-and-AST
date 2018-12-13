@@ -9,3 +9,20 @@ class Test {
 		return 0;
 	}
 }
+class Test2 {
+	var T0: Test;
+	var x: int[];
+	var j: int[];
+	var k: int[];
+	var l: boolean;
+	def main() : int {
+		x = new int[5];
+		j = new int[19];
+		k = new int[5];
+		l = x==k;
+		l = x<>k;
+		l = x==j; 
+		l = x<>j;
+		return T0;
+	}
+}

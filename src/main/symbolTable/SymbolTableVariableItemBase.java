@@ -21,6 +21,10 @@ public class SymbolTableVariableItemBase extends SymbolTableItem {
         return type;
     }
 
+    public void setType(Type type){
+        this.type = type;
+    }
+
     @Override
     public String getKey() {
         return name;

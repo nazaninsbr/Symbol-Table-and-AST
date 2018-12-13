@@ -1,0 +1,6 @@
+Line:6:variable x is not declared
+Line:6:unsupported operand type for and
+Line:6:unsupported operand type for or
+Line:24:array sizes need to be the same
+Line:25:array sizes need to be the same
+Line:26:main return type must be int

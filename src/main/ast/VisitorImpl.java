@@ -569,7 +569,23 @@ public class VisitorImpl implements Visitor {
                     this_binary_exp_type = new NoType();
                 } 
                 else {
-                    if (binaryExpression.getBinaryOperator() == BinaryOperator.and || binaryExpression.getBinaryOperator() == BinaryOperator.or ){
+                    if(binaryExpression.getBinaryOperator() == BinaryOperator.eq || binaryExpression.getBinaryOperator() == BinaryOperator.neq){
+                        if (binaryExpression.getLeft().getType().toString().equals("int[]")) {
+                            int size1 = ((ArrayType) binaryExpression.getLeft().getType()).getSize();
+                            int size2 = ((ArrayType) binaryExpression.getRight().getType()).getSize();
+                            if(size1!=size2){
+                                System.out.println("Line:"+Integer.toString(binaryExpression.get_line_number())+":array sizes need to be the same");
+                                this_binary_exp_type = new NoType();
+                            }
+                            else {
+                                this_binary_exp_type = new BooleanType();
+                            }
+                        }
+                        else {
+                            this_binary_exp_type = new BooleanType();
+                        }
+                    }
+                    else if (binaryExpression.getBinaryOperator() == BinaryOperator.and || binaryExpression.getBinaryOperator() == BinaryOperator.or ){
                         if((!binaryExpression.getLeft().getType().toString().equals("bool") )|| (!binaryExpression.getRight().getType().toString().equals("bool"))) {
                             System.out.println("Line:"+Integer.toString(binaryExpression.get_line_number())+":unsupported operand type for "+binaryExpression.getBinaryOperator());
                             this_binary_exp_type = new NoType();
@@ -808,7 +824,9 @@ public class VisitorImpl implements Visitor {
         }
         else if(second_round==true){
             newArray.getExpression().accept(this);
-            newArray.setType(new ArrayType());
+            ArrayType this_array = new ArrayType(); 
+            this_array.setSize(newArray.getIntSize());
+            newArray.setType(this_array);
         }
     }
 
@@ -949,8 +967,8 @@ public class VisitorImpl implements Visitor {
             }
             assign.getlValue().accept(this);
             assign.getrValue().accept(this);
-
             if (!(assign.getlValue().getType().toString().equals("NoType") || assign.getrValue().getType().toString().equals("NoType"))) {
+                
                 if ( (assign.getrValue().getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) && (assign.getlValue().getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) ){
                     ArrayList<String> parents = new ArrayList<String>();
                     String this_class_name = ((UserDefinedType)(assign.getrValue().getType())).getClassDeclaration().getName().getName();
@@ -967,7 +985,16 @@ public class VisitorImpl implements Visitor {
                 else{
                     if( ! assign.getlValue().getType().toString().equals(assign.getrValue().getType().toString()) ){
                         System.out.println("Line:"+Integer.toString(assign.get_line_number())+":unsupported operand type for assign");
-                    }                    
+                    }                   
+                }
+                if(assign.getlValue().getClass().getName().equals("ast.node.expression.Identifier") && assign.getrValue().getClass().getName().equals("ast.node.expression.NewArray")){
+                    try {
+                        SymbolTableItem this_item = symTable.top.get(((Identifier) assign.getlValue()).getName());
+                        SymbolTableVariableItemBase this_var_item = (SymbolTableVariableItemBase) this_item;
+                        this_var_item.setType(assign.getrValue().getType()); 
+                    }
+                    catch(ItemNotFoundException ex){
+                    }
                 }
             }
         }
