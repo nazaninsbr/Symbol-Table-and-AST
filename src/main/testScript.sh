@@ -5,7 +5,7 @@ rm *.java
 java -jar /usr/local/lib/antlr-4.7.1-complete.jar Smoola.g4
 javac *.java
 # echo 0
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/0.txt
+# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/0.txt 
 # echo 1
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/1.txt
 # echo 2
@@ -28,8 +28,8 @@ javac *.java
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/10.txt
 # echo 11
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/11.txt
-# echo 12
-# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/12.txt
+echo 12
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/12.txt
 # echo 13
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/13.sml
 # echo 14
@@ -68,5 +68,5 @@ javac *.java
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/23.txt
 # echo 24
 # java org.antlr.v4.gui.TestRig Smoola program < ./Tests/24.txt
-echo 25
-java org.antlr.v4.gui.TestRig Smoola program < ./Tests/25.txt
+# echo 25
+# java org.antlr.v4.gui.TestRig Smoola program < ./Tests/25.txt

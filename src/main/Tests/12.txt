@@ -13,7 +13,7 @@ class Book {
 			k = false;
 		else
 			k = "YES";
-		return -A && !V || (3+4-3*5);
+		return -A && !V + (3+4-3*5);
 	}
 
 	def f(): string {

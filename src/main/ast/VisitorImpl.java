@@ -72,7 +72,6 @@ public class VisitorImpl implements Visitor {
         add_class_to_symbol_table(main_class_name, program.getMainClass());
         program.getMainClass().accept(this);
         for(int i = 0; i < prog_classes.size(); ++i) {
-            // System.out.println("**");
             add_class_to_symbol_table(prog_classes.get(i).getName().getName(), prog_classes.get(i));
             prog_classes.get(i).accept(this);
         }
@@ -672,7 +671,6 @@ public class VisitorImpl implements Visitor {
         List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
         for(int i = 0; i < prog_classes.size(); ++i) {
             if(prog_classes.get(i).getName().getName().equals(this_class_name)){
-                System.out.println(prog_classes.get(i));
                 s = add_every_thing_to_symbol_table_no_errors_for_method_call(prog_classes.get(i), s);
                 if (! prog_classes.get(i).getParentName().getName().equals("null") && !prog_classes.get(i).getParentName().getName().equals("Object")){
                     create_symbol_table_for_class(prog_classes.get(i).getParentName().getName(), s);
@@ -710,10 +708,15 @@ public class VisitorImpl implements Visitor {
             SymbolTable this_classes_symTable = new SymbolTable(); 
             boolean check_error = find_class_and_get_symTable(methodCall, this_classes_symTable);
             if (methodCall.getInstance().getType().toString().equals("NoType") || methodCall.getInstance().getType().toString().equals("null")) {
-                String the_class_name = ((Identifier) methodCall.getInstance()).getName();
-                System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":variable "+the_class_name+" is of a class that is not declared");
-                methodCall.setType(new NoType());
-                return;
+                if(methodCall.getInstance().getClass().getName().equals("Identifier")){
+                    String the_class_name = ((Identifier) methodCall.getInstance()).getName();
+                    System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":variable "+the_class_name+" is of a class that is not declared");
+                    methodCall.setType(new NoType());
+                    return;
+                }
+                else if(methodCall.getInstance().getClass().getName().equals("NewClass")){
+                    return;
+                }
             }
             if (check_error){
                 try {
@@ -803,6 +806,8 @@ public class VisitorImpl implements Visitor {
                 else {
                     unaryExpression.setType(exp.getType());
                 }
+            } else{
+                unaryExpression.setType(new NoType());
             }
         }
     }
@@ -908,7 +913,6 @@ public class VisitorImpl implements Visitor {
                     }                    
                 }
             }
-            System.out.println("end of assign");
         }
     }
 
