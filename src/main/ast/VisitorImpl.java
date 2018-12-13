@@ -723,12 +723,10 @@ public class VisitorImpl implements Visitor {
                 if(methodCall.getInstance().getClass().getName().equals("Identifier")){
                     String the_class_name = ((Identifier) methodCall.getInstance()).getName();
                     System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":variable "+the_class_name+" is of a class that is not declared");
-                    methodCall.setType(new NoType());
-                    return;
+                    
                 }
-                else if(methodCall.getInstance().getClass().getName().equals("NewClass")){
-                    return;
-                }
+                methodCall.setType(new NoType());
+                return;
             }
             if (check_error){
                 try {
