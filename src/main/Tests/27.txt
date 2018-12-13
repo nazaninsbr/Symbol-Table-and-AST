@@ -15,6 +15,8 @@ class Test2 {
 	var j: int[];
 	var k: int[];
 	var l: boolean;
+	var y: boolean; 
+	var h: int[];
 	def main() : int {
 		x = new int[5];
 		j = new int[19];
@@ -23,6 +25,11 @@ class Test2 {
 		l = x<>k;
 		l = x==j; 
 		l = x<>j;
+		l = T0.main() == T0.main2() ;
+		l = T0.main() == T0.main() ;
+		l = y = x==k; 
+		l = hello = x==k; 
+		l = h = new int[100];
 		return T0;
 	}
 }

@@ -1,6 +1,9 @@
 Line:6:variable x is not declared
 Line:6:unsupported operand type for and
 Line:6:unsupported operand type for or
-Line:24:array sizes need to be the same
-Line:25:array sizes need to be the same
-Line:26:main return type must be int
+Line:26:array sizes need to be the same
+Line:27:array sizes need to be the same
+Line:28:there is no method named main2 in class Test
+Line:31:variable hello is not declared
+Line:32:unsupported operand type for assign
+Line:33:main return type must be int
