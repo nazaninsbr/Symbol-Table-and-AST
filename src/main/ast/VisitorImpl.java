@@ -411,6 +411,18 @@ public class VisitorImpl implements Visitor {
         else if(second_round==true && no_error==true){
             symTable.push(new SymbolTable(symTable)); 
             add_vars_and_methods_to_symbolTable_for_undefiend_checks(classDeclaration);
+            //////////
+            if (! classDeclaration.getParentName().getName().equals("null")) {
+                try{
+                    SymbolTableItem thisItem = symTable.top.get(classDeclaration.getParentName().getName());
+                }
+                catch(ItemNotFoundException ex){
+                    System.out.println("Line:"+Integer.toString(classDeclaration.get_line_number())+":class "+ classDeclaration.getParentName().getName()+" is not declared");
+                    Identifier new_parent_name = new Identifier("null");
+                    classDeclaration.setParentName(new_parent_name);
+                }               
+            }
+            ///////////
             if (! classDeclaration.getParentName().getName().equals("null")) {
                 ArrayList<String> already_seen = new ArrayList<String>();
                 ___fill_the_sym_table_with_parent_data(classDeclaration.getName().getName(), classDeclaration.getParentName().getName(), already_seen);
