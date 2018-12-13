@@ -636,16 +636,44 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+    SymbolTable add_every_thing_to_symbol_table_no_errors_for_method_call(ClassDeclaration classDeclaration, SymbolTable s){
+        ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
+        for(int j=0; j<vars.size(); j++){
+            try{
+                SymbolTableVariableItemBase var_sym_table_item = new SymbolTableVariableItemBase(vars.get(j).getIdentifier().getName(), vars.get(j).getType(), index); 
+                s.put(var_sym_table_item);
+            } catch(ItemAlreadyExistsException e) {
+                no_error = false;
+            }
+            index += 1;
+        }
+
+        ArrayList<MethodDeclaration> methodDeclarations = classDeclaration.getMethodDeclarations();
+        for(int i=0; i<methodDeclarations.size(); i++){
+            try{
+                ArrayList<Type> argTypes = create_arg_types(methodDeclarations.get(i));
+                SymbolTableMethodItem method_sym_table_item = new SymbolTableMethodItem(methodDeclarations.get(i).getName().getName(), argTypes); 
+                method_sym_table_item.set_return_type(methodDeclarations.get(i).getReturnType());
+                s.put(method_sym_table_item);
+            } catch(ItemAlreadyExistsException e) {
+                no_error = false;
+            }
+            index += 1;
+        }
+        return s;
+    }
+
     void create_symbol_table_for_class(String this_class_name, SymbolTable s){
         ClassDeclaration mainClass = this.this_prog.getMainClass();
         if(mainClass.getName().getName().equals(this_class_name)){
-            s = add_every_thing_to_symbol_table_no_errors(mainClass, s); 
+            s = add_every_thing_to_symbol_table_no_errors_for_method_call(mainClass, s); 
             return;
         }
         List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
         for(int i = 0; i < prog_classes.size(); ++i) {
             if(prog_classes.get(i).getName().getName().equals(this_class_name)){
-                s = add_every_thing_to_symbol_table_no_errors(prog_classes.get(i), s);
+                System.out.println(prog_classes.get(i));
+                s = add_every_thing_to_symbol_table_no_errors_for_method_call(prog_classes.get(i), s);
                 if (! prog_classes.get(i).getParentName().getName().equals("null") && !prog_classes.get(i).getParentName().getName().equals("Object")){
                     create_symbol_table_for_class(prog_classes.get(i).getParentName().getName(), s);
                 } 
@@ -681,7 +709,7 @@ public class VisitorImpl implements Visitor {
         else if(second_round==true){
             SymbolTable this_classes_symTable = new SymbolTable(); 
             boolean check_error = find_class_and_get_symTable(methodCall, this_classes_symTable);
-            if (methodCall.getInstance().getType().toString().equals("null")) {
+            if (methodCall.getInstance().getType().toString().equals("NoType") || methodCall.getInstance().getType().toString().equals("null")) {
                 String the_class_name = ((Identifier) methodCall.getInstance()).getName();
                 System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":variable "+the_class_name+" is of a class that is not declared");
                 methodCall.setType(new NoType());
@@ -689,7 +717,7 @@ public class VisitorImpl implements Visitor {
             }
             if (check_error){
                 try {
-                    SymbolTableItem thisItem = this_classes_symTable.top.get("method_"+methodCall.getMethodName().getName());
+                    SymbolTableItem thisItem = this_classes_symTable.get("method_"+methodCall.getMethodName().getName());
                     SymbolTableMethodItem method_item = (SymbolTableMethodItem) thisItem;
                     ArrayList<Expression> args = methodCall.getArgs();
                     ArrayList<Type> argTypes = method_item.get_arg_types();
@@ -880,6 +908,7 @@ public class VisitorImpl implements Visitor {
                     }                    
                 }
             }
+            System.out.println("end of assign");
         }
     }
 

@@ -1,0 +1,14 @@
+class Test2 {
+	def main33() : int {
+		new Test21().t();
+		return 0;
+	}
+}
+
+class Test21 extends Book{
+	def main(x6: int) : int {
+		var a :int;
+		a = new Test2().main();
+		return 0;
+	}
+}
