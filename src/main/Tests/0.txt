@@ -1,5 +1,5 @@
 class Test2 {
-	def main33() : int {
+	def main() : int {
 		i = 3;
 		new Test21().t();
 		return 0;

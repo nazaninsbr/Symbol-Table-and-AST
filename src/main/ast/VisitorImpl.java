@@ -943,7 +943,7 @@ public class VisitorImpl implements Visitor {
             }
         }
     }
-
+/*
     @Override
     public void visit(MethodCallInMain methodCallInMain) {
         if(second_round==false){
@@ -963,6 +963,29 @@ public class VisitorImpl implements Visitor {
                 }                
             }
             
+            else{
+                System.out.println("Line:"+Integer.toString(methodCallInMain.get_line_number())+":method call is illegal outside main class");
+            }
+        }
+    }
+    */
+//////////////
+    @Override
+    public void visit(MethodCallInMain methodCallInMain) {
+        MethodCall this_methodCall = new MethodCall(methodCallInMain.getInstance(),methodCallInMain.getMethodName());
+        ArrayList<Expression> methodCallInMain_args = methodCallInMain.getArgs();
+        this_methodCall.set_line_number(methodCallInMain.get_line_number());
+        for (int i = 0; i < methodCallInMain_args.size(); i++){
+            this_methodCall.addArg(methodCallInMain_args.get(i));
+        }
+
+        if(second_round==false){
+            this_methodCall.accept(this);
+        }
+        else if(second_round==true){
+            if (this.curr_class.getName().getName().equals(this_prog.getMainClass().getName().getName()) ){ 
+                this_methodCall.accept(this);               
+            }
             else{
                 System.out.println("Line:"+Integer.toString(methodCallInMain.get_line_number())+":method call is illegal outside main class");
             }
