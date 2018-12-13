@@ -1,6 +1,7 @@
 class Test2{
 	def main() : int {
 		writeln(true);
+		x + 2 = 6;
 		return true;
 	}
 }
@@ -13,11 +14,12 @@ class T3 extends Test2{
 	
 }
 
-class Book extends Book{
+class Book extends T3{
 	var x123: Test21; 
 	def methodmethod(): int{
-		x123 = new Test21(); 
-		y = x123.main22(12); 
+		x123 = new Test21();
+		x123 = new Book(); 
+		y = x123.main2('x'); 
 		y = new Test21().main2(12); 
 		return 0;
 	}

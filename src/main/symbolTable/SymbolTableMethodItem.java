@@ -14,6 +14,10 @@ public class SymbolTableMethodItem extends SymbolTableItem {
         this.argTypes = argTypes;
     }
 
+    public ArrayList<Type> get_arg_types(){
+    	return this.argTypes;
+    }
+
     public void set_return_type(Type ret_type){
     	this.ret_type = ret_type;
     }

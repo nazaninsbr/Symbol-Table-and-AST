@@ -685,6 +685,16 @@ public class VisitorImpl implements Visitor {
                 try {
                     SymbolTableItem thisItem = this_classes_symTable.top.get("method_"+methodCall.getMethodName().getName());
                     SymbolTableMethodItem method_item = (SymbolTableMethodItem) thisItem;
+                    ArrayList<Expression> args = methodCall.getArgs();
+                    ArrayList<Type> argTypes = method_item.get_arg_types();
+                    for(int i=0; i<args.size(); i++){
+                        args.get(i).accept(this);
+                        if (! args.get(i).getType().toString().equals("NoType")){
+                            if (! args.get(i).getType().toString().equals(argTypes.get(i).toString())){
+                                System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":invalid type for argument number "+Integer.toString(i));
+                            }
+                        }
+                    }
                     methodCall.setType(method_item.get_return_type());
                 }
                 catch(ItemNotFoundException ex){
