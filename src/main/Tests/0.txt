@@ -1,7 +1,7 @@
 class Test2 {
 	def main33() : int {
 		i = 3;
-		new Test21().main();
+		new Test21().t();
 		return 0;
 	}
 }

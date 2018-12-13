@@ -815,11 +815,11 @@ public class VisitorImpl implements Visitor {
         }
         else if(second_round==true){
             if (!(assign.getlValue().getClass().getName().equals("ast.node.expression.Identifier") || assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall"))) {
-                System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":unexpected type. required: variable found: value");
+                System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":left side of assignment must be a valid lvalue");
             }
             else if (assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall") ){
                 if (!(((ArrayCall)assign.getlValue()).getInstance().getClass().getName().equals("ast.node.expression.Identifier"))){
-                    System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":unexpected type. required: variable found: value");
+                    System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":left side of assignment must be a valid lvalue");
                 }
             }
             assign.getlValue().accept(this);
