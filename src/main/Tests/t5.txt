@@ -1,0 +1,26 @@
+class A {
+	def main() : int {
+		i = 3;
+		new A().main();
+		new C().d().main();
+		new C().d().main2();
+		(new C().dd()).main2();
+		new C().dd().main2().F();
+		return 0;
+	}
+}
+class B {
+	def main() : int {
+		i = 3;
+		new A().main();
+		new C().d().main2();
+		new C().dd().main2();
+		return new A().main();
+	}
+}
+class C {
+	def d() : B {
+		i = 3;
+		return new B();
+	}
+}

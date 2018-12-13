@@ -1,0 +1,26 @@
+class MainClass {
+	def main() : int {
+		return 10;
+	}
+}
+class SecondMain extends Blue{
+	var arr: int[];
+	var x : int;
+	var y : boolean;
+	def main2(xx: int): int{
+		var x: int;
+		arr = new int[10];
+		if (arr.length + 
+		10 * x) then
+			y =true;
+		else
+			y =false;
+				if (arr.length == 2) then
+			y = true ;
+				if (true||false||(2<>3) && (arr.length)) then
+			y = true ;
+
+	return 
+	y;
+	}
+}

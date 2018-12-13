@@ -1,0 +1,37 @@
+class A {
+	def main() : int {
+		i = 3;
+		return 0;
+	}
+}
+class B {
+	def main2() : int {
+		var a :int;
+		var b: int;
+		var c : bool;
+		var d :int[];
+		var d2 :int[];
+		d = new int [10];
+		d2 = new int [5];
+		a = 
+		(new A().main()) * 3
+		+ true;
+		b = b + b + b 
+		* !(new A().main()) + -(new A().main()) /
+		d.length 
+		;
+		a = -(true || false) + (!true * 1) + (-false && true);
+
+		b = b && a;
+		a = true && false || true;
+		a = !d.length;
+		a = -d.length;
+		b = (2 < 4 ) || (3 < -a);
+		b = (true > false) < 5;
+		a = b = c;
+		c = (d <> d2);
+		
+		i = 3;
+		return new A().main();
+	}
+}

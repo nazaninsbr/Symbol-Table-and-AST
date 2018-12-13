@@ -1,0 +1,10 @@
+class A{
+	def B(): int{
+	new B().C(1,2);	 
+	i = new int[3];
+	while(i<>m){
+	
+	}
+	return 0;
+	}
+}

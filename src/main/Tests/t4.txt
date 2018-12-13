@@ -1,0 +1,37 @@
+class A {
+	def main() : int {
+		writeln(1);
+		return 1;
+	}
+}
+
+class B extends A{
+	var x : Rectangle;
+	def main2(): int {
+	x = new Rectangle(); 
+	return s;
+	}
+}
+class E extends D{
+		var s1 : Rectangle;
+		var x : string;
+		def main3(): int {
+		var x: int;
+		s = new Rectangle(); 
+		x = s;
+		return s;
+	}
+}
+class C extends D{
+	def main4(): string {
+		return x;
+	}
+	def area2(): int {
+		return x*3;
+	}
+}
+class F extends C{
+	def area3(): int {
+		return 2*5;
+	}
+}
