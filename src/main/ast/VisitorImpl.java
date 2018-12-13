@@ -107,8 +107,13 @@ public class VisitorImpl implements Visitor {
             check_class_existance_condition_with_symTable(program);
         }
         if (no_error==true){
+            if(! program.getMainClass().getMethodDeclarations().get(0).getName().getName().equals("main")){
+                System.out.println("Line:"+Integer.toString((program.getMainClass().getMethodDeclarations().get(0)).get_line_number())+":main method was not found");
+            }            
             second_round = true; 
             program.getMainClass().accept(this);
+
+           
             List<ClassDeclaration> classes = program.getClasses(); 
             for(int i=0; i<classes.size(); i++){
                 classes.get(i).accept(this);
@@ -330,8 +335,50 @@ public class VisitorImpl implements Visitor {
             }
         }
     }
+   
+    void check_subtype_class(String class_we_came_here_from, String parent_name, ArrayList<String> already_seen){
+        Boolean found = false;
+        Boolean is_after = false;
+        ClassDeclaration mainClass = this.this_prog.getMainClass();
+        if(mainClass.getName().getName().equals(parent_name)){
+            found=true;
+            //___add_every_thing_to_symbol_table_no_errors(mainClass); 
+            if (already_seen.contains(mainClass.getParentName().getName())) {
+              //  System.out.println("Line:"+Integer.toString(mainClass.get_line_number())+":circular dependency is not allowed");
+                return;
+            }
+            else{
+                already_seen.add(mainClass.getParentName().getName());
+                if (! mainClass.getParentName().getName().equals("null") && !mainClass.getParentName().getName().equals("Object")){
+                    check_subtype_class(mainClass.getName().getName(), mainClass.getParentName().getName(), already_seen);
+                }
+            }        
+        }
+        if(found==false){
+            List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
+            for(int i = 0; i < prog_classes.size(); ++i) {
+                if(prog_classes.get(i).getName().getName().equals(parent_name)){
+                   // ___add_every_thing_to_symbol_table_no_errors(prog_classes.get(i));
+                    if (already_seen.contains(prog_classes.get(i).getParentName().getName())) {
+                        if(is_after==false){
+                            //System.out.println("Line:"+Integer.toString(prog_classes.get(i).get_line_number())+":circular dependency is not allowed");
+                            //prog_classes.get(i).setParentName(new Identifier("Object"));
+                        }
+                        return;
+                    }
+                    already_seen.add(prog_classes.get(i).getParentName().getName()); 
+                    if (! prog_classes.get(i).getParentName().getName().equals("null") && !prog_classes.get(i).getParentName().getName().equals("Object")){
 
-
+                        check_subtype_class(prog_classes.get(i).getName().getName(), prog_classes.get(i).getParentName().getName(), already_seen);
+                    } 
+                    break;
+                }
+                if(prog_classes.get(i).getName().getName().equals(class_we_came_here_from)){
+                    is_after = true;
+                }
+            }
+        }
+    }
     void continue_phase3_checks_for_class(ClassDeclaration classDeclaration){
         ArrayList<VarDeclaration> vars = classDeclaration.getVarDeclarations(); 
         for(int j=0; j<vars.size(); j++){
@@ -741,7 +788,20 @@ public class VisitorImpl implements Visitor {
             exprs.get(i).accept(this);
         }
     }
-
+    public void print_this(ArrayList<String> list){
+        System.out.println("--------");
+        for (int i = 0; i < list.size(); i++ ){
+            System.out.println(list.get(i));
+        } 
+        System.out.println("+++++++");
+    }
+    public boolean in_this_array(ArrayList<String> list,String name){
+        for (int i = 0; i < list.size(); i++ ){
+            if (list.get(i).equals(name))
+                return true;
+        }
+        return false;
+    }
     @Override
     public void visit(Assign assign) {
         ArrayList<Expression> exprs = new ArrayList<Expression>();
@@ -753,12 +813,33 @@ public class VisitorImpl implements Visitor {
             check_statement_expressions_for_newArray_expr(exprs);
         }
         else if(second_round==true){
+            if (!(assign.getlValue().getClass().getName().equals("ast.node.expression.Identifier") || assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall"))) {
+                System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":unexpected type. required: variable found: value");
+            }
+            else if (assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall") ){
+                if (!(((ArrayCall)assign.getlValue()).getInstance().getClass().getName().equals("ast.node.expression.Identifier"))){
+                    System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":unexpected type. required: variable found: value");
+                }
+            }
             assign.getlValue().accept(this);
             assign.getrValue().accept(this);
 
             if (!(assign.getlValue().getType().toString().equals("NoType") || assign.getrValue().getType().toString().equals("NoType"))) {
-                if( ! assign.getlValue().getType().toString().equals(assign.getrValue().getType().toString()) ){
-                    System.out.println("Line:"+Integer.toString(assign.get_line_number())+":unsupported operand type for assign");
+                if ( (assign.getrValue().getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) && (assign.getlValue().getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) ){
+                    ArrayList<String> parents = new ArrayList<String>();
+                    parents.add(((UserDefinedType)(assign.getrValue().getType())).getClassDeclaration().getName().getName());
+                    parents.add(((UserDefinedType)(assign.getrValue().getType())).getClassDeclaration().getParentName().getName());
+                    check_subtype_class(((UserDefinedType)(assign.getrValue().getType())).getClassDeclaration().getName().getName(),((UserDefinedType)(assign.getrValue().getType())).getClassDeclaration().getParentName().getName(),parents);
+                    boolean ok_subtype = in_this_array(parents,assign.getlValue().getType().toString());
+
+                    if (!ok_subtype){
+                        System.out.println("Line:"+Integer.toString(assign.get_line_number())+":unsupported operand type for assign");
+                    }
+                }
+                else{
+                    if( ! assign.getlValue().getType().toString().equals(assign.getrValue().getType().toString()) ){
+                        System.out.println("Line:"+Integer.toString(assign.get_line_number())+":unsupported operand type for assign");
+                    }                    
                 }
             }
         }
@@ -790,7 +871,6 @@ public class VisitorImpl implements Visitor {
             conditional.getExpression().accept(this);
             if (!(conditional.getExpression().getType().toString().equals("bool") || conditional.getExpression().getType().toString().equals("NoType"))) {
                 System.out.println("Line:"+Integer.toString(conditional.get_line_number())+":condition type must be boolean");
-                // no type?
             }  
             check_for_statements(statements);           
         }
@@ -842,11 +922,17 @@ public class VisitorImpl implements Visitor {
             }
         }
         else if(second_round==true){
-            methodCallInMain.getInstance().accept(this);
-            methodCallInMain.getMethodName().accept(this);
-            ArrayList<Expression> methodCallInMain_args = methodCallInMain.getArgs();
-            for (int i = 0; i < methodCallInMain_args.size(); i++){
-                methodCallInMain_args.get(i).accept(this);
+            if (this.curr_class.getName().getName().equals(this_prog.getMainClass().getName().getName()) ){
+                methodCallInMain.getInstance().accept(this);
+                methodCallInMain.getMethodName().accept(this);
+                ArrayList<Expression> methodCallInMain_args = methodCallInMain.getArgs();
+                for (int i = 0; i < methodCallInMain_args.size(); i++){
+                    methodCallInMain_args.get(i).accept(this);
+                }                
+            }
+            
+            else{
+                System.out.println("Line:"+Integer.toString(methodCallInMain.get_line_number())+":method call is illegal outside main class");
             }
         }
     }

@@ -186,7 +186,7 @@ grammar Smoola;
     ;
     mainClass[Program prog]:
         // name should be checked later
-        'class' class_name = ID {ClassDeclaration main_class_dec = create_class_object($class_name.text, "null"); ((Node)((Declaration)main_class_dec)).set_line_number($class_name.getLine()); $prog.setMainClass(main_class_dec);} '{' 'def' method_name = ID {MethodDeclaration main_method = create_main_method_object($method_name.text); main_class_dec.addMethodDeclaration(main_method); main_method.setReturnType(new IntType());} '()' ':' 'int' '{'  method_body = statements {main_method = add_body_statements_to_method(main_method, $method_body.all_statements);} l_num = 'return' ret_expr = expression {$ret_expr.this_expression.set_line_number($l_num.getLine()); main_method.setReturnValue($ret_expr.this_expression);} ';' '}' '}'
+        'class' class_name = ID {ClassDeclaration main_class_dec = create_class_object($class_name.text, "null"); ((Node)((Declaration)main_class_dec)).set_line_number($class_name.getLine()); $prog.setMainClass(main_class_dec);} '{' 'def' method_name = ID {MethodDeclaration main_method = create_main_method_object($method_name.text); main_method.set_line_number($method_name.getLine()); main_class_dec.addMethodDeclaration(main_method); main_method.setReturnType(new IntType());} '()' ':' 'int' '{'  method_body = statements {main_method = add_body_statements_to_method(main_method, $method_body.all_statements);} l_num = 'return' ret_expr = expression {$ret_expr.this_expression.set_line_number($l_num.getLine()); main_method.setReturnValue($ret_expr.this_expression);} ';' '}' '}'
     ;
     classDeclaration[Program prog]:
         'class' class_name = ID ('extends' parent_class = ID )? { ClassDeclaration new_class_dec = create_class_object($class_name.text, $parent_class.text);new_class_dec.set_line_number($class_name.getLine()); $prog.addClass(new_class_dec);} '{' (var_dec = varDeclaration { new_class_dec.addVarDeclaration($var_dec.this_var);})* (method_dec = methodDeclaration {new_class_dec.addMethodDeclaration($method_dec.this_method);})* '}'
@@ -207,7 +207,7 @@ grammar Smoola;
         conditional_statement = statementCondition {$this_statement = create_conditional_statement_object($conditional_statement.conditional_expression, $conditional_statement.consequence_body, $conditional_statement.alternative_body); $this_statement.set_line_number($conditional_statement.line_number);}|
         loop_statement = statementLoop {$this_statement = create_loop_statement_object($loop_statement.conditional_expression, $loop_statement.body);  $this_statement.set_line_number($loop_statement.line_number);} |
         write_statement = statementWrite {$this_statement = new Write($write_statement.print_expression); $this_statement.set_line_number($write_statement.line_number);} |
-        assign_statement = statementAssignment {$this_statement = $assign_statement.this_statement;}
+        assign_statement = statementAssignment {$this_statement = $assign_statement.this_statement; $this_statement.set_line_number($assign_statement.line_number);}
     ;
     statementBlock returns [ArrayList<Statement> block_statements]:
         '{'  block_body = statements {$block_statements = new ArrayList<>($block_body.all_statements);} '}'
@@ -221,8 +221,8 @@ grammar Smoola;
     statementWrite returns [Expression print_expression, int line_number]:
         l_num = 'writeln(' print_expr = expression {$print_expression = $print_expr.this_expression; $line_number = $l_num.getLine();} ')' ';'
     ;
-    statementAssignment returns [Statement this_statement]:
-        exp = expression ';' {
+    statementAssignment returns [Statement this_statement,int line_number]:
+        exp = expression l_num = ';' {
             if ($exp.this_expression.getClass().getName().equals("ast.node.expression.MethodCall")){
                 MethodCallInMain methodCallInMain = new MethodCallInMain(((MethodCall)$exp.this_expression).getInstance(),(((MethodCall)$exp.this_expression).getMethodName()));
                 ArrayList<Expression> method_args = ((MethodCall)($exp.this_expression)).getArgs();
@@ -230,9 +230,11 @@ grammar Smoola;
                     methodCallInMain.addArg(method_args.get(i));
                 }
                 $this_statement = methodCallInMain;
+                $this_statement.set_line_number($exp.this_expression.get_line_number());
+                $line_number = $l_num.getLine(); 
             }
             else {
-                {$this_statement = new Assign($exp.this_lvalue, $exp.this_rvalue); $this_statement.set_line_number($exp.this_expression.get_line_number());}
+                {$this_statement = new Assign($exp.this_lvalue, $exp.this_rvalue); $this_statement.set_line_number($exp.this_expression.get_line_number()); $line_number = $l_num.getLine();}
             }
         }
     ;
