@@ -681,6 +681,12 @@ public class VisitorImpl implements Visitor {
         else if(second_round==true){
             SymbolTable this_classes_symTable = new SymbolTable(); 
             boolean check_error = find_class_and_get_symTable(methodCall, this_classes_symTable);
+            if (methodCall.getInstance().getType().toString().equals("null")) {
+                String the_class_name = ((Identifier) methodCall.getInstance()).getName();
+                System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":variable "+the_class_name+" is of a class that is not declared");
+                methodCall.setType(new NoType());
+                return;
+            }
             if (check_error){
                 try {
                     SymbolTableItem thisItem = this_classes_symTable.top.get("method_"+methodCall.getMethodName().getName());

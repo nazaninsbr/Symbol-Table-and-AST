@@ -34,9 +34,9 @@ class Test21 extends Book{
         }
 		xx = new int[10];
 		yy = new int[8];
-		#a = new Test2().x3();
-		#a = new Test2().i();
-		#a = new Test2().main();
+		a = new Test2().x3();
+		a = new Test2().i();
+		a = new Test2().main();
 		
 		v = new Test8();
 		x3 = 
