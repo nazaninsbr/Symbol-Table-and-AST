@@ -215,6 +215,7 @@ public class VisitorImpl implements Visitor {
             try{
                 ArrayList<Type> argTypes = create_arg_types(methodDeclarations.get(i));
                 SymbolTableMethodItem method_sym_table_item = new SymbolTableMethodItem(methodDeclarations.get(i).getName().getName(), argTypes); 
+                method_sym_table_item.set_return_type(methodDeclarations.get(i).getReturnType());
                 s.top.put(method_sym_table_item);
             } catch(ItemAlreadyExistsException e) {
                 no_error = false;
@@ -588,6 +589,39 @@ public class VisitorImpl implements Visitor {
         }
     }
 
+    void create_symbol_table_for_class(ClassDeclaration this_class, SymbolTable s){
+        ClassDeclaration mainClass = this.this_prog.getMainClass();
+        if(mainClass.getName().getName().equals(this_class.getName())){
+            s = add_every_thing_to_symbol_table_no_errors(mainClass, s); 
+            return;
+        }
+        List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
+        for(int i = 0; i < prog_classes.size(); ++i) {
+            if(prog_classes.get(i).getName().getName().equals(this_class.getName())){
+                s = add_every_thing_to_symbol_table_no_errors(prog_classes.get(i), s);
+                if (! prog_classes.get(i).getParentName().getName().equals("null") && !prog_classes.get(i).getParentName().getName().equals("Object")){
+                    create_symbol_table_for_class(prog_classes.get(i), s);
+                } 
+                break;
+            }
+        }
+    }
+
+
+    boolean find_class_and_get_symTable(MethodCall methodCall, SymbolTable s){
+        methodCall.getInstance().accept(this);
+        if (methodCall.getInstance().getType().toString().equals("NoType")){
+            return false;
+        } else if(methodCall.getInstance().getType().toString().equals("int") || methodCall.getInstance().getType().toString().equals("string") || methodCall.getInstance().getType().toString().equals("bool") || methodCall.getInstance().getType().toString().equals("int[]") ) {
+            System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":method class is not allowed on a primitive type");
+        } else{
+            UserDefinedType this_type = (UserDefinedType) methodCall.getInstance().getType();
+            create_symbol_table_for_class(this_type.getClassDeclaration(), s);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void visit(MethodCall methodCall) {
         if(second_round==false){
@@ -598,12 +632,18 @@ public class VisitorImpl implements Visitor {
             }
         }
         else if(second_round==true){
-            System.out.println(methodCall);
-            methodCall.getInstance().accept(this);
-            methodCall.getMethodName().accept(this);
-            ArrayList<Expression> methodcall_args = methodCall.getArgs();
-            for (int i = 0; i < methodcall_args.size(); i++){
-                methodcall_args.get(i).accept(this);
+            SymbolTable this_classes_symTable = new SymbolTable(); 
+            boolean check_error = find_class_and_get_symTable(methodCall, this_classes_symTable);
+            if (check_error){
+                try {
+                    SymbolTableItem thisItem = this_classes_symTable.top.get(methodCall.getMethodName().getName());
+                    SymbolTableMethodItem method_item = (SymbolTableMethodItem) thisItem;
+                    methodCall.setType(method_item.get_return_type());
+                }
+                catch(ItemNotFoundException ex){
+                    System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":there is no method named "+methodCall.getMethodName().getName()+" in class "+methodCall.getInstance());
+                    methodCall.setType(new NoType());
+                }
             }
         }
     }
