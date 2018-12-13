@@ -1,0 +1,11 @@
+class Test {
+	def main() : int {
+		{
+			writeln("hi hi hi 12  ^ 7 *$(%*)(%@($) / \ | ");
+			{
+				x = ((((3)))) || 000005 + 7&&08 - 0;
+			}
+		}
+		return 0;
+	}
+}

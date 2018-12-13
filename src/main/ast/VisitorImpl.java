@@ -596,10 +596,57 @@ public class VisitorImpl implements Visitor {
             } 
             else {
                 if ( !(binaryExpression.getLeft().getType().toString().equals("NoType")) ){
-                    this_binary_exp_type = binaryExpression.getLeft().getType();
+                    if (binaryExpression.getBinaryOperator() == BinaryOperator.and || binaryExpression.getBinaryOperator() == BinaryOperator.or ){
+                        if((!binaryExpression.getLeft().getType().toString().equals("bool") )) {
+                            System.out.println("Line:"+Integer.toString(binaryExpression.get_line_number())+":unsupported operand type for "+binaryExpression.getBinaryOperator());
+                            this_binary_exp_type = new NoType();
+                        }
+                        else{
+                            this_binary_exp_type = binaryExpression.getLeft().getType();
+                        }
+                    }
+                    else if ( binaryExpression.getBinaryOperator() == BinaryOperator.mult || binaryExpression.getBinaryOperator() == BinaryOperator.div
+                                    || binaryExpression.getBinaryOperator() == BinaryOperator.add || binaryExpression.getBinaryOperator() == BinaryOperator.sub
+                                        || binaryExpression.getBinaryOperator() == BinaryOperator.lt || binaryExpression.getBinaryOperator() == BinaryOperator.gt ){
+                        if((!binaryExpression.getLeft().getType().toString().equals("int") )) {
+                            System.out.println("Line:"+Integer.toString(binaryExpression.get_line_number())+":unsupported operand type for "+binaryExpression.getBinaryOperator());
+                            this_binary_exp_type = new NoType();
+                        }
+                        else{
+                            this_binary_exp_type = binaryExpression.getLeft().getType();
+                        }
+                    }
+                    else{
+                        this_binary_exp_type = binaryExpression.getLeft().getType();
+                    }
+                }
+                else if ( !(binaryExpression.getRight().getType().toString().equals("NoType")) ){
+                    if (binaryExpression.getBinaryOperator() == BinaryOperator.and || binaryExpression.getBinaryOperator() == BinaryOperator.or ){
+                        if((!binaryExpression.getRight().getType().toString().equals("bool") )) {
+                            System.out.println("Line:"+Integer.toString(binaryExpression.get_line_number())+":unsupported operand type for "+binaryExpression.getBinaryOperator());
+                            this_binary_exp_type = new NoType();
+                        }
+                        else{
+                            this_binary_exp_type = binaryExpression.getLeft().getType();
+                        }
+                    }
+                    else if ( binaryExpression.getBinaryOperator() == BinaryOperator.mult || binaryExpression.getBinaryOperator() == BinaryOperator.div
+                                    || binaryExpression.getBinaryOperator() == BinaryOperator.add || binaryExpression.getBinaryOperator() == BinaryOperator.sub
+                                        || binaryExpression.getBinaryOperator() == BinaryOperator.lt || binaryExpression.getBinaryOperator() == BinaryOperator.gt ){
+                        if((!binaryExpression.getRight().getType().toString().equals("int") )) {
+                            System.out.println("Line:"+Integer.toString(binaryExpression.get_line_number())+":unsupported operand type for "+binaryExpression.getBinaryOperator());
+                            this_binary_exp_type = new NoType();
+                        }
+                        else{
+                            this_binary_exp_type = binaryExpression.getLeft().getType();
+                        }
+                    }
+                    else{
+                        this_binary_exp_type = binaryExpression.getLeft().getType();
+                    }
                 }
                 else {
-                    this_binary_exp_type = binaryExpression.getRight().getType();
+                    this_binary_exp_type = new NoType();
                 }
             }
             if(!this_binary_exp_type.toString().equals("NoType") && (binaryExpression.getBinaryOperator() == BinaryOperator.neq || binaryExpression.getBinaryOperator() == BinaryOperator.eq || binaryExpression.getBinaryOperator() == BinaryOperator.lt || binaryExpression.getBinaryOperator() == BinaryOperator.gt ) ){
