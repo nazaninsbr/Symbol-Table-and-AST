@@ -1,0 +1,32 @@
+class MAIN {
+    def main(): int {
+        return 0;
+    }
+}
+class A {
+    def a(): int {
+    	var a :A;
+    	var b :B;
+    	var c:C;
+    	var d:D;
+    	var  g :G;
+    	var h :H;
+    	var e:int; var f: string;
+        return 0;
+    }
+}
+class B {
+    def b(): int {
+        return 0;
+    }
+}
+class C {
+    def c(): int {
+        return 0;
+    }
+}
+class D {
+    def c(): int {
+        return 0;
+    }
+}

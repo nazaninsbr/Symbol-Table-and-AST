@@ -1,0 +1,34 @@
+class D {
+    def main(): int {
+        writeln((new B()).A(1, 2));
+        return 0;
+    }
+}
+
+class B {
+    var test1 : int[];
+    def A(f1 : int, f2 : int) : int {
+        var i : int;
+        i = 0;
+        return i;
+    }
+    def a(f1 : int, f2 : int) : int {
+    var i : int;
+    i = 0;
+    return i;
+    }
+    def AAA(f1 : int) : int {
+    var j : int;
+    return j;
+    }
+    def AA() : int {
+    var i : int;
+    return i;
+    }
+    def B(f1 : int, f2 : int) : int {
+    var t : int;
+    t = 0;
+    return t;
+    }
+
+}
