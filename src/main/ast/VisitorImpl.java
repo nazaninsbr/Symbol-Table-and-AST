@@ -636,18 +636,18 @@ public class VisitorImpl implements Visitor {
         }
     }
 
-    void create_symbol_table_for_class(ClassDeclaration this_class, SymbolTable s){
+    void create_symbol_table_for_class(String this_class_name, SymbolTable s){
         ClassDeclaration mainClass = this.this_prog.getMainClass();
-        if(mainClass.getName().getName().equals(this_class.getName())){
+        if(mainClass.getName().getName().equals(this_class_name)){
             s = add_every_thing_to_symbol_table_no_errors(mainClass, s); 
             return;
         }
         List<ClassDeclaration> prog_classes = this.this_prog.getClasses();
         for(int i = 0; i < prog_classes.size(); ++i) {
-            if(prog_classes.get(i).getName().getName().equals(this_class.getName())){
+            if(prog_classes.get(i).getName().getName().equals(this_class_name)){
                 s = add_every_thing_to_symbol_table_no_errors(prog_classes.get(i), s);
                 if (! prog_classes.get(i).getParentName().getName().equals("null") && !prog_classes.get(i).getParentName().getName().equals("Object")){
-                    create_symbol_table_for_class(prog_classes.get(i), s);
+                    create_symbol_table_for_class(prog_classes.get(i).getParentName().getName(), s);
                 } 
                 break;
             }
@@ -663,7 +663,7 @@ public class VisitorImpl implements Visitor {
             System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":method class is not allowed on a primitive type");
         } else{
             UserDefinedType this_type = (UserDefinedType) methodCall.getInstance().getType();
-            create_symbol_table_for_class(this_type.getClassDeclaration(), s);
+            create_symbol_table_for_class(this_type.getClassDeclaration().getName().getName(), s);
             return true;
         }
         return false;
@@ -683,12 +683,13 @@ public class VisitorImpl implements Visitor {
             boolean check_error = find_class_and_get_symTable(methodCall, this_classes_symTable);
             if (check_error){
                 try {
-                    SymbolTableItem thisItem = this_classes_symTable.top.get(methodCall.getMethodName().getName());
+                    SymbolTableItem thisItem = this_classes_symTable.top.get("method_"+methodCall.getMethodName().getName());
                     SymbolTableMethodItem method_item = (SymbolTableMethodItem) thisItem;
                     methodCall.setType(method_item.get_return_type());
                 }
                 catch(ItemNotFoundException ex){
-                    System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":there is no method named "+methodCall.getMethodName().getName()+" in class "+methodCall.getInstance());
+                    String the_class_name = methodCall.getInstance().getType().toString();
+                    System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":there is no method named "+methodCall.getMethodName().getName()+" in class "+the_class_name);
                     methodCall.setType(new NoType());
                 }
             }

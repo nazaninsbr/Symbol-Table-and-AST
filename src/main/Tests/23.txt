@@ -14,6 +14,13 @@ class T3 extends Test2{
 }
 
 class Book extends Book{
+	var x123: Test21; 
+	def methodmethod(): int{
+		x123 = new Test21(); 
+		y = x123.main22(12); 
+		y = new Test21().main2(12); 
+		return 0;
+	}
 }
 
 class A extends B{
