@@ -1,0 +1,27 @@
+Line:3:variable i is not declared
+Line:4:there is no method named t in class Test21
+Line:9:class Book is not declared
+Line:16:name Test32 is not defined
+Line:20:method call is illegal outside main class
+Line:22:condition type must be boolean
+Line:28:class A is not declared
+Line:29:condition type must be boolean
+Line:31:unsupported operand type for add
+Line:35:unsupported operand type for assign
+Line:36:unsupported operand type for assign
+Line:37:there is no method named x3 in class Test2
+Line:38:there is no method named i in class Test2
+Line:41:class Test8 is not declared
+Line:44:list indices must be integers
+Line:46:unsupported operand type for assign
+Line:47:unsupported operand type for assign
+Line:49:unsupported operand type for add
+Line:54:unsupported operand type for mult
+Line:57:unsupported operand type for mult
+Line:57:unsupported operand type for not
+Line:56:unsupported operand type for add
+Line:57:unsupported operand type for or
+Line:68:unsupported operand type for and
+Line:69:int object is not subscriptable
+Line:72:unsupported operand type for add
+Line:70:unsupported operand type for and

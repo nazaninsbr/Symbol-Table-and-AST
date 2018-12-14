@@ -1,0 +1,4 @@
+Line:2:main method was not found
+Line:3:there is no method named t in class Test21
+Line:8:class Book is not declared
+Line:11:there is no method named main in class Test2

@@ -9,3 +9,41 @@ class Test {
 		return 0;
 	}
 }
+
+class T4{
+	
+}
+
+class Test2 extends T4{
+	var T0: Test;
+	var x: int[];
+	var j: int[];
+	var k: int[];
+	var l: boolean;
+	var y: boolean; 
+	var h: int[];
+	var p: T4; 
+	var q: Test2;
+	var n: Object;
+	def main() : int {
+		x = new int[5];
+		j = new int[19];
+		k = new int[5];
+		l = x==k;
+		l = x<>k;
+		l = x==j; 
+		l = x<>j;
+		l = T0.main() == T0.main2() ;
+		l = T0.main() == T0.main() ;
+		l = p==q;
+		l = q==p;
+		l = p==T0;
+		l = T0==n; 
+		l = q==n;
+		n = q;
+		l = y = x==k; 
+		l = hello = x==k; 
+		l = h = new int[100];
+		return T0;
+	}
+}
