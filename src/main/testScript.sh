@@ -78,3 +78,9 @@ echo 28
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/28.txt > ./Results/28.txt
 echo 29
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/29.txt > ./Results/29.txt
+echo "naz-all-ph2.sml"
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/naz-all-ph2.sml > ./Results/naz-all-ph2.sml
+echo "naz-all-ph3.sml"
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/naz-all-ph3.sml > ./Results/naz-all-ph3.sml
+
+

@@ -38,7 +38,7 @@ public class VisitorImpl implements Visitor {
         try{
             UserDefinedType class_type = new UserDefinedType(); 
             class_type.setClassDeclaration(class_dec);
-            SymbolTableVariableItemBase class_sym_table_item = new SymbolTableVariableItemBase(class_name, class_type, index); 
+            SymbolTableVariableItemBase class_sym_table_item = new SymbolTableVariableItemBase("class_"+class_name, class_type, index); 
             symTable.put(class_sym_table_item);
         } catch(ItemAlreadyExistsException e) {
             no_error = false;
@@ -411,7 +411,7 @@ public class VisitorImpl implements Visitor {
             add_vars_and_methods_to_symbolTable_for_undefiend_checks(classDeclaration);
             if (! classDeclaration.getParentName().getName().equals("null")) {
                 try{
-                    SymbolTableItem thisItem = symTable.top.get(classDeclaration.getParentName().getName());
+                    SymbolTableItem thisItem = symTable.top.get("class_"+classDeclaration.getParentName().getName());
                 }
                 catch(ItemNotFoundException ex){
                     System.out.println("Line:"+Integer.toString(classDeclaration.get_line_number())+":class "+ classDeclaration.getParentName().getName()+" is not declared");
@@ -890,7 +890,7 @@ public class VisitorImpl implements Visitor {
             
             Identifier class_name = newClass.getClassName();
             try {
-                SymbolTableItem thisItem = symTable.top.get(newClass.getClassName().getName());
+                SymbolTableItem thisItem = symTable.top.get("class_"+newClass.getClassName().getName());
                 SymbolTableVariableItemBase thisClassType = (SymbolTableVariableItemBase) thisItem;
                 UserDefinedType this_new_class_type = new UserDefinedType();
                 this_new_class_type.setClassDeclaration(((UserDefinedType)(thisClassType.getType())).getClassDeclaration());

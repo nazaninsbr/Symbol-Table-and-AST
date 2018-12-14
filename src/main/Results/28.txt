@@ -1,4 +1,6 @@
 Line:6:variable x is not declared
 Line:6:unsupported operand type for and
 Line:6:unsupported operand type for or
+Line:18:name Test is not defined
+Line:20:name Object is not defined
 Line:23:main return type must be int
