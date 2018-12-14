@@ -991,8 +991,6 @@ public class VisitorImpl implements Visitor {
                     System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":left side of assignment must be a valid lvalue");
                 }
             }
-            assign.getlValue().accept(this);
-            assign.getrValue().accept(this);
             if (!(assign.getlValue().getType().toString().equals("NoType") || assign.getrValue().getType().toString().equals("NoType"))) {
                 
                 if ( (assign.getrValue().getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) && (assign.getlValue().getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) ){

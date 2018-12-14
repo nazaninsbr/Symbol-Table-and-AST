@@ -1,27 +1,81 @@
 Line:3:variable i is not declared
+Identifier i
+IntValue 3
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:4:there is no method named t in class Test21
 Line:9:class Book is not declared
 Line:16:name Test32 is not defined
 Line:20:method call is illegal outside main class
 Line:22:condition type must be boolean
+Identifier z
+IntValue 2
+&&&&&&&&&&&&&&&&&&&&&&&&&
+Identifier z
+IntValue 3
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:28:class A is not declared
 Line:29:condition type must be boolean
 Line:31:unsupported operand type for add
+Identifier a
+BinaryExpression add
+&&&&&&&&&&&&&&&&&&&&&&&&&
+Identifier xx
+NewArray
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:35:unsupported operand type for assign
+Identifier yy
+NewArray
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:36:unsupported operand type for assign
 Line:37:there is no method named x3 in class Test2
+Identifier a
+MethodCall
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:38:there is no method named i in class Test2
+Identifier a
+MethodCall
+&&&&&&&&&&&&&&&&&&&&&&&&&
+Identifier a
+MethodCall
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:41:class Test8 is not declared
+Identifier v
+NewClass
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:44:list indices must be integers
+Identifier x3
+ArrayCall
+&&&&&&&&&&&&&&&&&&&&&&&&&
+Identifier x
+BinaryExpression add
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:46:unsupported operand type for assign
 Line:47:unsupported operand type for assign
+Identifier x
+BinaryExpression assign
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:49:unsupported operand type for add
+Identifier a
+BinaryExpression add
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:54:unsupported operand type for mult
 Line:57:unsupported operand type for mult
 Line:57:unsupported operand type for not
 Line:56:unsupported operand type for add
 Line:57:unsupported operand type for or
+Identifier a
+BinaryExpression and
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:68:unsupported operand type for and
+Identifier b
+BinaryExpression and
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:69:int object is not subscriptable
+ArrayCall
+IntValue 8
+&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:72:unsupported operand type for add
 Line:70:unsupported operand type for and
+Identifier a
+BinaryExpression and
+&&&&&&&&&&&&&&&&&&&&&&&&&

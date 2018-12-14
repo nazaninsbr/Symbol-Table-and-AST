@@ -25,7 +25,11 @@ class Test2 extends T4{
 	var p: T4; 
 	var q: Test2;
 	var n: Object;
+	def x(): T4{
+		return new T4();
+	}
 	def main() : int {
+		p = this.x();
 		x = new int[5];
 		j = new int[19];
 		k = new int[5];

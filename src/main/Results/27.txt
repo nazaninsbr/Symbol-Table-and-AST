@@ -1,10 +1,3 @@
 Line:6:variable x is not declared
 Line:6:unsupported operand type for and
 Line:6:unsupported operand type for or
-Line:34:array sizes need to be the same
-Line:35:array sizes need to be the same
-Line:36:there is no method named main2 in class Test
-Line:40:unsupported operand type for eq
-Line:45:variable hello is not declared
-Line:46:unsupported operand type for assign
-Line:47:main return type must be int

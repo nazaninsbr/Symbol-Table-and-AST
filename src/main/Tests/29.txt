@@ -1,0 +1,21 @@
+class Test {
+	def main() : int {
+		return 0;
+	}
+}
+
+class T4{
+	
+}
+
+class Test2 extends T4{
+	var T0: Test;
+	var p: T4; 
+	def x(): T4{
+		return new T4();
+	}
+	def main() : int {
+		p = this.x();
+		return T0;
+	}
+}
