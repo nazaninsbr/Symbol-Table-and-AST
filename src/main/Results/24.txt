@@ -3,6 +3,6 @@ Line:9:main23 return type must be int
 Line:19:name Test21 is not defined
 Line:23:class Book is not declared
 Line:24:variable y is not declared
-Line:24:there is no method named main2 in class Object
+Line:24:variable x123 is of a class that is not declared
 Line:25:variable y is not declared
 Line:25:class Test21 is not declared
