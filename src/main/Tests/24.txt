@@ -18,19 +18,19 @@ class Pet extends Animal{
 class Dog extends Pet{
 	var x123: Test21; 
 	var x4: Dog;
-	def methodmethod(): int{
+	def methodmethod(l: Animal): Pet{
 		x123 = new Animal();
 		x123 = new Book(); 
 		y = x123.main2("x"); 
 		y = new Test21().main2(12); 
-		return 0;
+		return x4;
 	}
 }
 
 class Cat extends Pet{
 	var x: Animal; 
 	def m(): int{
-		x = new Cat(); 
+		x = new Dog().methodmethod(new Pet()); 
 		return 0; 
 	}
 }

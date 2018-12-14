@@ -1,25 +1,4 @@
 Line:3:variable j is not declared
-Identifier j
-BooleanValue true
-&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:4:variable i is not declared
-Identifier i
-StringValue "st  g"
-&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:6:class d is not declared
-Identifier i
-IntValue 0
-&&&&&&&&&&&&&&&&&&&&&&&&&
-Identifier test1
-NewArray
-&&&&&&&&&&&&&&&&&&&&&&&&&
-ArrayCall
-Identifier i
-&&&&&&&&&&&&&&&&&&&&&&&&&
-Identifier test2
-BooleanValue true
-&&&&&&&&&&&&&&&&&&&&&&&&&
-Identifier test2
-BooleanValue false
-&&&&&&&&&&&&&&&&&&&&&&&&&
-Line:27:testMethod return type must be int
+Line:27:testMethod must be int

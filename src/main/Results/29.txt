@@ -1,4 +1,4 @@
 Line:15:variable n is not declared
 Line:19:variable o is not declared
 Line:19:variable x is not declared
-Line:21:main return type must be int
+Line:21:main must be int

@@ -1,32 +1,11 @@
 Line:3:variable x is not declared
-Identifier x
-UnaryExpression minus
-&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:8:class Blue is not declared
 Line:13:unsupported operand type for or
-Identifier x
-BinaryExpression div
-&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:14:variable c is not declared
 Line:14:unsupported operand type for and
 Line:14:unsupported operand type for or
-Identifier y
-BinaryExpression or
-&&&&&&&&&&&&&&&&&&&&&&&&&
-Identifier arr
-NewArray
-&&&&&&&&&&&&&&&&&&&&&&&&&
-Identifier x
-BooleanValue true
-&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:17:unsupported operand type for assign
-Identifier y
-BooleanValue false
-&&&&&&&&&&&&&&&&&&&&&&&&&
 Line:20:variable j is not declared
 Line:21:variable j is not declared
 Line:21:int object is not subscriptable
 Line:21:variable j is not declared
-ArrayCall
-BinaryExpression add
-&&&&&&&&&&&&&&&&&&&&&&&&&

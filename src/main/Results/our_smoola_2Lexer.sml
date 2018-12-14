@@ -1,1 +1,1 @@
-Line:24:testMethod return type must be int
+Line:24:testMethod must be int

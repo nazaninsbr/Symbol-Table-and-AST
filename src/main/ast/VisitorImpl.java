@@ -483,8 +483,21 @@ public class VisitorImpl implements Visitor {
     void check_method_return_type_conditions(MethodDeclaration methodDeclaration){
         methodDeclaration.getReturnValue().accept(this);
         if(! methodDeclaration.getReturnValue().getType().toString().equals("NoType")){
-            if (! methodDeclaration.getReturnType().toString().equals(methodDeclaration.getReturnValue().getType().toString())){
-                System.out.println("Line:"+Integer.toString(methodDeclaration.getReturnValue().get_line_number())+":"+methodDeclaration.getName().getName()+" return type must be "+methodDeclaration.getReturnType().toString());
+            if ( (methodDeclaration.getReturnValue().getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) && (methodDeclaration.getReturnType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) ){
+                ArrayList<String> parents = new ArrayList<String>();
+                String this_class_name = ((UserDefinedType)(methodDeclaration.getReturnValue().getType())).getClassDeclaration().getName().getName();
+                parents.add(this_class_name);
+                parents.add("Object");
+                add_all_parent_names(this_class_name, parents);
+                check_subtype_class(((UserDefinedType)(methodDeclaration.getReturnValue().getType())).getClassDeclaration().getName().getName(),((UserDefinedType)(methodDeclaration.getReturnValue().getType())).getClassDeclaration().getParentName().getName(),parents);
+                boolean ok_subtype = in_this_array(parents, methodDeclaration.getReturnType().toString());
+
+                if (!ok_subtype){
+                    System.out.println("Line:"+Integer.toString(methodDeclaration.getReturnValue().get_line_number())+":"+methodDeclaration.getName().getName()+" must be "+methodDeclaration.getReturnType().toString());
+                }
+            }
+            else if (! methodDeclaration.getReturnType().toString().equals(methodDeclaration.getReturnValue().getType().toString())){
+                System.out.println("Line:"+Integer.toString(methodDeclaration.getReturnValue().get_line_number())+":"+methodDeclaration.getName().getName()+" must be "+methodDeclaration.getReturnType().toString());
             }
         }
     }
@@ -826,7 +839,20 @@ public class VisitorImpl implements Visitor {
                     for(int i=0; i<args.size(); i++){
                         args.get(i).accept(this);
                         if (! args.get(i).getType().toString().equals("NoType")){
-                            if (! args.get(i).getType().toString().equals(argTypes.get(i).toString())){
+                            if ( (args.get(i).getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) && (argTypes.get(i).getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) ){
+                                ArrayList<String> parents = new ArrayList<String>();
+                                String this_class_name = ((UserDefinedType)(args.get(i).getType())).getClassDeclaration().getName().getName();
+                                parents.add(this_class_name);
+                                parents.add("Object");
+                                add_all_parent_names(this_class_name, parents);
+                                check_subtype_class(((UserDefinedType)(args.get(i).getType())).getClassDeclaration().getName().getName(),((UserDefinedType)(args.get(i).getType())).getClassDeclaration().getParentName().getName(),parents);
+                                boolean ok_subtype = in_this_array(parents, argTypes.get(i).toString());
+
+                                if (!ok_subtype){
+                                    System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":invalid type for argument number "+Integer.toString(i+1));
+                                }
+                            }
+                            else if (! args.get(i).getType().toString().equals(argTypes.get(i).toString())){
                                 System.out.println("Line:"+Integer.toString(methodCall.get_line_number())+":invalid type for argument number "+Integer.toString(i+1));
                             }
                         }
