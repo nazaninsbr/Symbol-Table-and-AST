@@ -149,7 +149,7 @@ grammar Smoola;
                 }
             }
         }
-        return create_class_object("null", "null");
+        return create_class_object("Object", "null");
     }
 
     void complete_incomple_var_declarations(Program prog){

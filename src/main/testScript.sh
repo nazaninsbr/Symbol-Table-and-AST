@@ -74,3 +74,5 @@ echo 26
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/26.txt > ./Results/26.txt
 echo 27
 java org.antlr.v4.gui.TestRig Smoola program < ./Tests/27.txt > ./Results/27.txt
+echo 28
+java org.antlr.v4.gui.TestRig Smoola program < ./Tests/28.txt > ./Results/28.txt

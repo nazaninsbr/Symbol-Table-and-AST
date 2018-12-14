@@ -410,7 +410,6 @@ public class VisitorImpl implements Visitor {
         else if(second_round==true && no_error==true){
             symTable.push(new SymbolTable(symTable)); 
             add_vars_and_methods_to_symbolTable_for_undefiend_checks(classDeclaration);
-            //////////
             if (! classDeclaration.getParentName().getName().equals("null")) {
                 try{
                     SymbolTableItem thisItem = symTable.top.get(classDeclaration.getParentName().getName());
@@ -421,7 +420,6 @@ public class VisitorImpl implements Visitor {
                     classDeclaration.setParentName(new_parent_name);
                 }               
             }
-            ///////////
             if (! classDeclaration.getParentName().getName().equals("null")) {
                 ArrayList<String> already_seen = new ArrayList<String>();
                 ___fill_the_sym_table_with_parent_data(classDeclaration.getName().getName(), classDeclaration.getParentName().getName(), already_seen);
@@ -564,7 +562,35 @@ public class VisitorImpl implements Visitor {
             binaryExpression.getLeft().accept(this);
             binaryExpression.getRight().accept(this);
             if ( !(binaryExpression.getLeft().getType().toString().equals("NoType") || binaryExpression.getRight().getType().toString().equals("NoType"))) {
-                if( ! binaryExpression.getLeft().getType().toString().equals(binaryExpression.getRight().getType().toString()) ){
+                if (binaryExpression.getLeft().getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType") && binaryExpression.getRight().getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")) {
+                    ArrayList<String> parents = new ArrayList<String>();
+                    String this_class_name = ((UserDefinedType)(binaryExpression.getLeft().getType())).getClassDeclaration().getName().getName();
+                    parents.add(this_class_name);
+                    parents.add("Object");
+                    add_all_parent_names(this_class_name, parents);
+                    check_subtype_class(((UserDefinedType)(binaryExpression.getLeft().getType())).getClassDeclaration().getName().getName(),((UserDefinedType)(binaryExpression.getLeft().getType())).getClassDeclaration().getParentName().getName(),parents);
+                    boolean ok_subtype = in_this_array(parents, binaryExpression.getRight().getType().toString());
+                    if (! ok_subtype){
+                        ArrayList<String> parents2 = new ArrayList<String>();
+                        String this_class_name2 = ((UserDefinedType)(binaryExpression.getRight().getType())).getClassDeclaration().getName().getName();
+                        parents2.add(this_class_name2);
+                        parents2.add("Object");
+                        add_all_parent_names(this_class_name2, parents2);
+                        check_subtype_class(((UserDefinedType)(binaryExpression.getRight().getType())).getClassDeclaration().getName().getName(),((UserDefinedType)(binaryExpression.getRight().getType())).getClassDeclaration().getParentName().getName(),parents2);
+                        boolean ok_subtype2 = in_this_array(parents2, binaryExpression.getLeft().getType().toString());
+                        if (! ok_subtype2) {
+                            System.out.println("Line:"+Integer.toString(binaryExpression.get_line_number())+":unsupported operand type for "+binaryExpression.getBinaryOperator());
+                            this_binary_exp_type = new NoType();
+                        }
+                        else{
+                            this_binary_exp_type = binaryExpression.getRight().getType();
+                        }
+                    }
+                    else{
+                        this_binary_exp_type = binaryExpression.getLeft().getType();
+                    }
+                }
+                else if( ! binaryExpression.getLeft().getType().toString().equals(binaryExpression.getRight().getType().toString()) ){
                     System.out.println("Line:"+Integer.toString(binaryExpression.get_line_number())+":unsupported operand type for "+binaryExpression.getBinaryOperator());
                     this_binary_exp_type = new NoType();
                 } 
