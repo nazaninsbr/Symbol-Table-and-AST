@@ -11,10 +11,10 @@ class SecondMain extends Test{
 		var o : int[];
 		return o;
 	}
-	#def b():Rectangle{
-	#	var q : Rectangle;
-	#	return q;
-	#}
+	def b():Rectangle{
+		var q : Rectangle;
+		return q;
+	}
 	def area2(): int {
 	return 3;
 	}

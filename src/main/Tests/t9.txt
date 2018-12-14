@@ -51,14 +51,6 @@ class A extends Rectangle{
 		def main3(): Rectangle {
 		var x: int;
 
-		s1.f()[1] = 10;
-		s1.f()[2] = 2;
-		s1.f()[2 + 2] = 2;
-		(s1.g().a())[3] = 20;
-		s1.area()[2]  = 10; #error
-		s1.g().area2()[3] = 20; #error
-		s1.g().b().f()[2] = 10;
-		s1.g().b().g().a()[1] = 2;
 		return s2;
 	}
 }

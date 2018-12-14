@@ -143,7 +143,6 @@ public class VisitorImpl implements Visitor {
         for(int i = 0; i < errors.size(); ++i) {
             System.out.println(errors.get(i));
         }
-        
     }
 
     ArrayList<Type> create_arg_types(MethodDeclaration method_dec){
@@ -1009,7 +1008,7 @@ public class VisitorImpl implements Visitor {
             check_statement_expressions_for_newArray_expr(exprs);
         }
         else if(second_round==true){
-            if (!(assign.getlValue().getClass().getName().equals("ast.node.expression.Identifier") || assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall") || assign.getlValue().getClass().getName().equals("ast.node.expression.MethodCall"))) {
+            if (!(assign.getlValue().getClass().getName().equals("ast.node.expression.Identifier") || assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall") )) {
                 System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":left side of assignment must be a valid lvalue");
             }
 

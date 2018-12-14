@@ -8,7 +8,7 @@ class B {
 	def main2() : int {
 		var a :int;
 		var b: int;
-		var c : bool;
+		var c : boolean;
 		var d :int[];
 		var d2 :int[];
 		d = new int [10];

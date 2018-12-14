@@ -1,6 +1,7 @@
 class Test {
 	def main() : int {
 		writeln(1);
+		
 		return 0;
 	}
 }

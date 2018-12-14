@@ -23,13 +23,21 @@ class E extends D{
 	}
 }
 class C extends D{
-	def main4(): string {
+	def main8(): string {
 		return x;
 	}
-	def area2(): int {
+	def area8(): int {
 		return x*3;
 	}
 }
+class D extends C{
+	def main7(): string {
+		return x;
+	}
+	def area7(): int {
+		return x*3;
+	}
+} 
 class F extends C{
 	def area3(): int {
 		return 2*5;
