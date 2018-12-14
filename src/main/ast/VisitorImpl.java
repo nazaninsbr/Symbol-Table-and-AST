@@ -525,7 +525,7 @@ public class VisitorImpl implements Visitor {
             try {
                 if (varDeclaration.getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")){
                     UserDefinedType x = (UserDefinedType) varDeclaration.getType(); 
-                    symTable.top.get(x.getName().getName());
+                    symTable.top.get("class_"+x.getName().getName());
                 }
             }
             catch(ItemNotFoundException ex){

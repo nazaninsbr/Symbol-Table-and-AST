@@ -1,10 +1,6 @@
 Line:6:variable x is not declared
 Line:6:unsupported operand type for and
 Line:6:unsupported operand type for or
-Line:18:name Test is not defined
-Line:25:name T4 is not defined
-Line:26:name Test2 is not defined
-Line:27:name Object is not defined
 Line:38:array sizes need to be the same
 Line:39:array sizes need to be the same
 Line:40:there is no method named main2 in class Test

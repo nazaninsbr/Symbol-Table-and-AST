@@ -1,5 +1,3 @@
-Line:12:name Test is not defined
-Line:13:name T4 is not defined
 Line:15:variable n is not declared
 Line:19:variable o is not declared
 Line:19:variable x is not declared

@@ -1,7 +1,6 @@
 Line:3:variable i is not declared
 Line:4:there is no method named t in class Test21
 Line:9:class Book is not declared
-Line:14:name Test21 is not defined
 Line:16:name Test32 is not defined
 Line:20:method call is illegal outside main class
 Line:22:condition type must be boolean

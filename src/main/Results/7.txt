@@ -1,13 +1,8 @@
-Line:9:name Rectangle is not defined
 Line:24:variable s is not declared
 Line:25:variable s is not declared
 Line:26:variable s is not declared
 Line:30:variable y is not declared
 Line:30:unsupported operand type for mult
-Line:34:name Rectangle is not defined
-Line:35:name SecondMain is not defined
-Line:36:name Test is not defined
-Line:37:name A is not defined
 Line:43:left side of assignment must be a valid lvalue
 Line:44:left side of assignment must be a valid lvalue
 Line:45:left side of assignment must be a valid lvalue

@@ -1,11 +1,8 @@
 Line:3:main return type must be int
 Line:9:main23 return type must be int
 Line:19:name Test21 is not defined
-Line:20:name Dog is not defined
-Line:21:name Animal is not defined
 Line:23:class Book is not declared
 Line:24:variable y is not declared
 Line:24:variable x123 is of a class that is not declared
 Line:25:variable y is not declared
 Line:25:class Test21 is not declared
-Line:31:name Animal is not defined
