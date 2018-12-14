@@ -171,6 +171,17 @@ grammar Smoola;
                         x.setClassDeclaration(get_user_defined_type_class_def( x.getName().getName(), prog));
                     }
                 }
+                ArrayList<VarDeclaration> args = methods.get(j).getArgs();
+                for(int l=0; l<args.size(); l++){
+                    if (args.get(l).getType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")){
+                        UserDefinedType x = (UserDefinedType) args.get(l).getType(); 
+                        x.setClassDeclaration(get_user_defined_type_class_def( x.getName().getName(), prog));
+                    }
+                }
+                if (methods.get(j).getReturnType().getClass().getName().equals("ast.Type.UserDefinedType.UserDefinedType")){
+                    UserDefinedType x = (UserDefinedType) methods.get(j).getReturnType(); 
+                    x.setClassDeclaration(get_user_defined_type_class_def( x.getName().getName(), prog));
+                }
             }
         }
     }

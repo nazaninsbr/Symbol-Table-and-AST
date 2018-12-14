@@ -12,9 +12,11 @@ class Test2 extends T4{
 	var T0: Test;
 	var p: T4; 
 	def x(): T4{
+		n = 3;
 		return new T4();
 	}
 	def main() : int {
+		o = x;
 		p = this.x();
 		return T0;
 	}
