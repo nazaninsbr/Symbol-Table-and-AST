@@ -25,6 +25,6 @@ class Rectangle extends SecondMain{
 		return 23;
 	}
 	def f(z: int[]): SecondMain{
-		return new SecondMain;
+		return new SecondMain();
 	}
 }
