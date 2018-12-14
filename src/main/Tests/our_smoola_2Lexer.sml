@@ -13,7 +13,7 @@ class BabyTest {
         i = 0;
         test1 = new int[1];
 
-        while(i <> 10) {
+        while(1+2) {
             test1[i] = i;
         }
         if(test1[1] == 1) then

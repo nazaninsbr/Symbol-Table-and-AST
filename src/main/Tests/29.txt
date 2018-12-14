@@ -18,6 +18,7 @@ class Test2 extends T4{
 	def main() : int {
 		o = x;
 		p = this.x();
+		T0.main() = "0";
 		return T0;
 	}
 }

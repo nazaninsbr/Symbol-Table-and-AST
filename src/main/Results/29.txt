@@ -1,4 +1,6 @@
 Line:15:variable n is not declared
 Line:19:variable o is not declared
 Line:19:variable x is not declared
-Line:21:main must be int
+Line:21:left side of assignment must be a valid lvalue
+Line:21:unsupported operand type for assign
+Line:22:main return type must be int

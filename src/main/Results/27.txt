@@ -7,4 +7,4 @@ Line:40:there is no method named main2 in class Test
 Line:44:unsupported operand type for eq
 Line:49:variable hello is not declared
 Line:50:unsupported operand type for assign
-Line:51:main must be int
+Line:51:main return type must be int

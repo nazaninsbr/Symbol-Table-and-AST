@@ -1,9 +1,9 @@
 Line:3:unsupported type for writeln
 Line:4:left side of assignment must be a valid lvalue
 Line:4:variable x is not declared
-Line:5:main must be int
+Line:5:main return type must be int
 Line:11:variable x2 is not declared
-Line:12:main23 must be int
+Line:12:main23 return type must be int
 Line:21:unsupported operand type for assign
 Line:22:variable y is not declared
 Line:22:invalid type for argument number 1
@@ -11,4 +11,4 @@ Line:23:variable y is not declared
 Line:28:circular dependency is not allowed
 Line:40:object of type bool has no length
 Line:42:unsupported operand type for add
-Line:44:main2 must be int
+Line:44:main2 return type must be int
