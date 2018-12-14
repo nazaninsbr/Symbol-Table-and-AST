@@ -550,7 +550,12 @@ public class VisitorImpl implements Visitor {
                     arrayCall.setType(new NoType());
                 }
                 else {
-                    arrayCall.setType(new IntType());
+                    if( (arrayCall.getInstance().getType().toString().equals("int[]"))){
+                        arrayCall.setType(new IntType());
+                    } else if (arrayCall.getInstance().getType().toString().equals("NoType")) {
+                        arrayCall.setType(new NoType());
+                    }
+                    
                 }
             } 
             else {

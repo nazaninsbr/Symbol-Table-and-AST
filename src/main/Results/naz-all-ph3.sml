@@ -5,7 +5,6 @@ Line:42:variable x is not declared
 Line:43:variable x is not declared
 Line:43:variable x is not declared
 Line:43:variable x is not declared
-Line:43:unsupported operand type for eq
 Line:44:variable a is not declared
 Line:44:variable b is not declared
 Line:44:variable c is not declared
@@ -24,13 +23,11 @@ Line:47:variable b is not declared
 Line:47:variable d is not declared
 Line:49:variable class2 is not declared
 Line:52:variable a is not declared
-Line:52:condition type must be boolean
 Line:53:variable a is not declared
 Line:53:variable a is not declared
 Line:55:x return type must be string
 Line:59:variable arr is not declared
 Line:59:variable i is not declared
-Line:59:main return type must be int[]
 Line:85:variable a is not declared
 Line:85:variable x is not declared
 Line:92:variable a is not declared

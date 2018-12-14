@@ -1,6 +1,12 @@
-Line:15:variable n is not declared
-Line:19:variable o is not declared
-Line:19:variable x is not declared
-Line:21:left side of assignment must be a valid lvalue
-Line:21:unsupported operand type for assign
-Line:22:main return type must be int
+Line:16:variable n is not declared
+Line:20:variable x is not declared
+Line:20:variable x is not declared
+Line:20:variable x is not declared
+Line:23:unsupported operand type for eq
+Line:26:variable x is not declared
+Line:26:unsupported operand type for eq
+Line:29:variable o is not declared
+Line:29:variable x is not declared
+Line:31:left side of assignment must be a valid lvalue
+Line:31:unsupported operand type for assign
+Line:32:main return type must be int

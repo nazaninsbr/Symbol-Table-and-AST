@@ -11,11 +11,21 @@ class T4{
 class Test2 extends T4{
 	var T0: Test;
 	var p: T4; 
+	var l: int[];
 	def x(): T4{
 		n = 3;
 		return new T4();
 	}
 	def main() : int {
+		if(x[x*2+x*4]== true) then{
+
+		}
+		if(l[32]==true) then{
+
+		}
+		if(l[x]==true) then{
+
+		}
 		o = x;
 		p = this.x();
 		T0.main() = "0";
