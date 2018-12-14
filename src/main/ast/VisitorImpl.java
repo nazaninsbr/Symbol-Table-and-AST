@@ -493,11 +493,11 @@ public class VisitorImpl implements Visitor {
                 boolean ok_subtype = in_this_array(parents, methodDeclaration.getReturnType().toString());
 
                 if (!ok_subtype){
-                    System.out.println("Line:"+Integer.toString(methodDeclaration.getReturnValue().get_line_number())+":"+methodDeclaration.getName().getName()+" must be "+methodDeclaration.getReturnType().toString());
+                    System.out.println("Line:"+Integer.toString(methodDeclaration.getReturnValue().get_line_number())+":"+methodDeclaration.getName().getName()+" return type must be "+methodDeclaration.getReturnType().toString());
                 }
             }
             else if (! methodDeclaration.getReturnType().toString().equals(methodDeclaration.getReturnValue().getType().toString())){
-                System.out.println("Line:"+Integer.toString(methodDeclaration.getReturnValue().get_line_number())+":"+methodDeclaration.getName().getName()+" must be "+methodDeclaration.getReturnType().toString());
+                System.out.println("Line:"+Integer.toString(methodDeclaration.getReturnValue().get_line_number())+":"+methodDeclaration.getName().getName()+" return type must be "+methodDeclaration.getReturnType().toString());
             }
         }
     }

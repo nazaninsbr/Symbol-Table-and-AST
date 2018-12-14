@@ -31,7 +31,10 @@ class Rectangle extends SecondMain{
 		x = s;
 		return s;
 	}
-
+	def ffff(): string {
+		var x: int;
+		return x;
+	}
 	def area(): int {
 		return x*y;
 	}
