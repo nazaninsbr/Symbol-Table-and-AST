@@ -19,7 +19,6 @@ class SecondMain extends Test{
 	return 3;
 	}
 }
-
 class Rectangle extends SecondMain{
 
 	def constructor(x: int, y:int): int {
@@ -34,10 +33,14 @@ class Rectangle extends SecondMain{
 	}
 
 	def area(): int {
-		return 23;
+		return x*y;
 	}
 	def f(z: int[]):int[]{
 		return z;
+	}
+	def g():SecondMain{
+		var t : SecondMain;
+		return t;
 	}
 }
 class A extends Rectangle{
@@ -48,7 +51,7 @@ class A extends Rectangle{
 		var s5 : string;
 		var s6 : int;
 		var s7 : int[];
-		def main3(): Rectangle {
+		def main3(): int {
 		var x: int;
 
 		s1.f()[1] = 10;
@@ -59,6 +62,10 @@ class A extends Rectangle{
 		s1.g().area2()[3] = 20; #error
 		s1.g().b().f()[2] = 10;
 		s1.g().b().g().a()[1] = 2;
-		return s2;
+		s1.g() = s2;
+		s1.area() = 54;
+		s1.g().b().g().a()[1] = 2;
+		s2.area2() = 3;
+		return s1;
 	}
 }

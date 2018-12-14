@@ -1009,14 +1009,15 @@ public class VisitorImpl implements Visitor {
             check_statement_expressions_for_newArray_expr(exprs);
         }
         else if(second_round==true){
-            if (!(assign.getlValue().getClass().getName().equals("ast.node.expression.Identifier") || assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall"))) {
+            if (!(assign.getlValue().getClass().getName().equals("ast.node.expression.Identifier") || assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall") || assign.getlValue().getClass().getName().equals("ast.node.expression.MethodCall"))) {
                 System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":left side of assignment must be a valid lvalue");
             }
-            else if (assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall") ){
-                if (!(((ArrayCall)assign.getlValue()).getInstance().getClass().getName().equals("ast.node.expression.Identifier"))){
-                    System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":left side of assignment must be a valid lvalue");
-                }
-            }
+
+            //else if (assign.getlValue().getClass().getName().equals("ast.node.expression.ArrayCall") ){
+            //    if (!(((ArrayCall)assign.getlValue()).getInstance().getClass().getName().equals("ast.node.expression.Identifier"))){
+            //        System.out.println("Line:"+Integer.toString(assign.getlValue().get_line_number())+":left side of assignment must be a valid lvalue");
+           //     }
+           // }
             assign.getlValue().accept(this);
             assign.getrValue().accept(this);
             if (!(assign.getlValue().getType().toString().equals("NoType") || assign.getrValue().getType().toString().equals("NoType"))) {
